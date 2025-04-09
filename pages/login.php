@@ -13,10 +13,15 @@
             <input type="text" id="usuario" name="usuario" required>
 
             <label for="senha">Senha:</label>
-            <input type="password" id="senha" name="senha" required>
+            <div class="senha-container">
+                <input type="password" id="senha" name="senha" required>
+                <button type="button" id="toggleSenha">👁️</button>
+            </div>
 
             <button type="submit">Entrar</button>
         </form>
     </div>
+
+    <script src="login.js"></script>
 </body>
 </html>

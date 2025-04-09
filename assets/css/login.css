@@ -39,7 +39,7 @@ input {
     border-radius: 5px;
 }
 
-button {
+button[type="submit"] {
     padding: 10px;
     background-color: #2d89ef;
     color: white;
@@ -48,6 +48,25 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button[type="submit"]:hover {
     background-color: #1b5fc6;
+}
+
+.senha-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.senha-container input {
+    flex: 1;
+}
+
+.senha-container button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
 }
