@@ -16,6 +16,14 @@
       <button>Contato</button>
     </nav>
   </header>
+
+  <div id="searchbar">
+    <form action="search.php" method="POST">
+      <input type="text" id="search" placeholder="Pesquisar produto..." />
+      <button type="submit" id="search-button">Pesquisar</button>
+    </form>
+  </div>
+
   <h1>Cadastro de Produtos</h1>
   <form action="create.php" method="POST">
     <input type="text" name="nome" placeholder="Nome do Produto" required />
