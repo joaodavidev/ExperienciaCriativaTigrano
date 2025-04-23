@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
-        <form action="autenticar.php" method="post">
+        <form action="../includes/autenticar.php" method="post">
             <label for="usuario">Usuário:</label>
             <input type="text" id="usuario" name="usuario" required>
 
@@ -22,6 +22,6 @@
         </form>
     </div>
 
-    <script src="login.js"></script>
+    <script src="../includes/login.js"></script>
 </body>
 </html>

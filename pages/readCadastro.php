@@ -6,8 +6,7 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: login.php"); 
     exit();
 }
-
-require_once 'db.php'; 
+require_once '../includes/db.php';
 
 $sql = "SELECT id, usuario FROM usuarios";
 $result = $conn->query($sql);
@@ -19,7 +18,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuários Cadastrados</title>
-    <link rel="stylesheet" href="readCadastro.css">
+    <link rel="stylesheet" href="../assets/css/readCadastro.css">
 </head>
 <body>
 

@@ -1,7 +1,7 @@
 <?php
-session_start();
 
-require_once 'db.php';
+require_once '../includes/db.php';
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST['usuario'];
@@ -24,14 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Cadastrar Novo Usuário</title>
-    <link rel="stylesheet" href="createCadastro.css" />
+    <link rel="stylesheet" href="../assets/css/createCadastro.css" />
 </head>
 <body>
 
     <div class="container">
         <h1>Cadastrar Novo Usuário</h1>
 
-        <form action="createCadastroProcess.php" method="POST">
+        <form action="createCadastro.php" method="POST">
             <label for="usuario">Usuário:</label>
             <input type="text" name="usuario" id="usuario" placeholder="Digite o nome de usuário" required>
 
