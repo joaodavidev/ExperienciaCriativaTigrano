@@ -1,3 +1,24 @@
+<?php
+include 'db.php';
+
+$produtoEncontradoID = null;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
+    $nome = trim($_POST['nome']);
+
+    $sql_search = "SELECT * FROM produtos WHERE nome = ?";
+    $stmt_search = $conn->prepare($sql_search);
+    $stmt_search->bind_param("s", $nome);
+    $stmt_search->execute();
+    $result = $stmt_search->get_result();
+
+    if ($result->num_rows > 0) {
+        $produto = $result->fetch_assoc();
+        $produtoEncontradoID = $produto['id'];
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,8 +39,8 @@
   </header>
 
   <div id="searchbar">
-    <form action="search.php" method="POST">
-      <input type="text" id="search" placeholder="Pesquisar produto..." />
+    <form action="index.php" method="POST">
+      <input type="text" id="search" name="nome" placeholder="Pesquisar produto..." required />
       <button type="submit" id="search-button">Pesquisar</button>
     </form>
   </div>
@@ -32,10 +53,21 @@
     <button type="submit">Cadastrar</button>
   </form>
 
-  
   <div id="produtos">
     <h2>Produtos Cadastrados</h2>
-    <?php include '../includes/read.php'; ?>
-  </div>  
+    <?php include 'read.php'; ?>
+  </div>
+
+  <?php if ($produtoEncontradoID): ?>
+    <script>
+      window.onload = function() {
+        const el = document.getElementById('produto-<?php echo $produtoEncontradoID; ?>');
+        if (el) {
+          el.classList.add('encontrado');
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+    </script>
+  <?php endif; ?>
 </body>
 </html>
