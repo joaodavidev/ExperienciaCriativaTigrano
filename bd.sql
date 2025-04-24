@@ -15,6 +15,15 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE suporte (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    assunto VARCHAR(150) NOT NULL,
+    descricao TEXT NOT NULL,
+    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 SELECT * FROM ecommerce.usuarios;
 
 SELECT * FROM ecommerce.produtos;

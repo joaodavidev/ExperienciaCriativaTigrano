@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include '../includes/db.php';
 
 $produtoEncontradoID = null;
 
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
 
   <div id="produtos">
     <h2>Produtos Cadastrados</h2>
-    <?php include 'read.php'; ?>
+    <?php include '../includes/read.php'; ?>
   </div>
 
   <?php if ($produtoEncontradoID): ?>
