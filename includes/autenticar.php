@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (password_verify($senha, $user['senha'])) {
             $_SESSION['usuario'] = $usuario;
-            header("Location: readCadastro.php");
+            header("Location: index.php");
             exit();
         } else {
             echo "Senha incorreta!";

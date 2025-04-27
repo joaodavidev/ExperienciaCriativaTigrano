@@ -5,7 +5,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST['usuario'];
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT); 
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT); //hash para criptografia da senha
 
     $sql = "INSERT INTO usuarios (usuario, senha) VALUES ('$usuario', '$senha')";
 
