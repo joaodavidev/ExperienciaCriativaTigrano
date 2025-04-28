@@ -23,7 +23,3 @@ CREATE TABLE suporte (
     descricao TEXT NOT NULL,
     data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-SELECT * FROM ecommerce.usuarios;
-
-SELECT * FROM ecommerce.produtos;
