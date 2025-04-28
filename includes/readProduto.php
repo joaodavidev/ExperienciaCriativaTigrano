@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include '../includes/db.php';
 
 $sql = "SELECT * FROM produtos";
 $result = $conn->query($sql);
