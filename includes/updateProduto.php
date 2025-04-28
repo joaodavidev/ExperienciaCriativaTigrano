@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $stmt->bind_param("sdsi", $nome, $preco, $descricao, $id);
 
   if ($stmt->execute()) {
-    header("Location: <pages>index.php");
+    header("Location: cadastarProdutos.php");
     exit();
   } else {
     echo "Erro ao atualizar: " . $conn->error;

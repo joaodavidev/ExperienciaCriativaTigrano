@@ -12,7 +12,7 @@ while ($row = $result->fetch_assoc()) {
   
   echo "<div class='produto-conteudo'>";
 
-  echo "<form class='form-editar' action='update.php' method='POST'>
+  echo "<form class='form-editar' action='updateProduto.php' method='POST'>
           <input type='hidden' name='id' value='" . $row['id'] . "'>
           <input type='text' name='nome' value='" . htmlspecialchars($row['nome']) . "'>
           <input type='number' step='0.01' name='preco' value='" . $row['preco'] . "'>
@@ -20,7 +20,7 @@ while ($row = $result->fetch_assoc()) {
           <button type='submit'>Editar</button>
         </form>";
 
-  echo "<form class='form-excluir' action='delete.php' method='POST'>
+  echo "<form class='form-excluir' action='deleteProduto.php' method='POST'>
           <input type='hidden' name='id' value='" . $row['id'] . "'>
           <button type='submit'>Excluir</button>
         </form>";

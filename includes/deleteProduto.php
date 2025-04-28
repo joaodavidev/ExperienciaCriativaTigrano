@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $stmt->bind_param("i", $id);
 
   if ($stmt->execute()) {
-    header("Location: <pages>index.php");
+    header("Location: cadastrarProdutos.php");
     exit();
   } else {
     echo "Erro ao excluir produto: " . $conn->error;

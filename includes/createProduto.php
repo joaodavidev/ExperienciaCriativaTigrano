@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $stmt->bind_param("sds", $nome, $preco, $descricao);
 
   if ($stmt->execute()) {
-    header("Location: <pages>index.php");
+    header("Location: cadastrarProdutos.php");
     exit();
   } else {
     echo "Erro ao cadastrar: " . $conn->error;

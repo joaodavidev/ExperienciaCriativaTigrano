@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadastro de Produtos</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/cadastrarProdutos.css" />
 </head>
 <body>
   <header>
@@ -39,14 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
   </header>
 
   <div id="searchbar">
-    <form action="index.php" method="POST">
+    <form action="cadastrarProdutos.php" method="POST">
       <input type="text" id="search" name="nome" placeholder="Pesquisar produto..." required />
       <button type="submit" id="search-button">Pesquisar</button>
     </form>
   </div>
 
   <h1>Cadastro de Produtos</h1>
-  <form action="create.php" method="POST">
+  <form action="createProduto.php" method="POST">
     <input type="text" name="nome" placeholder="Nome do Produto" required />
     <input type="number" name="preco" placeholder="Preço" step="0.01" required />
     <textarea name="descricao" placeholder="Descrição do Produto"></textarea>
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
 
   <div id="produtos">
     <h2>Produtos Cadastrados</h2>
-    <?php include '../includes/read.php'; ?>
+    <?php include '../includes/readProduto.php'; ?>
   </div>
 
   <?php if ($produtoEncontradoID): ?>
