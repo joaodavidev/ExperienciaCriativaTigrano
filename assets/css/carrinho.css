@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #011474;
+    padding: 20px;
+    text-align: center;
+    color: white;
+  }
+  
+  nav {
+    margin-top: 10px;
+  }
+  
+  nav button {
+    background-color: white;
+    color: #011474;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .search-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    margin: 30px auto;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  #search {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  #search-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #011474;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  #produtos {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .produto {
+    background-color: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  
+  .form-excluir {
+    text-align: right;
+    margin-top: 10px;
+  }
+  
+  .btn-excluir {
+    background-color: #011474;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-excluir:hover {
+    background-color: #022ba8;
+  }
+  
+  .erro {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  

@@ -1,5 +1,5 @@
 <?php
-include '../includes/db.php';
+include '..includes/db.php';
 
 $produtoEncontradoID = null;
 
@@ -31,22 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
   <header>
     <h1>TIGRANO</h1>
     <nav>
-      <button>Home</button>
-      <button>Produtos</button>
-      <button>Carrinho</button>
+      <a href="..pages/paginaInicial.php"><button>Home</button></a>
+      <a href="../pages/carrinho.php"><button>Carrinho</button></a>
       <button>Contato</button>
     </nav>
   </header>
 
   <div id="searchbar">
-    <form action="cadastrarProdutos.php" method="POST">
+    <form action="index.php" method="POST">
       <input type="text" id="search" name="nome" placeholder="Pesquisar produto..." required />
       <button type="submit" id="search-button">Pesquisar</button>
     </form>
   </div>
 
   <h1>Cadastro de Produtos</h1>
-  <form action="createProduto.php" method="POST">
+  <form action="create.php" method="POST">
     <input type="text" name="nome" placeholder="Nome do Produto" required />
     <input type="number" name="preco" placeholder="Preço" step="0.01" required />
     <textarea name="descricao" placeholder="Descrição do Produto"></textarea>

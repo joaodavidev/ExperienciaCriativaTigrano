@@ -19,6 +19,8 @@
             </div>
 
             <button type="submit">Entrar</button>
+
+            <p>Não possui uma conta? <a href="../pages/createCadastro.php">Cadastre-se</a></p>
         </form>
     </div>
 

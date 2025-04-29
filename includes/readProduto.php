@@ -24,6 +24,11 @@ while ($row = $result->fetch_assoc()) {
           <input type='hidden' name='id' value='" . $row['id'] . "'>
           <button type='submit'>Excluir</button>
         </form>";
+  
+  echo "<form class='form-selecionar' action='../pages/carrinho.php' method='POST'>
+          <input type='hidden' name='id' value='" . $row['id'] . "'>
+          <button type='submit'>Selecionar</button>
+        </form>";
 
   echo "</div>";
   echo "</div>";
