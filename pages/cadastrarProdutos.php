@@ -1,7 +1,8 @@
 <?php
-include '..includes/db.php';
+include '../includes/db.php';
 
 $produtoEncontradoID = null;
+$produtosFiltrados = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     $nome = trim($_POST['nome']);
@@ -15,7 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     if ($result->num_rows > 0) {
         $produto = $result->fetch_assoc();
         $produtoEncontradoID = $produto['id'];
+    }else {
+        $mensagem_erro = "Produto não encontrado.";
     }
+    
+} elseif (isset($_GET['preco_min']) && isset($_GET['preco_max']) && $_GET['preco_min'] !== '' && $_GET['preco_max'] !== '') {
+    $min = (float) $_GET['preco_min'];
+    $max = (float) $_GET['preco_max'];
+    $sql_search = "SELECT * FROM produtos WHERE preco BETWEEN ? AND ?";
+    $stmt_search = $conn->prepare($sql_search);
+    $stmt_search->bind_param("dd", $min, $max);
+    $stmt_search->execute();
+    $produtosFiltrados = $stmt_search->get_result();
 }
 ?>
 
@@ -42,6 +54,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
       <input type="text" id="search" name="nome" placeholder="Pesquisar produto..." required />
       <button type="submit" id="search-button">Pesquisar</button>
     </form>
+    <?php if (isset($mensagem_erro)) echo "<p class='erro'>$mensagem_erro</p>"; ?>
+  </div>
+
+  <div class="filtro-preco-form">
+    <form action="index.php" method="GET">
+      <label>Preço mínimo:
+        <input type="number" name="preco_min" step="0.01" min="0">
+      </label>
+      <label>Preço máximo:
+        <input type="number" name="preco_max" step="0.01" min="0">
+      </label>
+      <button type="submit">Filtrar</button>
+    </form>
   </div>
 
   <h1>Cadastro de Produtos</h1>
@@ -54,7 +79,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
 
   <div id="produtos">
     <h2>Produtos Cadastrados</h2>
-    <?php include '../includes/readProduto.php'; ?>
+    <?php if (!empty($produtosFiltrados)): ?>
+      <?php while($produto = $produtosFiltrados->fetch_assoc()): ?>
+        <div class="produto" id="produto-<?php echo $produto['id']; ?>">
+          <strong><?php echo htmlspecialchars($produto['nome']); ?></strong>
+          <p>Preço: R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></p>
+          <p><?php echo htmlspecialchars($produto['descricao']); ?></p>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <?php include '../includes/readProduto.php'; ?>
+    <?php endif; ?>
   </div>
 
   <?php if ($produtoEncontradoID): ?>

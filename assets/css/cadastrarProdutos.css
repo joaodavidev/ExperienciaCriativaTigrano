@@ -146,3 +146,73 @@ button:hover {
 .form-excluir button:hover {
   background-color: #959cee;
 }
+
+.botao-selecionar {
+  width: 120px;
+  height: 40px;
+  background-color: #011474;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.botao-selecionar:hover {
+  background-color: #959cee;
+}
+
+#searchbar {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 30px;
+}
+
+#searchbar form {
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#searchbar input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+#searchbar button {
+  padding: 10px 20px;
+  background-color: #011474;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#searchbar button:hover {
+  background-color: #959cee;
+}
+
+.filtro-preco-form {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filtro-preco-form input {
+  width: 100px;
+  padding: 8px;
+}
+
+ .erro {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
