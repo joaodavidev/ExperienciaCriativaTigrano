@@ -80,6 +80,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     ?>
   </div>
 
+  <div class="comprar-container">
+    <form action="pagamento.php" method="POST">
+      <button type="submit" class="btn-comprar">Finalizar Compra</button>
+    </form>
+  </div>
+
   <?php if ($produtoEncontradoID): ?>
     <script>
       window.onload = function() {
