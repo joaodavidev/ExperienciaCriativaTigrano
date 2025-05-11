@@ -77,8 +77,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     </form>
 
     <div id="produtos">
+<<<<<<< Updated upstream
     </div>
   </main>
+=======
+      <!-- Cards de produtos vão aparecer aqui -->
+    </div>
+  </main>
+
+  <!-- Scripts -->
+>>>>>>> Stashed changes
   <script src="../assets/css/js/script.js"></script>
   <script src="../assets/css/js/produtos.js"></script>
 </body>
