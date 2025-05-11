@@ -1,7 +1,16 @@
 <?php
+session_start();
+
+// Bloqueia acesso de não-admins
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
 include '../includes/db.php';
 
-$sql = "SELECT * FROM usuarios WHERE usuario = 'admin'";
+// Busca todos os usuários com tipo admin
+$sql = "SELECT * FROM usuarios WHERE tipo = 'admin'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -31,5 +40,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "Nenhum administrador encontrado.";
 }
+
 $conn->close();
 ?>
+

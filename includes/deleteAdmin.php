@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Proteção: só admins podem acessar
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
 include '../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
@@ -14,5 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
         echo "Erro ao excluir.";
     }
 }
+
 $conn->close();
 ?>
