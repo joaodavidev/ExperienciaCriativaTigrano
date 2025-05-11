@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
   <header>
     <h1>TIGRANO</h1>
     <nav>
-      <a href="..pages/paginaInicial.php"><button>Home</button></a>
+      <a href="../pages/paginaInicial.php"><button>Home</button></a>
       <a href="../pages/carrinho.php"><button>Carrinho</button></a>
       <button>Contato</button>
     </nav>
