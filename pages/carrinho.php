@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
 </head>
 <body>
   <header>
-    <h1>a</h1>
+    <h1>TIGRANO</h1>
     <nav>
       <a href="../pages/cadastrarProdutos.php"><button>Cadastrar</button></a>
     </nav>
