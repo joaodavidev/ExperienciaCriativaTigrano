@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '..includes/db.php';
+include '../includes/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     $produtoId = intval($_POST['id']);
@@ -40,14 +40,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
 <head>
   <meta charset="UTF-8">
   <title>Carrinho</title>
-  <link rel="stylesheet" href="carrinho.css">
+  <link rel="stylesheet" href="../assets/css/carrinho.css">
 </head>
 <body>
   <header>
     <h1>TIGRANO</h1>
     <nav>
       <a href="../pages/cadastrarProdutos.php"><button>Cadastrar</button></a>
-      <a href="../pages/carrinho.php"><button>Carrinho</button></a>
     </nav>
   </header>
 
