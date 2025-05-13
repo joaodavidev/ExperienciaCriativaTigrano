@@ -11,13 +11,6 @@ CREATE TABLE `usuarios` (
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `cpf` VARCHAR(14) UNIQUE
 );
-
-CREATE TABLE `adm` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `suporte_id` INT,
-  FOREIGN KEY (`suporte_id`) REFERENCES `suporte` (`id`)
-);
-
 CREATE TABLE `suporte` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `adm_id` INT,
@@ -29,6 +22,10 @@ CREATE TABLE `suporte` (
   `data_resposta` DATE,
   FOREIGN KEY (`adm_id`) REFERENCES `adm` (`id`)
   -- NÃO é recomendado referenciar `email` com FK aqui, pois não é PK em `usuarios`
+);
+
+CREATE TABLE adm (
+  id INT PRIMARY KEY AUTO_INCREMENT
 );
 
 CREATE TABLE `produtos` (
