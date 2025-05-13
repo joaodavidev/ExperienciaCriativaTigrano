@@ -166,8 +166,9 @@
     cursor: pointer;
   }
   .lista-item.grupo-inferior {
-    margin-top: 450px
-  }
+    margin-top:200px;
+
+  }  
   
   body.light-mode {
     background-color: #ffffff !important;
