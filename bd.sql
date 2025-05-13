@@ -2,7 +2,6 @@ CREATE DATABASE ecommerce;
 
 USE ecommerce;
 
--- Tabela de usuários (compradores e/ou fornecedores)
 CREATE TABLE usuarios (
   email VARCHAR(255) PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
@@ -12,14 +11,12 @@ CREATE TABLE usuarios (
   cpf VARCHAR(14) UNIQUE
 );
 
--- Tabela de administradores
 CREATE TABLE adm (
   email PRIMARY KEY VARCHAR(255) UNIQUE,
   nome VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL
 );
 
--- Tabela de suporte
 CREATE TABLE suporte (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email_adm VARCHAR(255),
@@ -33,7 +30,6 @@ CREATE TABLE suporte (
   FOREIGN KEY (email_usuario) REFERENCES usuarios (email)
 );
 
--- Produtos agora têm apenas informações estáticas (sem estoque)
 CREATE TABLE produtos (
   id INT PRIMARY KEY AUTO_INCREMENT,
   fornecedor_email VARCHAR(255),
@@ -44,7 +40,6 @@ CREATE TABLE produtos (
   FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email)
 );
 
--- Tabela de pedidos (ordem de compra)
 CREATE TABLE pedidos (
   id INT PRIMARY KEY AUTO_INCREMENT,
   comprador_email VARCHAR(255),
@@ -53,7 +48,6 @@ CREATE TABLE pedidos (
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email)
 );
 
--- Relacionamento entre produtos e pedidos (com quantidade comprada)
 CREATE TABLE produtos_pedido (
   pedido_id INT,
   produto_id INT,
@@ -62,7 +56,6 @@ CREATE TABLE produtos_pedido (
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
--- Pagamento via Pix vinculado ao pedido
 CREATE TABLE pix (
   id INT PRIMARY KEY AUTO_INCREMENT,
   pedido_id INT,
@@ -74,7 +67,6 @@ CREATE TABLE pix (
   FOREIGN KEY (pedido_id) REFERENCES pedidos (id)
 );
 
--- Carrinho de compras
 CREATE TABLE carrinho (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -83,7 +75,6 @@ CREATE TABLE carrinho (
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
--- Carteira de Tigrano Coins
 CREATE TABLE tigrano_coins (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -91,7 +82,6 @@ CREATE TABLE tigrano_coins (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email)
 );
 
--- Avaliações de produtos
 CREATE TABLE avaliacao (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -102,7 +92,6 @@ CREATE TABLE avaliacao (
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
--- Registro de vendas
 CREATE TABLE vendas (
   id INT PRIMARY KEY AUTO_INCREMENT,
   fornecedor_email VARCHAR(255),
@@ -113,7 +102,6 @@ CREATE TABLE vendas (
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
--- Histórico de compras
 CREATE TABLE historico_compras (
   id INT PRIMARY KEY AUTO_INCREMENT,
   comprador_email VARCHAR(255),
@@ -123,7 +111,6 @@ CREATE TABLE historico_compras (
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
--- Ligação entre produtos e histórico de compras
 CREATE TABLE produtos_historico_compras (
   produtos_id INT,
   historico_compras_id INT,
@@ -132,7 +119,6 @@ CREATE TABLE produtos_historico_compras (
   FOREIGN KEY (historico_compras_id) REFERENCES historico_compras (id)
 );
 
--- Cartões de crédito
 CREATE TABLE cartao_credito_usuario (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -143,7 +129,6 @@ CREATE TABLE cartao_credito_usuario (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email)
 );
 
--- Cartões de débito
 CREATE TABLE cartao_debito_usuario (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -153,7 +138,6 @@ CREATE TABLE cartao_debito_usuario (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email)
 );
 
--- Tipos de pagamento (relacionamento opcional entre cartões)
 CREATE TABLE tipo_pagamento (
   id_cartao_credito INT,
   id_cartao_debito INT,
