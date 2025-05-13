@@ -14,21 +14,22 @@ CREATE TABLE usuarios (
 
 -- Tabela de administradores
 CREATE TABLE adm (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  suporte_id INT
+  email PRIMARY KEY VARCHAR(255) UNIQUE,
+  nome VARCHAR(255) NOT NULL,
+  senha VARCHAR(255) NOT NULL
 );
 
 -- Tabela de suporte
 CREATE TABLE suporte (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  adm_id INT,
+  email_adm VARCHAR(255),
   email_usuario VARCHAR(255),
   assunto VARCHAR(255),
   descricao TEXT,
   data_envio DATETIME,
   resposta TEXT,
   data_resposta DATE,
-  FOREIGN KEY (adm_id) REFERENCES adm (id),
+  FOREIGN KEY (email_adm) REFERENCES adm (email),
   FOREIGN KEY (email_usuario) REFERENCES usuarios (email)
 );
 
@@ -56,7 +57,6 @@ CREATE TABLE pedidos (
 CREATE TABLE produtos_pedido (
   pedido_id INT,
   produto_id INT,
-  quantidade INT NOT NULL,
   PRIMARY KEY (pedido_id, produto_id),
   FOREIGN KEY (pedido_id) REFERENCES pedidos (id),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
@@ -105,21 +105,21 @@ CREATE TABLE avaliacao (
 -- Registro de vendas
 CREATE TABLE vendas (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_email VARCHAR(255),
+  fornecedor_email VARCHAR(255),
   produto_id INT,
   quantidade_vendas INT,
   data_vendas DATE,
-  FOREIGN KEY (usuario_email) REFERENCES usuarios (email),
+  FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
 -- Histórico de compras
 CREATE TABLE historico_compras (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_email VARCHAR(255),
+  comprador_email VARCHAR(255),
   produto_id INT,
   data_compras DATE,
-  FOREIGN KEY (usuario_email) REFERENCES usuarios (email),
+  FOREIGN KEY (comprador_email) REFERENCES usuarios (email),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
 
