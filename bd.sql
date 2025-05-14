@@ -30,14 +30,12 @@ CREATE TABLE suporte (
 );
 
 CREATE TABLE produtos (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  fornecedor_email VARCHAR(255),
-  nome VARCHAR(255),
-  preco DECIMAL(10,2),
-  descricao TEXT,
-  categoria TEXT,
-  status varchar(20) NOT NULL DEFAULT 'Ativo',
-  FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  categoria VARCHAR(255) NOT NULL,
+  preco DECIMAL(10,2) NOT NULL,
+  descricao TEXT NOT NULL,
+  status VARCHAR(50) DEFAULT 'Ativo'
 );
 
 CREATE TABLE pedidos (
@@ -47,7 +45,7 @@ CREATE TABLE pedidos (
   status ENUM('pendente', 'pago', 'enviado', 'cancelado') DEFAULT 'pendente',
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email)
 );
-
+SELECT * FROM produtos;
 CREATE TABLE produtos_pedido (
   pedido_id INT,
   produto_id INT,
@@ -144,3 +142,5 @@ CREATE TABLE tipo_pagamento (
   FOREIGN KEY (id_cartao_credito) REFERENCES cartao_credito_usuario (id),
   FOREIGN KEY (id_cartao_debito) REFERENCES cartao_debito_usuario (id)
 );
+
+SHOW TABLES;

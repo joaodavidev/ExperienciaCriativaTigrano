@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     <div id="modalProduto" class="modal-overlay" style="display: none;">
       <div class="modal-content">
         <h2>Novo Produto</h2>
-        <form method="POST" class="form-produto">
+        <form action="../includes/createProduto.php" method="POST" class="form-produto">
             <input type="hidden" name="id">
             <input type="text" name="nome" placeholder="Nome do Produto" required />
             <input type="text" name="categoria" placeholder="Categoria" required />

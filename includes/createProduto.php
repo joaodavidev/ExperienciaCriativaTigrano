@@ -1,5 +1,6 @@
 <?php
-include '../includes/db.php';
+
+include 'db.php';
 
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
@@ -21,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             die("Erro no prepare: " . $conn->error);
         }
 
-        $stmt->bind_param("ssdds", $nome, $categoria, $preco, $descricao, $status);
+        $stmt->bind_param("ssdss", $nome, $categoria, $preco, $descricao, $status);
 
         if ($stmt->execute()) {
             header("Location: ../pages/produto.php?sucesso=1");

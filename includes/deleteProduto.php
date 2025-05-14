@@ -1,18 +1,29 @@
 <?php
-include '../includes/db.php';
+include 'db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $id = $_POST['id'];
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
+}
 
-  $sql = "DELETE FROM produtos WHERE id = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("i", $id);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
 
-  if ($stmt->execute()) {
-    header("Location: cadastrarProdutos.php");
-    exit();
-  } else {
-    echo "Erro ao excluir produto: " . $conn->error;
-  }
+    $sql = "DELETE FROM produtos WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        die("Erro no prepare: " . $conn->error);
+    }
+
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        header("Location: ../pages/produto.php?removido=1");
+        exit;
+    } else {
+        echo "Erro ao deletar: " . $stmt->error;
+    }
+} else {
+    echo "Requisição inválida.";
 }
 ?>
