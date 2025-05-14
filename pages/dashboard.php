@@ -1,7 +1,5 @@
 <?php
-session_start();
-include 'db.php';
-
+include '../includes/db.php';
 
 $emailVendedor = 'vendedor@email.com';
 
@@ -118,6 +116,6 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
       <button><i class='bx bx-search'></i></button>
     </div>
   </main>
-  <script src="../assets/js/script.js"></script>
+  <script src="../assets/css/js/script.js"></script>
 </body>
 </html>
