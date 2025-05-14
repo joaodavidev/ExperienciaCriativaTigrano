@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
   idade INT NOT NULL,
   cpf CHAR(11) UNIQUE
 );
-
+SELECT * FROM usuarios;
 CREATE TABLE adm (
   email VARCHAR(255) UNIQUE PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
@@ -78,8 +78,6 @@ INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
 VALUES ('cliente@email.com', 'Cliente Teste', '123456', 'masculino', 30, '12345678900');
 INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
 VALUES ('vendedor@email.com', 'Vendedor Teste', '654321', 'masculino', 20, '11683507940');
-INSERT INTO carrinho (usuario_email, produto_id)
-VALUES ('cliente@email.com', 1); -- 1 é o ID do produto inserido acima
 
 SELECT * FROM produtos;
 SELECT * FROM carrinho;

@@ -1,19 +1,25 @@
 <?php
 session_start();
+require_once '../includes/db.php';
 
-$conn = new mysqli("localhost", "root", "", "ecommerce");
-
-if ($conn->connect_error) {
-    die("Erro na conexão: " . $conn->connect_error);
+if (!isset($_SESSION['usuario'])) {
+  header("Location: login.php");
+  exit();
 }
 
-$id = $_GET['id'];
+$email = $_SESSION['usuario']['email'];
 
-$sql = "DELETE FROM usuarios WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-
-header("Location: readCadastro.php");
-exit();
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['deletar_conta'])) {
+  $sql = "DELETE FROM usuarios WHERE email = ?";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("s", $email);
+  
+  if ($stmt->execute()) {
+    session_destroy();
+    header("Location: ../pages/login.php");
+    exit();
+  } else {
+    $erro = "Erro ao deletar a conta.";
+  }
+}
 ?>
