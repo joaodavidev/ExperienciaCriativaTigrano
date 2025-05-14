@@ -1,40 +1,130 @@
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
-input, button {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 16px;
+body {
+  background-color: #121212;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-button {
-    background-color: #011474;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.container {
+  background-color: #1e1e1e;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 400px;
 }
 
-button:hover {
-    background-color: #959cee;
+.container h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: center;
 }
 
-.btn {
-    display: inline-block;
-    margin-top: 20px;
-    background-color: #011474;
-    color: white;
-    padding: 10px 16px;
-    text-decoration: none;
-    border-radius: 6px;
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
-.btn:hover {
-    background-color: #959cee;
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  background-color: #2e2e2e;
+  color: white;
 }
-    
+
+select option {
+  background-color: #2e2e2e;
+  color: white;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #1D4ED8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #2563eb;
+}
+
+p {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+p a {
+  color: #1D4ED8;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+.btn-toggle-tema i {
+  transition: color 0.3s;
+}
+
+/* Ícone da lua/sol */
+body:not(.light-mode) .btn-toggle-tema i {
+  color: white;
+}
+body.light-mode .btn-toggle-tema i {
+  color: #1D4ED8;
+}
+
+/* Modo claro */
+body.light-mode {
+  background-color: #ffffff;
+  color: #262626;
+}
+
+body.light-mode .container {
+  background-color: #e0e0e0;
+  color: #262626;
+}
+
+body.light-mode input,
+body.light-mode select {
+  background-color: #ffffff;
+  color: #262626;
+  border: 1px solid #ccc;
+}
+
+body.light-mode select option {
+  background-color: #ffffff;
+  color: #262626;
+}
+
+body.light-mode button[type="submit"] {
+  background-color: #1D4ED8;
+  color: white;
+}
+
+body.light-mode p a {
+  color: #1D4ED8;
+}
