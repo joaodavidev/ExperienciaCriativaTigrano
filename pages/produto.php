@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
             </a>
         </li>
         <li class="lista-item">
-            <a href="#">
+            <a href="../pages/dashboard.php">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="nome-link" style="--i:2;">Dashboard</span>
             </a>
