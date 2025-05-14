@@ -3,7 +3,7 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
+    $email = $_POST['usuario'];  // campo de login continua com o name="usuario" no formulário
     $senha = $_POST['senha'];
 
     // Consulta segura
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $result->fetch_assoc();
 
         if (password_verify($senha, $user['senha'])) {
-            $_SESSION['email'] = [
+            $_SESSION['usuario'] = [
                 'email' => $user['email'],
                 'nome'  => $user['nome']
             ];

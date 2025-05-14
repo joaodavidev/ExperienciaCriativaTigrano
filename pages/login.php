@@ -14,8 +14,8 @@
     <div class="login-container">
         <h2>Login</h2>
         <form action="../includes/autenticar.php" method="post">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required>
+            <label for="usuario">Email:</label>
+            <input type="text" id="usuario" name="usuario" required>
 
             <label for="senha">Senha:</label>
             <div class="senha-container">

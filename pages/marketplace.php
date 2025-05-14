@@ -1,11 +1,5 @@
 <?php
-session_start();
-require_once '../includes/db.php';
-
-if (!isset($_SESSION['email'])) {
-  header("Location: login.php");
-  exit();
-}
+include '../includes/db.php';
 
 $produtoEncontradoID = null;
 
@@ -95,12 +89,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
           </a>
         </li>
         <li class="lista-item">
-          <a href="perfil.php">
-            <i class='bx bx-user' ></i>
-            <span class="nome-link" style="--i:7;">Perfil</span>
+          <a href="#">
+            <i class='bx bx-log-out'></i>
+            <span class="nome-link" style="--i:7;">LogOut</span>
           </a>
         </li>
       </ul>
+
     </nav>
 
   <main class="main-content">
