@@ -35,8 +35,8 @@ CREATE TABLE produtos (
   fornecedor_email VARCHAR(255),
   nome VARCHAR(255),
   preco DECIMAL(10,2),
-  preco_tigrano_coins INT,
   descricao TEXT,
+  status VARCHAR(20) NOT NULL DEFAULT 'ATIVO',
   FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email)
 );
 
