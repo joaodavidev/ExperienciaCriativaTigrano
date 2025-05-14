@@ -74,11 +74,8 @@ CREATE TABLE carrinho (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
-INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-VALUES ('cliente@email.com', 'Cliente Teste', '123456', 'masculino', 30, '12345678900');
-INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-VALUES ('vendedor@email.com', 'Vendedor Teste', '654321', 'masculino', 20, '11683507940');
 
+SELECT * FROM usuarios;
 SELECT * FROM produtos;
 SELECT * FROM carrinho;
 CREATE TABLE avaliacao (

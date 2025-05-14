@@ -1,8 +1,6 @@
 <?php
-include '../includes/db.php';
-
-$emailVendedor = 'vendedor@email.com';
-
+session_start();
+require_once '../includes/db.php';
 
 // Saldo total
 $querySaldo = $conn->prepare("
@@ -69,7 +67,8 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
       <h2 class="logo">Tigrano</h2>
       <i class='bx bx-menu toggle-btn'></i>
     </div>
-          <ul class="lista">
+      <ul class="lista">
+        <!-- Itens superiores -->
         <li class="lista-item">
           <a href="../pages/marketplace.php">
             <i class='bx bxs-shopping-bag-alt'></i>
@@ -112,9 +111,9 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
           </a>
         </li>
         <li class="lista-item">
-          <a href="#">
-            <i class='bx bx-log-out'></i>
-            <span class="nome-link" style="--i:7;">LogOut</span>
+          <a href="perfil.php">
+            <i class='bx bx-user' ></i>
+            <span class="nome-link" style="--i:7;">Perfil</span>
           </a>
         </li>
       </ul>
@@ -157,8 +156,8 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
     </div>
 
     <div class="search-bar">
-        <input type="text" name="nome" placeholder="Buscar Produtos"/>
-      <button><i class='bx bx-search'></i></button>
+        <input type="text" name="nome" placeholder="Buscar produtos">
+        <i class='bx bx-search'></i>
     </div>
   </main>
   <script src="../assets/css/js/script.js"></script>

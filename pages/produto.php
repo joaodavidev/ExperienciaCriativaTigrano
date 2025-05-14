@@ -2,12 +2,12 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['email'])) {
   header("Location: ../pages/login.php");
   exit();
 }
 
-$email = $_SESSION['usuario']['email'];
+$email = $_SESSION['email'];
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +69,7 @@ $email = $_SESSION['usuario']['email'];
           </a>
         </li>
         <li class="lista-item">
-          <a href="#">
+          <a href="perfil.php">
             <i class='bx bx-user' ></i>
             <span class="nome-link" style="--i:7;">Perfil</span>
           </a>

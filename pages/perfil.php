@@ -2,12 +2,12 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['email'])) {
   header("Location: login.php");
   exit();
 }
 
-$email = $_SESSION['usuario']['email'];
+$email = $_SESSION['email'];
 
 // Atualizar dados
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -51,50 +51,55 @@ $dados = $result->fetch_assoc();
     <i class='bx bx-menu toggle-btn'></i>
   </div>
   <ul class="lista">
-    <li class="lista-item">
-      <a href="../pages/marketplace.php">
-        <i class='bx bxs-shopping-bag-alt'></i>
-        <span class="nome-link" style="--i:1;">Marketplace</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/dashboard.php">
-        <i class='bx bxs-dashboard'></i>
-        <span class="nome-link" style="--i:2;">Dashboard</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/produto.php">
-        <i class='bx bxs-purchase-tag'></i>
-        <span class="nome-link" style="--i:3;">Produtos</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/compras.php">
-        <i class='bx bx-shopping-bag'></i>
-        <span class="nome-link" style="--i:4;">Compras</span>
-      </a>
-    </li>
-    <li class="espacador"></li>
-    <li class="lista-item">
-      <a href="#" class="btn-toggle-tema">
-        <i class='bx bx-moon'></i>
-        <span class="nome-link" style="--i:5;">Claro/Escuro</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/configuracoes.php">
-        <i class='bx bx-cog'></i>
-        <span class="nome-link" style="--i:6;">Configurações</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="perfil.php">
-        <i class='bx bx-user'></i>
-        <span class="nome-link" style="--i:7;">Perfil</span>
-      </a>
-    </li>
-  </ul>
+        <!-- Itens superiores -->
+        <li class="lista-item">
+          <a href="../pages/marketplace.php">
+            <i class='bx bxs-shopping-bag-alt'></i>
+            <span class="nome-link" style="--i:1;">Marketplace</span>
+          </a>
+        </li>
+        <li class="lista-item">
+          <a href="../pages/dashboard.php">
+            <i class='bx bxs-dashboard'></i>
+            <span class="nome-link" style="--i:2;">Dashboard</span>
+          </a>
+        </li>
+        <li class="lista-item">
+          <a href="../pages/produto.php">
+            <i class='bx bxs-purchase-tag'></i>
+            <span class="nome-link" style="--i:3;">Produtos</span>
+          </a>
+        </li>
+        <li class="lista-item">
+          <a href="../pages/compras.php">
+            <i class='bx bx-shopping-bag'></i>
+            <span class="nome-link" style="--i:4;">Compras</span>
+          </a>
+        </li>
+
+        <!-- Separador flexível -->
+        <li class="espacador"></li>
+
+        <!-- Itens inferiores -->
+        <li class="lista-item">
+          <a href="#" class="btn-toggle-tema">
+            <i class='bx bx-moon'></i>
+            <span class="nome-link" style="--i:5;">Claro/Escuro</span>
+          </a>
+        </li>
+        <li class="lista-item">
+          <a href="../pages/configuracoes.php">
+            <i class='bx bx-cog'></i>
+            <span class="nome-link" style="--i:6;">Configurações</span>
+          </a>
+        </li>
+        <li class="lista-item">
+          <a href="perfil.php">
+            <i class='bx bx-user' ></i>
+            <span class="nome-link" style="--i:7;">Perfil</span>
+          </a>
+        </li>
+      </ul>
 </nav>
 
 <main class="main-content">
