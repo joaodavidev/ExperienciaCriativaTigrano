@@ -9,7 +9,7 @@ while ($row = $result->fetch_assoc()) {
   echo "<strong>" . htmlspecialchars($row['nome']) . "</strong><br>";
   echo "R$ " . number_format($row['preco'], 2, ',', '.') . "<br>";
   echo "<p>" . htmlspecialchars($row['descricao']) . "</p>";
-  
+
   echo "<div class='produto-conteudo'>";
 
   echo "<form class='form-editar' action='updateProduto.php' method='POST'>
@@ -24,7 +24,7 @@ while ($row = $result->fetch_assoc()) {
           <input type='hidden' name='id' value='" . $row['id'] . "'>
           <button type='submit'>Excluir</button>
         </form>";
-  
+
   echo "<form class='form-selecionar' action='../pages/carrinho.php' method='POST'>
           <input type='hidden' name='id' value='" . $row['id'] . "'>
           <button type='submit'>Selecionar</button>

@@ -1,28 +1,53 @@
-const btnNovo = document.getElementById("btnNovoProduto");
-const form = document.getElementById("formProduto");
-const lista = document.getElementById("produtos");
+const modal = document.getElementById('modalProduto');
+    const abrirModalBtn = document.getElementById('btnNovoProduto');
+    const fecharModalBtn = document.getElementById('fecharModal');
+    const form = document.querySelector('form.form-produto');
 
-btnNovo.addEventListener("click", () => {
-  form.style.display = form.style.display === "flex" ? "none" : "flex";
-});
+    function abrirModal(dados = {}) {
+      modal.style.display = 'flex';
+      form.reset();
+      form.id.value = dados.id || '';
+      form.nome.value = dados.nome || '';
+      form.categoria.value = dados.categoria || '';
+      form.preco.value = dados.preco || '';
+      form.icone.value = dados.icone || '';
+      form.descricao.value = dados.descricao || '';
+      form.status.value = dados.status || 'Ativo'; // ← adicionado aqui
+    }    
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+    function fecharModal() {
+      modal.style.display = 'none';
+    }
 
-  const nome = document.getElementById("nome").value;
-  const preco = document.getElementById("preco").value;
-  const descricao = document.getElementById("descricao").value;
+    abrirModalBtn.addEventListener('click', () => abrirModal());
+    fecharModalBtn.addEventListener('click', fecharModal);
+    window.addEventListener('click', e => { if (e.target === modal) fecharModal(); });
 
-  const card = document.createElement("div");
-  card.className = "produto";
-  card.innerHTML = `
-    <strong>${nome}</strong>
-    <p>Preço: R$ ${parseFloat(preco).toFixed(2)}</p>
-    <p>${descricao}</p>
-  `;
+    document.querySelectorAll('.editar-produto').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const res = await fetch('', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ action: 'buscar', id })
+        });
+        const data = await res.json();
+        abrirModal(data);
+      });
+    });
 
-  lista.appendChild(card);
-
-  form.reset();
-  form.style.display = "none";
-});
+    document.querySelectorAll('.deletar-produto').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Deseja realmente excluir este produto?')) return;
+        const id = btn.dataset.id;
+        const res = await fetch('', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ action: 'excluir', id })
+        });
+        const result = await res.json();
+        if (result.success) {
+          btn.closest('.tabela-linha').remove();
+        }
+      });
+    });
