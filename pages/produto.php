@@ -47,13 +47,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
       </div>
       <ul class="lista">
         <li class="lista-item active">
-            <a href="../pages/paginaInicial.php">
+            <a href="../pages/marketplace.php">
                 <i class='bx bxs-shopping-bag-alt' ></i>
                 <span class="nome-link" style="--i:1;">Marketplace</span>
             </a>
         </li>
         <li class="lista-item">
-            <a href="#">
+            <a href="../pages/dashboard.php">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="nome-link" style="--i:2;">Dashboard</span>
             </a>
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
             </a>
         </li>
         <li class="lista-item">
-            <a href="#">
+            <a href="../pages/compras.php">
                 <i class='bx bx-shopping-bag' ></i>
                 <span class="nome-link" style="--i:4;">Compras</span>
             </a>
@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
             </a>
           </li>
         <li class="lista-item">
-          <a href="#">
+          <a href="../pages/configuracoes.php">
             <i class='bx bx-cog'></i>
             <span class="nome-link" style="--i:6;">Configurações</span>
           </a>
