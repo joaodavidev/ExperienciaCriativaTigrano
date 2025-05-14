@@ -2,7 +2,7 @@
 session_start();
 include '../includes/db.php';
 
-// 🔐 LOGIN FAKE PARA TESTES (cliente)
+
 if (!isset($_SESSION['cliente_email'])) {
     $_SESSION['cliente_email'] = 'cliente@email.com';
 }

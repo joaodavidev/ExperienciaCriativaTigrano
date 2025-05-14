@@ -265,3 +265,92 @@ body.light-mode .cart-icon {
 body.light-mode .cart-icon:hover {
   color: #1D4ED8;
 }
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+}
+
+.marketplace-title h1 {
+  font-size: 2em;
+  margin-bottom: 5px;
+}
+
+.marketplace-title p {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding-inline: 1rem;
+}
+
+.product-card {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+  position: relative;
+  top: 5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 7px ;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card h2 {
+  color: #ffffff;
+  font-size: 1.2em;
+}
+
+.product-card .categoria {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.product-card .descricao {
+  font-size: 0.95em;
+  color: #ccc;
+}
+
+.product-card .preco {
+  font-size: 1.1em;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.product-card .vendedor {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.btn-carrinho {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--texto);
+  font-size: 24px;
+  padding: 0;
+}
+
+.btn-carrinho:hover i {
+  color: #00c853;
+  transform: scale(1.2);
+  transition: 0.2s;
+}

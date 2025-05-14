@@ -9,8 +9,13 @@ $querySaldo = $conn->prepare("
     SELECT SUM(v.quantidade_vendas * p.preco) AS saldo_total
     FROM vendas v
     JOIN produtos p ON v.produto_id = p.id
-    WHERE p.fornecedor_email = ?
+    WHERE p.vendedor_email = ?
 ");
+if(!$querySaldo) { 
+  die('o erro é: '.$conn->error);
+}
+
+
 $querySaldo->bind_param("s", $emailVendedor);
 $querySaldo->execute();
 $resultSaldo = $querySaldo->get_result();
@@ -40,7 +45,7 @@ $queryClientes = $conn->prepare("
     FROM produtos p
     JOIN produtos_pedido pped ON p.id = pped.produto_id
     JOIN pedidos ped ON pped.pedido_id = ped.id
-    WHERE p.fornecedor_email = ?
+    WHERE p.vendedor_email = ?
 ");
 $queryClientes->bind_param("s", $emailVendedor);
 $queryClientes->execute();
@@ -65,7 +70,6 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
       <i class='bx bx-menu toggle-btn'></i>
     </div>
           <ul class="lista">
-        <!-- Itens superiores -->
         <li class="lista-item">
           <a href="../pages/marketplace.php">
             <i class='bx bxs-shopping-bag-alt'></i>
