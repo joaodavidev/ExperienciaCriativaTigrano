@@ -19,7 +19,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
         $mensagem_erro = "Produto não encontrado.";
     }
 }
+
+
+
+  $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
+        FROM produtos p
+        JOIN usuarios u ON p.vendedor_email = u.email
+        WHERE p.status = 'Ativo'";
+
+  $result = $conn->query($sql);
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -87,7 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
       </ul>
 
     </nav>
-    <main class="main-content">
+
+  <main class="main-content">
+  <div class="content-wrapper">
+    <header>
       <section class="marketplace-header">
         <div class="marketplace-title">
           <div>
@@ -99,14 +112,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
           </a>
         </div>
       </section>
+        <div class="search-bar">
+          <input type="text" name="nome" placeholder="Buscar...">
+          <i class='bx bx-search'></i>
+        </div>
+    </header>
 
-    <div class="search-bar">
-      <input type="text" name="nome" placeholder="Buscar...">
-      <i class='bx bx-search'></i>
-    </div>
-  </section>
+    <section class="product-grid">
+      <?php if ($result->num_rows > 0): ?>
+      <?php while($row = $result->fetch_assoc()): ?>
+        <div class="product-card">
+          <h2><?php echo htmlspecialchars($row['nome_produto']); ?></h2>
+          <p class="categoria"><?php echo htmlspecialchars($row['categoria']); ?></p>
+          <p class="descricao"><?php echo htmlspecialchars($row['descricao']); ?></p>
+          <p class="preco">R$ <?php echo number_format($row['preco'], 2, ',', '.'); ?></p>
+          <p class="vendedor">Vendedor: <?php echo htmlspecialchars($row['nome_vendedor']); ?></p>
+          <form action="carrinho.php" method="POST" class="form-selecionar">
+            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+            <button type="submit" title="Adicionar ao carrinho" class="btn-carrinho">
+              <i class='bx bx-cart-add'></i>
+            </button>
+          </form>
+        </div>
+      <?php endwhile; ?>
+      <?php else: ?>
+        <p>Nenhum produto ativo encontrado.</p>
+    <?php endif; ?>
+    </section>
+  </div>
+</main>
 
-    </main>
 
 
       <script src="../assets/css/js/script.js"></script>
