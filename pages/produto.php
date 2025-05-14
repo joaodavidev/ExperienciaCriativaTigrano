@@ -2,12 +2,12 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['email'])) {
   header("Location: ../pages/login.php");
   exit();
 }
 
-$email = $_SESSION['usuario']['email'];
+$email = $_SESSION['email'];
 ?>
 
 <!DOCTYPE html>
