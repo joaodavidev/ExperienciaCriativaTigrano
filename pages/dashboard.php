@@ -67,9 +67,9 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
       <i class='bx bx-menu toggle-btn'></i>
     </div>
     <ul class="lista">
-      <li class="lista-item"><a href="../pages/paginaInicial.php"><i class='bx bxs-shopping-bag-alt'></i><span class="nome-link" style="--i:1;">Marketplace</span></a></li>
+      <li class="lista-item"><a href="../pages/marketplace.php"><i class='bx bxs-shopping-bag-alt'></i><span class="nome-link" style="--i:1;">Marketplace</span></a></li>
       <li class="lista-item"><a href="#"><i class='bx bxs-dashboard'></i><span class="nome-link" style="--i:2;">Dashboard</span></a></li>
-      <li class="lista-item"><a href="produtos.php"><i class='bx bxs-purchase-tag'></i><span class="nome-link" style="--i:3;">Produtos</span></a></li>
+      <li class="lista-item"><a href="../pages/produto.php"><i class='bx bxs-purchase-tag'></i><span class="nome-link" style="--i:3;">Produtos</span></a></li>
       <li class="lista-item"><a href="#"><i class='bx bx-shopping-bag'></i><span class="nome-link" style="--i:4;">Compras</span></a></li>
       <li class="lista-item grupo-inferior"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
       <li class="lista-item"><a href="#"><i class='bx bx-cog'></i><span class="nome-link" style="--i:6;">Configurações</span></a></li>
