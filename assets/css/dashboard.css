@@ -44,7 +44,7 @@ body {
 .lista .lista-item a i { min-width: 50px; text-align: center; }
 .sidebar .nome-link { opacity: 0; pointer-events: none; transition: opacity .3s; }
 .sidebar.active .nome-link { opacity: 1; pointer-events: auto; transition-delay: calc(.1s * var(--i)); }
-.lista-item.grupo-inferior { margin-top: 450px; }
+.lista-item.grupo-inferior { margin-top: 200px; }
 
 body:not(.light-mode) .main-content {
   margin-left: 80px;
@@ -52,7 +52,7 @@ body:not(.light-mode) .main-content {
 }
 
 .sidebar.active ~ .main-content {
-  margin-left: 260px;
+  margin-left: 220px;
 }
 
 
