@@ -1,19 +1,13 @@
 <?php
 session_start();
-session_start();
-include 'db.php';
+require_once 'db.php';
 
-// 🔐 LOGIN FAKE PARA TESTES (vendedor)
-if (!isset($_SESSION['vendedor_email'])) {
-    $_SESSION['vendedor_email'] = 'vendedor@email.com';
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ../pages/login.php");
+    exit();
 }
 
-$vendedorEmail = $_SESSION['vendedor_email'];
-
-
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+$vendedorEmail = $_SESSION['usuario']['email'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = trim($_POST['nome'] ?? '');
@@ -45,4 +39,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else {
     echo "Requisição inválida.";
 }
-?>
