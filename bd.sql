@@ -35,7 +35,9 @@ CREATE TABLE produtos (
   categoria VARCHAR(255) NOT NULL,
   preco DECIMAL(10,2) NOT NULL,
   descricao TEXT NOT NULL,
-  status VARCHAR(50) DEFAULT 'Ativo'
+  status VARCHAR(50) DEFAULT 'Ativo',
+  vendedor_email VARCHAR(255),
+  FOREIGN KEY (vendedor_email) REFERENCES usuarios(email)
 );
 
 CREATE TABLE pedidos (
@@ -45,7 +47,7 @@ CREATE TABLE pedidos (
   status ENUM('pendente', 'pago', 'enviado', 'cancelado') DEFAULT 'pendente',
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email)
 );
-SELECT * FROM produtos;
+
 CREATE TABLE produtos_pedido (
   pedido_id INT,
   produto_id INT,
@@ -72,14 +74,15 @@ CREATE TABLE carrinho (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
+INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
+VALUES ('cliente@email.com', 'Cliente Teste', '123456', 'masculino', 30, '12345678900');
+INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
+VALUES ('vendedor@email.com', 'Vendedor Teste', '654321', 'masculino', 20, '11683507940');
+INSERT INTO carrinho (usuario_email, produto_id)
+VALUES ('cliente@email.com', 1); -- 1 é o ID do produto inserido acima
 
-CREATE TABLE tigrano_coins (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_email VARCHAR(255),
-  quantidade INT,
-  FOREIGN KEY (usuario_email) REFERENCES usuarios (email)
-);
-
+SELECT * FROM produtos;
+SELECT * FROM carrinho;
 CREATE TABLE avaliacao (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),

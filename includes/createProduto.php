@@ -1,6 +1,15 @@
 <?php
-
+session_start();
+session_start();
 include 'db.php';
+
+// 🔐 LOGIN FAKE PARA TESTES (vendedor)
+if (!isset($_SESSION['vendedor_email'])) {
+    $_SESSION['vendedor_email'] = 'vendedor@email.com';
+}
+
+$vendedorEmail = $_SESSION['vendedor_email'];
+
 
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
@@ -13,16 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $descricao = trim($_POST['descricao'] ?? '');
     $status = trim($_POST['status'] ?? 'Ativo');
 
-    if ($nome && $categoria && $preco && $descricao) {
-        $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status)
-                VALUES (?, ?, ?, ?, ?)";
+    if ($nome && $categoria && $preco && $descricao && $vendedorEmail) {
+        $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status, vendedor_email)
+                VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
             die("Erro no prepare: " . $conn->error);
         }
 
-        $stmt->bind_param("ssdss", $nome, $categoria, $preco, $descricao, $status);
+        $stmt->bind_param("ssdsss", $nome, $categoria, $preco, $descricao, $status, $vendedorEmail);
 
         if ($stmt->execute()) {
             header("Location: ../pages/produto.php?sucesso=1");

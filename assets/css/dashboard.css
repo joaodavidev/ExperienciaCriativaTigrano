@@ -24,6 +24,10 @@
   padding: 6px 14px;
   background: #262626;
   transition: .5s;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar.active {
@@ -68,7 +72,14 @@
 }
 
 .sidebar .lista {
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.lista .espacador {
+  flex-grow: 1;
 }
 
 .lista .lista-item {
@@ -76,7 +87,7 @@
   width: 100%;
   height: 50px;
   margin: 5px 0;
-  line-height: 50px;    
+  line-height: 50px;
 }
 
 .lista .lista-item a {
@@ -112,10 +123,6 @@
   opacity: 1;
   pointer-events: auto;
   transition-delay: calc(.1s * var(--i));
-}
-
-.lista-item.grupo-inferior {
-  margin-top: 200px;
 }
 
 /* Light mode - Sidebar */

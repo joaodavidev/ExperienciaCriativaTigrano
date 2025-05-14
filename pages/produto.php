@@ -46,36 +46,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
         <i class='bx bx-menu toggle-btn'></i>
       </div>
       <ul class="lista">
-        <li class="lista-item active">
-            <a href="../pages/marketplace.php">
-                <i class='bx bxs-shopping-bag-alt' ></i>
-                <span class="nome-link" style="--i:1;">Marketplace</span>
-            </a>
+        <!-- Itens superiores -->
+        <li class="lista-item">
+          <a href="../pages/marketplace.php">
+            <i class='bx bxs-shopping-bag-alt'></i>
+            <span class="nome-link" style="--i:1;">Marketplace</span>
+          </a>
         </li>
         <li class="lista-item">
-            <a href="../pages/dashboard.php">
-                <i class='bx bxs-dashboard' ></i>
-                <span class="nome-link" style="--i:2;">Dashboard</span>
-            </a>
+          <a href="../pages/dashboard.php">
+            <i class='bx bxs-dashboard'></i>
+            <span class="nome-link" style="--i:2;">Dashboard</span>
+          </a>
         </li>
         <li class="lista-item">
-            <a href="../pages/produtos.php">
-                <i class='bx bxs-purchase-tag' ></i>
-                <span class="nome-link" style="--i:3;">Produtos</span>
-            </a>
+          <a href="../pages/produto.php">
+            <i class='bx bxs-purchase-tag'></i>
+            <span class="nome-link" style="--i:3;">Produtos</span>
+          </a>
         </li>
         <li class="lista-item">
-            <a href="../pages/compras.php">
-                <i class='bx bx-shopping-bag' ></i>
-                <span class="nome-link" style="--i:4;">Compras</span>
-            </a>
-              </li>
-        <li class="lista-item grupo-inferior">
-            <a href="#" class="btn-toggle-tema">
-              <i class='bx bx-moon'></i>
-              <span class="nome-link" style="--i:5;">Claro/Escuro</span>
-            </a>
-          </li>
+          <a href="../pages/compras.php">
+            <i class='bx bx-shopping-bag'></i>
+            <span class="nome-link" style="--i:4;">Compras</span>
+          </a>
+        </li>
+
+        <!-- Separador flexível -->
+        <li class="espacador"></li>
+
+        <!-- Itens inferiores -->
+        <li class="lista-item">
+          <a href="#" class="btn-toggle-tema">
+            <i class='bx bx-moon'></i>
+            <span class="nome-link" style="--i:5;">Claro/Escuro</span>
+          </a>
+        </li>
         <li class="lista-item">
           <a href="../pages/configuracoes.php">
             <i class='bx bx-cog'></i>
@@ -84,11 +90,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
         </li>
         <li class="lista-item">
           <a href="#">
-            <i class='bx bx-log-out'></i>
-            <span class="nome-link" style="--i:7;">LogOut</span>
+            <i class='bx bx-user' ></i>
+            <span class="nome-link" style="--i:7;">Perfil</span>
           </a>
         </li>
       </ul>
+
     </nav>
     <main class="main-content">
     <div class="main-header">

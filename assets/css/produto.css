@@ -16,107 +16,115 @@
   }
   
 
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 80px;
-    height: 100%;
-    padding: 6px 14px;
-    background: #262626;
-    transition: .5s;
-  }
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 100%;
+  padding: 6px 14px;
+  background: #262626;
+  transition: .5s;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
 
-  .sidebar.active {
-    width: 220px;
-  }
-  
-  .sidebar .logo-menu {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    width: 100%;
-    height: 70px;
-  }
+.sidebar.active {
+  width: 220px;
+}
 
-  .sidebar .logo-menu .logo {
-    font-size: 25px;
-    color: #fff;
-    pointer-events: none;
-    opacity: 0;
-    transition: .3s;
-  }
+.sidebar .logo-menu {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 70px;
+}
 
-  .sidebar.active .logo-menu .logo {
-    opacity: 1;
-    transition-delay: .2s;
-  }
-  
-  .sidebar .logo-menu .toggle-btn {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-    text-align: center;
-    line-height: 40px;
-    transition: .5s;
-  }
+.sidebar .logo-menu .logo {
+  font-size: 25px;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: .3s;
+}
 
-  .sidebar.active .logo-menu .toggle-btn {
-    left: 90%;
-  }
+.sidebar.active .logo-menu .logo {
+  opacity: 1;
+  transition-delay: .2s;
+}
 
-  .sidebar .lista {
-    margin-top: 10px;
-  }
+.sidebar .logo-menu .toggle-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  text-align: center;
+  line-height: 40px;
+  transition: .5s;
+}
 
-  .lista .lista-item {
-    list-style: none;
-    width: 100%;
-    height: 50px;
-    margin: 5px 0;
-    line-height: 50px;    
-  }
+.sidebar.active .logo-menu .toggle-btn {
+  left: 90%;
+}
 
-  .lista .lista-item a {
-    display: flex;
-    align-items: center;
-    font-size: 18px;
-    color: #D2D2D2;
-    white-space: nowrap;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: .5s;
-  }
+.sidebar .lista {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 10px;
+}
 
-  .lista .lista-item.ativar a,
-  .lista .lista-item a:hover {
-    background: rgba(255, 255, 255, .2);
-  }
+.lista .espacador {
+  flex-grow: 1;
+}
 
-  .lista .lista-item a i {
-    min-width: 50px;
-    height: 50px;
-    text-align: center;
-    line-height: 50px;
+.lista .lista-item {
+  list-style: none;
+  width: 100%;
+  height: 50px;
+  margin: 5px 0;
+  line-height: 50px;
+}
 
-  }
+.lista .lista-item a {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #D2D2D2;
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: .5s;
+}
 
-  .sidebar .nome-link {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .3s;
-  }
+.lista .lista-item.ativar a,
+.lista .lista-item a:hover {
+  background: rgba(255, 255, 255, .2);
+}
 
-  .sidebar.active .nome-link {
-    opacity: 1;
-    pointer-events: auto;
-    transition-delay: calc(.1s * var(--i));
-  }
+.lista .lista-item a i {
+  min-width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
 
+.sidebar .nome-link {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+
+.sidebar.active .nome-link {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: calc(.1s * var(--i));
+}
   
   .sidebar.active ~ .main-content {
     margin-left: 260px;
@@ -158,40 +166,33 @@
     color: white;
     cursor: pointer;
   }
-  .lista-item.grupo-inferior {
-    margin-top:200px;
 
-  }  
-  
-  body.light-mode {
+/* MODO CLARO - SIDEBAR */
+body.light-mode {
     background-color: #ffffff !important;
     color: #262626;
-  }
-  
-  body.light-mode .main-content {
-    background-color: #ffffff !important;
-    color: #262626;
-  }
-  
-  body.light-mode .sidebar {
-    background-color: #E6E4E4;
-  }
-  
-  body.light-mode .sidebar .logo,
-  body.light-mode .lista-item a,
-  body.light-mode .lista-item a i,
-  body.light-mode .nome-link {
-    color: #262626;
-  }
-  
-  body.light-mode .lista-item a:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
+}
 
-  body.light-mode .sidebar .logo-menu .toggle-btn {
-    color: #262626 !important;
-  }
+body.light-mode .sidebar {
+  background-color: #e0e0e0;
+}
 
+body.light-mode .sidebar .logo,
+body.light-mode .lista-item a,
+body.light-mode .lista-item a i,
+body.light-mode .nome-link {
+  color: #262626;
+}
+
+body.light-mode .lista-item a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .sidebar .logo-menu .toggle-btn {
+  color: #262626 !important;
+}
+
+/* SEARCH BAR */
   
   body.light-mode .search-bar {
     background-color: #e0e0e0;
@@ -210,6 +211,8 @@
     color: white;
     transition: margin-left 0.5s;
   }
+
+
   /*css produto*/
 
   .main-header {
@@ -236,45 +239,6 @@
   }
   
   #btnNovoProduto:hover {
-    background-color: #2563eb;
-  }
-  #formProduto {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #1e1e1e;
-    padding: 30px;
-    border-radius: 10px;
-    z-index: 9999;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    flex-direction: column;
-    gap: 10px;
-    width: 300px;
-  }
-
-  #formProduto input,
-  #formProduto textarea {
-    background-color: #2a2a2a;
-    border: 1px solid #444;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-  }
-
-  #formProduto button {
-    background-color: #1D4ED8;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-weight: 500;
-  }
-
-  #formProduto button:hover {
     background-color: #2563eb;
   }
 
@@ -407,7 +371,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ececff;
+    background-color: #3535b8;
   }
 .status {
   padding: 4px 10px;
@@ -510,3 +474,102 @@
     background-color: #555;
     color: white;
   }
+
+/*MODO CLARO - PRODUTO*/
+body.light-mode .main-content {
+  background-color: #ffffff !important;
+  color: #262626;
+}
+
+/* Botão novo produto */
+body.light-mode #btnNovoProduto {
+  background-color: #1D4ED8;
+  color: white;
+}
+body.light-mode #btnNovoProduto:hover {
+  background-color: #2563eb;
+}
+
+/* Formulário do modal */
+body.light-mode #formProduto,
+body.light-mode .modal-content {
+  background-color: #ffffff;
+  color: #262626;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+body.light-mode #formProduto input,
+body.light-mode #formProduto textarea,
+body.light-mode .form-produto input,
+body.light-mode .form-produto textarea {
+  background-color: #f1f1f1;
+  color: #262626;
+  border: 1px solid #ccc;
+}
+
+/* Cartões de produto */
+body.light-mode .produto {
+  background-color: #ffffff;
+  color: #262626;
+  border: 1px solid #ddd;
+}
+body.light-mode .produto strong {
+  color: #1d1d1d;
+}
+body.light-mode .produto p {
+  color: #666;
+}
+
+/* Tabela de produtos */
+body.light-mode .tabela-produtos {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+body.light-mode .tabela-cabecalho {
+  background-color: #e0e0e0;
+  color: #333;
+}
+body.light-mode .tabela-linha {
+  border-top: 1px solid #ddd;
+}
+
+/* Modal inputs */
+body.light-mode .form-produto input,
+body.light-mode .form-produto textarea {
+  background-color: #f9f9f9;
+  color: #262626;
+  border: 1px solid #ccc;
+}
+
+/* Ícones e texto */
+body.light-mode .produto-info strong {
+  color: #262626;
+}
+body.light-mode .produto-info p {
+  color: #555;
+}
+body.light-mode .acoes i {
+  color: #666;
+}
+body.light-mode .acoes i:hover {
+  color: #1D4ED8;
+}
+
+/* Status */
+body.light-mode .status.ativo {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+body.light-mode .status.inativo {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+/* Botões no modal */
+body.light-mode .botoes button[type="submit"] {
+  background-color: #1D4ED8;
+  color: white;
+}
+body.light-mode .botoes button#fecharModal {
+  background-color: #ccc;
+  color: #333;
+}
