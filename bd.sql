@@ -1,5 +1,4 @@
 CREATE DATABASE ecommerce;
-
 USE ecommerce;
 
 CREATE TABLE usuarios (
@@ -8,11 +7,11 @@ CREATE TABLE usuarios (
   senha VARCHAR(255) NOT NULL,
   sexo ENUM('masculino', 'feminino', 'outro') NOT NULL,
   idade INT NOT NULL,
-  cpf VARCHAR(14) UNIQUE
+  cpf CHAR(11) UNIQUE
 );
 
 CREATE TABLE adm (
-  email PRIMARY KEY VARCHAR(255) UNIQUE,
+  email VARCHAR(255) UNIQUE PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL
 );
@@ -35,8 +34,9 @@ CREATE TABLE produtos (
   fornecedor_email VARCHAR(255),
   nome VARCHAR(255),
   preco DECIMAL(10,2),
-  preco_tigrano_coins INT,
   descricao TEXT,
+  categoria TEXT,
+  status varchar(20) NOT NULL DEFAULT 'Ativo',
   FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email)
 );
 

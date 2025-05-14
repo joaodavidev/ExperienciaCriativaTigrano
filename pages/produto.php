@@ -103,7 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     <div id="modalProduto" class="modal-overlay" style="display: none;">
       <div class="modal-content">
         <h2>Novo Produto</h2>
-        <form action="../includes/createProduto.php" method="POST" class="form-produto">
+        <form method="POST" class="form-produto">
+            <input type="hidden" name="id">
             <input type="text" name="nome" placeholder="Nome do Produto" required />
             <input type="text" name="categoria" placeholder="Categoria" required />
             <input type="number" name="preco" placeholder="Preço" step="0.01" required />
@@ -121,15 +122,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
       </div>
     </div>
     <section class="produtos-listagem">
-      <div class="tabela-produtos">
-        <div class="tabela-cabecalho">
-          <span>PRODUTO</span>
-          <span>CATEGORIA</span>
-          <span>PREÇO</span>
-          <span>STATUS</span>
-        </div>
-        </div>
+    <div class="tabela-produtos">
+      <div class="tabela-cabecalho">
+        <span>PRODUTO</span>
+        <span>CATEGORIA</span>
+        <span>PREÇO</span>
+        <span>STATUS</span>
+        <span>AÇÕES</span>
       </div>
+
+      <?php include '../includes/readProduto.php'; ?>
+    </div>
     </section>
 </main>
     <script src="../assets/css/js/script.js"></script>
