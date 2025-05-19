@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Mensagem de erro ou vazio */
+tr td[colspan='6'] {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}
