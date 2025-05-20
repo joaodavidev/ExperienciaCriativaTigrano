@@ -1,28 +1,13 @@
 <?php
-require_once '../includes/db.php';
 session_start();
+require_once '../includes/db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = trim($_POST['nome']);
-    $email = trim($_POST['email']);
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-    $sexo = $_POST['sexo'];
-    $idade = intval($_POST['idade']);
-    $cpf = $_POST['cpf'];
-
-    $sql = "INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-            VALUES (?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssis", $email, $nome, $senha, $sexo, $idade, $cpf);
-
-    if ($stmt->execute()) {
-        header("Location: readCadastro.php");
-        exit();
-    } else {
-        echo "Erro ao cadastrar: " . $stmt->error;
-    }
+if (!isset($_SESSION['usuario']['email'])) {
+  header("Location: login.php");
+  exit();
 }
+
+$email = $_SESSION['usuario']['email'];
 ?>
 
 <!DOCTYPE html>
@@ -84,5 +69,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </li>
       </ul>
     </nav>
+    <main class="main-content">
+      <section class="marketplace-header">
+    <div class="marketplace-title">
+      <h1>Requisitar suporte</h1>
+    </div>
+    <div class="suporte-lista">
+      <h3>Suas solicitações de suporte:</h3>
+      <?php include '../includes/readSuporteUsuario.php'; ?>
+    </div>
+      </section>
+      <section class="marketplace-content">
+        <div class="container">
+          <form action="../includes/createSuporteRequest.php" method="POST">
+            <div class="form-group">
+              <label for="assunto">Assunto:</label>
+              <input type="text" id="assunto" name="assunto" required>
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" required>
+              <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+              <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
+              <button type="submit">Solicitar suporte</button>
+            </div>
+          </form>
+        </div>
+      </section>
 </body>
 </html>
