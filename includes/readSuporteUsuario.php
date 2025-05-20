@@ -4,7 +4,7 @@ require_once '../includes/db.php';
 if (!isset($_SESSION)) {
     session_start();
 }
-$email = $_SESSION['usuario']['email'];
+$email = $_SESSION['email'];
 
 $sql = "SELECT * FROM suporte WHERE email = ?";
 $stmt = $conn->prepare($sql);

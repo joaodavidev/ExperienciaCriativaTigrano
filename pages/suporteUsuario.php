@@ -2,12 +2,6 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario']['email'])) {
-  header("Location: login.php");
-  exit();
-}
-
-$email = $_SESSION['usuario']['email'];
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +11,7 @@ $email = $_SESSION['usuario']['email'];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tigrano Marketplace</title>
-  <link rel="stylesheet" href="caminho/para/suporteUsuario.css">
+  <link rel="stylesheet" href="../assets/css/suporteUsuario.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
     <nav class="sidebar active">
@@ -107,5 +101,7 @@ $email = $_SESSION['usuario']['email'];
           </form>
         </div>
       </section>
+</main>
+    <script src="../assets/css/js/script.js"></script>
 </body>
 </html>
