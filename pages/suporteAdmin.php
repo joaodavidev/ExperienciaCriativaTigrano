@@ -85,4 +85,16 @@ if ($result->num_rows === 0) {
         </li>
       </ul>
     </nav>
+    <main class="main-content">
+      <section class="marketplace-header">
+        <div class="marketplace-title">
+          <h1>Suporte</h1>
+        </div>
+      </section>
+
+      <section class="suporte-section">
+        <h2>Tickets de Suporte</h2>
+        <?php include '../includes/readSuporteAdmin.php'; ?>
+      </section>
 </body>
+</html>
