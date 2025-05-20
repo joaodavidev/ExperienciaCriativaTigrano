@@ -13,6 +13,13 @@ $email = $_SESSION['usuario']['email'];
 <!DOCTYPE html>
 <html lang="pt-BR">
 <body>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tigrano Marketplace</title>
+  <link rel="stylesheet" href="caminho/para/suporteUsuario.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  </head>
     <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
