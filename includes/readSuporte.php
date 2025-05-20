@@ -16,9 +16,10 @@ if ($result->num_rows > 0) {
             <td>{$row['assunto']}</td>
             <td>{$row['descricao']}</td>
             <td>
-                <a href='../includes/updateSuporte.php?id={$row['id']}'>Editar</a>
-                <a href='../includes/deleteSuporte.php?id={$row['id']}' onclick='return confirm(\"Tem certeza que deseja deletar?\")'>Deletar</a>
-            </td>
+                <a href="visualizarTicket.php?id=<?= $ticket['id'] ?>">Visualizar</a> |
+                <a href="updateSuporte.php?id=<?= $ticket['id'] ?>">Editar</a> |
+                <a href="deleteSuporte.php?id=<?= $ticket['id'] ?>" onclick="return confirm('Tem certeza que deseja deletar?')">Deletar</a>
+<           /td>
         </tr>";
     }
     echo "</table>";
