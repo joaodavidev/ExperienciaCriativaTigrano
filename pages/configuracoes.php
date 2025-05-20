@@ -64,7 +64,7 @@ $email = $_SESSION['usuario']['email'];
       </a>
     </li>
     <li class="lista-item">
-      <a href="perfil.php">
+      <a href="../pages/perfil.php">
         <i class='bx bx-user'></i>
         <span class="nome-link" style="--i:7;">Perfil</span>
       </a>
