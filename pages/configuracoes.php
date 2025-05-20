@@ -2,12 +2,12 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['email'])) {
-  header("Location: ../pages/login.php");
+if (!isset($_SESSION['usuario'])) {
+  header("Location: login.php");
   exit();
 }
 
-$email = $_SESSION['email'];
+$email = $_SESSION['usuario']['email'];
 ?>
 
 <!DOCTYPE html>
@@ -15,12 +15,12 @@ $email = $_SESSION['email'];
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Produtos</title>
-  <link rel="stylesheet" href="../assets/css/produto.css">
+  <title>Configurações</title>
+  <link rel="stylesheet" href="../assets/css/perfil.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <nav class="sidebar active">
+<nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
@@ -82,52 +82,24 @@ $email = $_SESSION['email'];
     </li>
   </ul>
 </nav>
-    <main class="main-content">
-    <div class="main-header">
-        <h1>Produtos</h1>
-        <button id="btnNovoProduto"><i class="bx bx-plus"></i> Novo Produto</button>
-    </div>
 
-    <div class="search-bar">
-        <input type="text" name="nome" placeholder="Buscar produtos">
-        <i class='bx bx-search'></i>
+<main class="main-content">
+  <section class="marketplace-header">
+    <div class="marketplace-title">
+      <h1>Configurações da Conta</h1>
     </div>
-    <div id="modalProduto" class="modal-overlay" style="display: none;">
-      <div class="modal-content">
-        <h2>Novo Produto</h2>
-        <form action="../includes/createProduto.php" method="POST" class="form-produto">
-            <input type="hidden" name="id">
-            <input type="text" name="nome" placeholder="Nome do Produto" required />
-            <input type="text" name="categoria" placeholder="Categoria" required />
-            <input type="number" name="preco" placeholder="Preço" step="0.01" required />
-            <textarea name="descricao" placeholder="Descrição do Produto" required></textarea>
+  </section>
 
-        <select name="status" required>
-            <option value="Ativo">Ativo</option>
-            <option value="Inativo">Inativo</option>
-        </select>
-        <div class="botoes">
-            <button type="submit">Salvar</button>
-            <button type="button" id="fecharModal">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <section class="produtos-listagem">
-    <div class="tabela-produtos">
-      <div class="tabela-cabecalho">
-        <span>PRODUTO</span>
-        <span>CATEGORIA</span>
-        <span>PREÇO</span>
-        <span>STATUS</span>
-        <span>AÇÕES</span>
-      </div>
+  <section class="perfil-container">
+    <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?> // Exibe mensagem de erro
 
-      <?php include '../includes/readProduto.php'; ?>
-    </div>
-    </section>
+    <form action="../includes/deletecadastro.php" method="POST" class="logout-form">
+      <input type="hidden" name="deletar_conta" value="1">
+      <button type="submit">Deletar minha conta</button>
+    </form>
+  </section>
 </main>
-    <script src="../assets/css/js/script.js"></script>
-    <script src="../assets/css/js/produtos.js"></script>
+
+<script src="../assets/css/js/script.js"></script>
 </body>
 </html>

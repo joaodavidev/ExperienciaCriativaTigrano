@@ -2,25 +2,25 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['email'])) {
-  header("Location: ../pages/login.php");
+if (!isset($_SESSION['usuario']['email'])) {
+  header("Location: login.php");
   exit();
 }
 
-$email = $_SESSION['email'];
+$email = $_SESSION['usuario']['email'];
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<html lang="pt-BR">
+<body>
+  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Produtos</title>
-  <link rel="stylesheet" href="../assets/css/produto.css">
+  <title>Tigrano Marketplace</title>
+  <link rel="stylesheet" href="caminho/para/suporteUsuario.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-  <nav class="sidebar active">
+  </head>
+    <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
@@ -83,51 +83,29 @@ $email = $_SESSION['email'];
   </ul>
 </nav>
     <main class="main-content">
-    <div class="main-header">
-        <h1>Produtos</h1>
-        <button id="btnNovoProduto"><i class="bx bx-plus"></i> Novo Produto</button>
+      <section class="marketplace-header">
+    <div class="marketplace-title">
+      <h1>Requisitar suporte</h1>
     </div>
-
-    <div class="search-bar">
-        <input type="text" name="nome" placeholder="Buscar produtos">
-        <i class='bx bx-search'></i>
+    <div class="suporte-lista">
+      <h3>Suas solicitações de suporte:</h3>
+      <?php include '../includes/readSuporteUsuario.php'; ?>
     </div>
-    <div id="modalProduto" class="modal-overlay" style="display: none;">
-      <div class="modal-content">
-        <h2>Novo Produto</h2>
-        <form action="../includes/createProduto.php" method="POST" class="form-produto">
-            <input type="hidden" name="id">
-            <input type="text" name="nome" placeholder="Nome do Produto" required />
-            <input type="text" name="categoria" placeholder="Categoria" required />
-            <input type="number" name="preco" placeholder="Preço" step="0.01" required />
-            <textarea name="descricao" placeholder="Descrição do Produto" required></textarea>
-
-        <select name="status" required>
-            <option value="Ativo">Ativo</option>
-            <option value="Inativo">Inativo</option>
-        </select>
-        <div class="botoes">
-            <button type="submit">Salvar</button>
-            <button type="button" id="fecharModal">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <section class="produtos-listagem">
-    <div class="tabela-produtos">
-      <div class="tabela-cabecalho">
-        <span>PRODUTO</span>
-        <span>CATEGORIA</span>
-        <span>PREÇO</span>
-        <span>STATUS</span>
-        <span>AÇÕES</span>
-      </div>
-
-      <?php include '../includes/readProduto.php'; ?>
-    </div>
-    </section>
-</main>
-    <script src="../assets/css/js/script.js"></script>
-    <script src="../assets/css/js/produtos.js"></script>
+      </section>
+      <section class="marketplace-content">
+        <div class="container">
+          <form action="../includes/createSuporteRequest.php" method="POST">
+            <div class="form-group">
+              <label for="assunto">Assunto:</label>
+              <input type="text" id="assunto" name="assunto" required>
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" required>
+              <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+              <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
+              <button type="submit">Solicitar suporte</button>
+            </div>
+          </form>
+        </div>
+      </section>
 </body>
 </html>

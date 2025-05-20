@@ -1,7 +1,5 @@
 <?php
-session_start();
-include 'db.php';
-
+include '../includes/db.php';
 
 $emailVendedor = 'vendedor@email.com';
 
@@ -11,8 +9,13 @@ $querySaldo = $conn->prepare("
     SELECT SUM(v.quantidade_vendas * p.preco) AS saldo_total
     FROM vendas v
     JOIN produtos p ON v.produto_id = p.id
-    WHERE p.fornecedor_email = ?
+    WHERE p.vendedor_email = ?
 ");
+if(!$querySaldo) { 
+  die('o erro é: '.$conn->error);
+}
+
+
 $querySaldo->bind_param("s", $emailVendedor);
 $querySaldo->execute();
 $resultSaldo = $querySaldo->get_result();
@@ -42,7 +45,7 @@ $queryClientes = $conn->prepare("
     FROM produtos p
     JOIN produtos_pedido pped ON p.id = pped.produto_id
     JOIN pedidos ped ON pped.pedido_id = ped.id
-    WHERE p.fornecedor_email = ?
+    WHERE p.vendedor_email = ?
 ");
 $queryClientes->bind_param("s", $emailVendedor);
 $queryClientes->execute();
@@ -62,20 +65,67 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
 </head>
 <body>
   <nav class="sidebar active">
-    <div class="logo-menu">
-      <h2 class="logo">Tigrano</h2>
-      <i class='bx bx-menu toggle-btn'></i>
-    </div>
-    <ul class="lista">
-      <li class="lista-item"><a href="../pages/marketplace.php"><i class='bx bxs-shopping-bag-alt'></i><span class="nome-link" style="--i:1;">Marketplace</span></a></li>
-      <li class="lista-item"><a href="#"><i class='bx bxs-dashboard'></i><span class="nome-link" style="--i:2;">Dashboard</span></a></li>
-      <li class="lista-item"><a href="../pages/produto.php"><i class='bx bxs-purchase-tag'></i><span class="nome-link" style="--i:3;">Produtos</span></a></li>
-      <li class="lista-item"><a href="#"><i class='bx bx-shopping-bag'></i><span class="nome-link" style="--i:4;">Compras</span></a></li>
-      <li class="lista-item grupo-inferior"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
-      <li class="lista-item"><a href="#"><i class='bx bx-cog'></i><span class="nome-link" style="--i:6;">Configurações</span></a></li>
-      <li class="lista-item"><a href="#"><i class='bx bx-log-out'></i><span class="nome-link" style="--i:7;">Sair</span></a></li>
-    </ul>
-  </nav>
+  <div class="logo-menu">
+    <h2 class="logo">Tigrano</h2>
+    <i class='bx bx-menu toggle-btn'></i>
+  </div>
+  <ul class="lista">
+    <li class="lista-item">
+      <a href="../pages/marketplace.php">
+        <i class='bx bxs-shopping-bag-alt'></i>
+        <span class="nome-link" style="--i:1;">Marketplace</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="../pages/dashboard.php">
+        <i class='bx bxs-dashboard'></i>
+        <span class="nome-link" style="--i:2;">Dashboard</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="../pages/produto.php">
+        <i class='bx bxs-purchase-tag'></i>
+        <span class="nome-link" style="--i:3;">Produtos</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="../pages/compras.php">
+        <i class='bx bx-shopping-bag'></i>
+        <span class="nome-link" style="--i:4;">Compras</span>
+      </a>
+    </li>
+    <li class="espacador"></li>
+    <li class="lista-item">
+      <a href="#" class="btn-toggle-tema">
+        <i class='bx bx-moon'></i>
+        <span class="nome-link" style="--i:5;">Claro/Escuro</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="../pages/configuracoes.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link" style="--i:6;">Configurações</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="suporteUsuario.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">Suporte</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="suporteAdmin.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">SuporteAdmin</span>
+      </a></li>
+    <li class="lista-item">
+      <a href="perfil.php">
+        <i class='bx bx-user'></i>
+        <span class="nome-link" style="--i:7;">Perfil</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
   <main class="main-content">
     <div class="info-cards">
@@ -118,6 +168,6 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
       <button><i class='bx bx-search'></i></button>
     </div>
   </main>
-  <script src="../assets/js/script.js"></script>
+  <script src="../assets/css/js/script.js"></script>
 </body>
 </html>
