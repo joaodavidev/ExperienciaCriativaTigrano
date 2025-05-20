@@ -1,19 +1,19 @@
 <?php
 include 'db.php';
 
-$sql_checkar = "SELECT * FROM usuarios WHERE usuario = 'admin'";
+$sql_checkar = "SELECT * FROM adm WHERE nome = 'admin'";
 $result_checkar = $conn->query($sql_checkar);
 
 if ($result_checkar->num_rows == 0) {
     $usuario = 'admin';
-
+    $email = 'adm@adm';
     $senha = password_hash(123, PASSWORD_DEFAULT); //usa hash na senha para segurança
 
-    $sql = "INSERT INTO usuarios (usuario, senha) VALUES (?, ?)";
+    $sql = "INSERT INTO adm (nome, email, senha) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("ss", $usuario, $senha);
+        $stmt->bind_param("ssi", $usuario, $email, $senha);
         if ($stmt->execute()) {
             echo "Admin cadastrado com sucesso!";
         } else {
