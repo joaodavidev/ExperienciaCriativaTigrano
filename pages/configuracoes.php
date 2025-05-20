@@ -64,6 +64,17 @@ $email = $_SESSION['usuario']['email'];
       </a>
     </li>
     <li class="lista-item">
+      <a href="suporteUsuario.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">Suporte</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="suporteAdmin.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">SuporteAdmin</span>
+      </a></li>
+    <li class="lista-item">
       <a href="perfil.php">
         <i class='bx bx-user'></i>
         <span class="nome-link" style="--i:7;">Perfil</span>
