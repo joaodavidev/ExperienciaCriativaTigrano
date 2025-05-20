@@ -2,50 +2,25 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario']['email'])) {
   header("Location: login.php");
   exit();
 }
 
 $email = $_SESSION['usuario']['email'];
-
-// Atualizar dados
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  $nome = trim($_POST['nome']);
-  $sexo = $_POST['sexo'];
-  $idade = intval($_POST['idade']);
-
-  $sql = "UPDATE usuarios SET nome = ?, sexo = ?, idade = ? WHERE email = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ssis", $nome, $sexo, $idade, $email);
-
-  if ($stmt->execute()) {
-    $_SESSION['usuario']['nome'] = $nome;
-    $mensagem = "Perfil atualizado com sucesso!";
-  } else {
-    $mensagem = "Erro ao atualizar perfil.";
-  }
-}
-//dados atuais
-$sql = "SELECT nome, sexo, idade FROM usuarios WHERE email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
-$dados = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<html lang="pt-BR">
+<body>
+  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil</title>
-  <link rel="stylesheet" href="../assets/css/perfil.css">
+  <title>Tigrano Marketplace</title>
+  <link rel="stylesheet" href="caminho/para/suporteUsuario.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-<nav class="sidebar active">
+  </head>
+    <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
@@ -107,40 +82,30 @@ $dados = $result->fetch_assoc();
     </li>
   </ul>
 </nav>
-
-<main class="main-content">
-  <section class="marketplace-header">
+    <main class="main-content">
+      <section class="marketplace-header">
     <div class="marketplace-title">
-      <h1>Meu Perfil</h1>
+      <h1>Requisitar suporte</h1>
     </div>
-  </section>
-
-  <section class="perfil-container">
-    <?php if (isset($mensagem)) echo "<p class='mensagem'>$mensagem</p>"; ?>
-
-    <form action="perfil.php" method="POST" class="perfil-form">
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
-
-      <label for="sexo">Sexo:</label>
-      <select name="sexo" id="sexo" required>
-        <option value="masculino" <?= $dados['sexo'] == 'masculino' ? 'selected' : '' ?>>Masculino</option>
-        <option value="feminino" <?= $dados['sexo'] == 'feminino' ? 'selected' : '' ?>>Feminino</option>
-        <option value="outro" <?= $dados['sexo'] == 'outro' ? 'selected' : '' ?>>Outro</option>
-      </select>
-
-      <label for="idade">Idade:</label>
-      <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" required>
-
-      <button type="submit">Salvar</button>
-    </form>
-
-    <form action="../includes/logout.php" method="post" class="logout-form">
-      <button type="submit">Sair da conta</button>
-    </form>
-  </section>
-</main>
-
-<script src="../assets/css/js/script.js"></script>
+    <div class="suporte-lista">
+      <h3>Suas solicitações de suporte:</h3>
+      <?php include '../includes/readSuporteUsuario.php'; ?>
+    </div>
+      </section>
+      <section class="marketplace-content">
+        <div class="container">
+          <form action="../includes/createSuporteRequest.php" method="POST">
+            <div class="form-group">
+              <label for="assunto">Assunto:</label>
+              <input type="text" id="assunto" name="assunto" required>
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" required>
+              <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+              <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
+              <button type="submit">Solicitar suporte</button>
+            </div>
+          </form>
+        </div>
+      </section>
 </body>
 </html>

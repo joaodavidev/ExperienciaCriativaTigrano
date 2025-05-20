@@ -2,50 +2,41 @@
 session_start();
 require_once '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario']['email'])) {
   header("Location: login.php");
   exit();
 }
 
 $email = $_SESSION['usuario']['email'];
 
-// Atualizar dados
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  $nome = trim($_POST['nome']);
-  $sexo = $_POST['sexo'];
-  $idade = intval($_POST['idade']);
-
-  $sql = "UPDATE usuarios SET nome = ?, sexo = ?, idade = ? WHERE email = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ssis", $nome, $sexo, $idade, $email);
-
-  if ($stmt->execute()) {
-    $_SESSION['usuario']['nome'] = $nome;
-    $mensagem = "Perfil atualizado com sucesso!";
-  } else {
-    $mensagem = "Erro ao atualizar perfil.";
-  }
-}
-//dados atuais
-$sql = "SELECT nome, sexo, idade FROM usuarios WHERE email = ?";
+// Verifica se o e-mail existe na tabela de administradores
+$sql = "SELECT 1 FROM adm WHERE email = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
-$dados = $result->fetch_assoc();
-?>
 
+// Se não for admin, exibe erro e redireciona
+if ($result->num_rows === 0) {
+  echo "<script>
+          alert('Acesso negado. Apenas administradores podem acessar esta página.');
+          window.location.href = 'marketplace.php';
+        </script>";
+  exit();
+}
+
+?>
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<html lang="pt-BR">
+<body>
+  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil</title>
-  <link rel="stylesheet" href="../assets/css/perfil.css">
+  <title>Tigrano Marketplace</title>
+  <link rel="stylesheet" href="caminho/para/suporteAdmin.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-<nav class="sidebar active">
+  </head>
+    <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
@@ -107,40 +98,16 @@ $dados = $result->fetch_assoc();
     </li>
   </ul>
 </nav>
+    <main class="main-content">
+      <section class="marketplace-header">
+        <div class="marketplace-title">
+          <h1>Suporte</h1>
+        </div>
+      </section>
 
-<main class="main-content">
-  <section class="marketplace-header">
-    <div class="marketplace-title">
-      <h1>Meu Perfil</h1>
-    </div>
-  </section>
-
-  <section class="perfil-container">
-    <?php if (isset($mensagem)) echo "<p class='mensagem'>$mensagem</p>"; ?>
-
-    <form action="perfil.php" method="POST" class="perfil-form">
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
-
-      <label for="sexo">Sexo:</label>
-      <select name="sexo" id="sexo" required>
-        <option value="masculino" <?= $dados['sexo'] == 'masculino' ? 'selected' : '' ?>>Masculino</option>
-        <option value="feminino" <?= $dados['sexo'] == 'feminino' ? 'selected' : '' ?>>Feminino</option>
-        <option value="outro" <?= $dados['sexo'] == 'outro' ? 'selected' : '' ?>>Outro</option>
-      </select>
-
-      <label for="idade">Idade:</label>
-      <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" required>
-
-      <button type="submit">Salvar</button>
-    </form>
-
-    <form action="../includes/logout.php" method="post" class="logout-form">
-      <button type="submit">Sair da conta</button>
-    </form>
-  </section>
-</main>
-
-<script src="../assets/css/js/script.js"></script>
+      <section class="suporte-section">
+        <h2>Tickets de Suporte</h2>
+        <?php include '../includes/readSuporteAdmin.php'; ?>
+      </section>
 </body>
 </html>

@@ -1,26 +1,19 @@
 <?php
+
 require_once '../includes/db.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = trim($_POST['nome']);
-    $email = trim($_POST['email']);
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-    $sexo = $_POST['sexo'];
-    $idade = intval($_POST['idade']);
-    $cpf = $_POST['cpf'];
+    $usuario = $_POST['usuario'];
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT); //hash para criptografia da senha
 
-    $sql = "INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO usuarios (usuario, senha) VALUES ('$usuario', '$senha')";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssis", $email, $nome, $senha, $sexo, $idade, $cpf);
-
-    if ($stmt->execute()) {
-        header("Location: readCadastro.php");
+    if ($conn->query($sql) === TRUE) {
+        header("Location: readCadastro.php"); 
         exit();
     } else {
-        echo "Erro ao cadastrar: " . $stmt->error;
+        echo "Erro: " . $sql . "<br>" . $conn->error;
     }
 }
 ?>
@@ -28,57 +21,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastro</title>
-  <link rel="stylesheet" href="../assets/css/login.css">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cadastrar Novo Usuário</title>
+    <link rel="stylesheet" href="../assets/css/createCadastro.css" />
 </head>
 <body>
-  <button id="btnModo" class="btn-toggle-tema" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: white; cursor: pointer;">
-    <i class='bx bx-moon'></i>
-  </button>
 
-  <div class="login-container">
-    <h2>Cadastro</h2>
-    <form action="createCadastro.php" method="POST">
-      <label for="nome">Nome completo:</label>
-      <input type="text" id="nome" name="nome" required>
+    <div class="container">
+        <h1>Cadastrar Novo Usuário</h1>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
+        <form action="createCadastro.php" method="POST">
+            <label for="usuario">Usuário:</label>
+            <input type="text" name="usuario" id="usuario" placeholder="Digite o nome de usuário" required>
 
-      <label for="senha">Senha:</label>
-      <input type="password" id="senha" name="senha" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" placeholder="Digite o email" required>
 
-      <label for="sexo">Sexo:</label>
-      <select id="sexo" name="sexo" required>
-        <option value="">Selecione</option>
-        <option value="masculino">Masculino</option>
-        <option value="feminino">Feminino</option>
-        <option value="outro">Outro</option>
-      </select>
+            <label for="senha">Senha:</label>
+            <input type="password" name="senha" id="senha" placeholder="Digite a senha" required>
 
-      <label for="idade">Idade:</label>
-      <input type="number" id="idade" name="idade" required>
+            <button type="submit">Cadastrar</button>
+        </form>
 
-      <label for="cpf">CPF:</label>
-      <input type="text" id="cpf" name="cpf" pattern="\d{11}" placeholder="Somente números" required>
+        <a href="readCadastro.php" class="btn">Voltar à Lista de Usuários</a>
+    </div>
 
-      <button type="submit">Cadastrar</button>
-
-      <p>Já possui uma conta? <a href="login.php">Fazer login</a></p>
-    </form>
-  </div>
-
-  <script>
-    const btnModo = document.getElementById('btnModo');
-    if (btnModo) {
-      btnModo.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        const icon = btnModo.querySelector('i');
-        icon.className = document.body.classList.contains('light-mode') ? 'bx bx-sun' : 'bx bx-moon';
-      });
-    }
-  </script>
 </body>
 </html>

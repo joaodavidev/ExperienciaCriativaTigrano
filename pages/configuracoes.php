@@ -64,6 +64,17 @@ $email = $_SESSION['usuario']['email'];
       </a>
     </li>
     <li class="lista-item">
+      <a href="suporteUsuario.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">Suporte</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="suporteAdmin.php">
+        <i class='bx bx-cog'></i>
+        <span class="nome-link">SuporteAdmin</span>
+      </a></li>
+    <li class="lista-item">
       <a href="perfil.php">
         <i class='bx bx-user'></i>
         <span class="nome-link" style="--i:7;">Perfil</span>
@@ -80,7 +91,7 @@ $email = $_SESSION['usuario']['email'];
   </section>
 
   <section class="perfil-container">
-    <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?>
+    <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?> // Exibe mensagem de erro
 
     <form action="../includes/deletecadastro.php" method="POST" class="logout-form">
       <input type="hidden" name="deletar_conta" value="1">

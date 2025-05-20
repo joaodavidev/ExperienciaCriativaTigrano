@@ -1,13 +1,9 @@
 <?php
-session_start();
-require_once 'db.php';
+include '../includes/db.php';
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../pages/login.php");
-    exit();
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
 }
-
-$vendedorEmail = $_SESSION['usuario']['email'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = trim($_POST['nome'] ?? '');
@@ -16,16 +12,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $descricao = trim($_POST['descricao'] ?? '');
     $status = trim($_POST['status'] ?? 'Ativo');
 
-    if ($nome && $categoria && $preco && $descricao && $vendedorEmail) {
-        $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status, vendedor_email)
-                VALUES (?, ?, ?, ?, ?, ?)";
+    if ($nome && $categoria && $preco && $descricao) {
+        $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status)
+                VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
             die("Erro no prepare: " . $conn->error);
         }
 
-        $stmt->bind_param("ssdsss", $nome, $categoria, $preco, $descricao, $status, $vendedorEmail);
+        $stmt->bind_param("ssdds", $nome, $categoria, $preco, $descricao, $status);
 
         if ($stmt->execute()) {
             header("Location: ../pages/produto.php?sucesso=1");
@@ -39,3 +35,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else {
     echo "Requisição inválida.";
 }
+?>

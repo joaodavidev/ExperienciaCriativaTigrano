@@ -3,29 +3,17 @@ const modal = document.getElementById('modalProduto');
     const fecharModalBtn = document.getElementById('fecharModal');
     const form = document.querySelector('form.form-produto');
 
-   function abrirModal(dados = {}) {
-    const modal = document.getElementById('modalProduto');
-    const form = document.querySelector('.form-produto');
-
-    modal.style.display = 'flex';
-    form.reset();
-
-    // Preencher os campos
-    form.querySelector('[name="id"]').value = dados.id || '';
-    form.querySelector('[name="nome"]').value = dados.nome || '';
-    form.querySelector('[name="categoria"]').value = dados.categoria || '';
-    form.querySelector('[name="preco"]').value = dados.preco || '';
-    form.querySelector('[name="descricao"]').value = dados.descricao || '';
-    form.querySelector('[name="status"]').value = dados.status || 'Ativo';
-
-    // Corrige o caminho relativo para update
-    if (dados.id) {
-        form.action = "../includes/updateProduto.php";
-    } else {
-        form.action = "../includes/createProduto.php";
-    }
-}
-
+    function abrirModal(dados = {}) {
+      modal.style.display = 'flex';
+      form.reset();
+      form.id.value = dados.id || '';
+      form.nome.value = dados.nome || '';
+      form.categoria.value = dados.categoria || '';
+      form.preco.value = dados.preco || '';
+      form.icone.value = dados.icone || '';
+      form.descricao.value = dados.descricao || '';
+      form.status.value = dados.status || 'Ativo'; // ← adicionado aqui
+    }    
 
     function fecharModal() {
       modal.style.display = 'none';

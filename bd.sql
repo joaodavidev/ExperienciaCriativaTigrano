@@ -1,4 +1,5 @@
 CREATE DATABASE ecommerce;
+
 USE ecommerce;
 
 CREATE TABLE usuarios (
@@ -7,11 +8,11 @@ CREATE TABLE usuarios (
   senha VARCHAR(255) NOT NULL,
   sexo ENUM('masculino', 'feminino', 'outro') NOT NULL,
   idade INT NOT NULL,
-  cpf CHAR(11) UNIQUE
+  cpf VARCHAR(14) UNIQUE
 );
-SELECT * FROM usuarios;
+
 CREATE TABLE adm (
-  email VARCHAR(255) UNIQUE PRIMARY KEY,
+  email PRIMARY KEY VARCHAR(255) UNIQUE,
   nome VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL
 );
@@ -30,14 +31,13 @@ CREATE TABLE suporte (
 );
 
 CREATE TABLE produtos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255) NOT NULL,
-  categoria VARCHAR(255) NOT NULL,
-  preco DECIMAL(10,2) NOT NULL,
-  descricao TEXT NOT NULL,
-  status VARCHAR(50) DEFAULT 'Ativo',
-  vendedor_email VARCHAR(255),
-  FOREIGN KEY (vendedor_email) REFERENCES usuarios(email)
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  fornecedor_email VARCHAR(255),
+  nome VARCHAR(255),
+  preco DECIMAL(10,2),
+  descricao TEXT,
+  status VARCHAR(20) NOT NULL DEFAULT 'ATIVO',
+  FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email)
 );
 
 CREATE TABLE pedidos (
@@ -74,13 +74,14 @@ CREATE TABLE carrinho (
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
-INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-VALUES ('cliente@email.com', 'Cliente Teste', '123456', 'masculino', 30, '12345678900');
-INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-VALUES ('vendedor@email.com', 'Vendedor Teste', '654321', 'masculino', 20, '11683507940');
 
-SELECT * FROM produtos;
-SELECT * FROM carrinho;
+CREATE TABLE tigrano_coins (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  usuario_email VARCHAR(255),
+  quantidade INT,
+  FOREIGN KEY (usuario_email) REFERENCES usuarios (email)
+);
+
 CREATE TABLE avaliacao (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
@@ -143,5 +144,3 @@ CREATE TABLE tipo_pagamento (
   FOREIGN KEY (id_cartao_credito) REFERENCES cartao_credito_usuario (id),
   FOREIGN KEY (id_cartao_debito) REFERENCES cartao_debito_usuario (id)
 );
-
-SHOW TABLES;
