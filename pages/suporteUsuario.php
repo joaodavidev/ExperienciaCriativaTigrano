@@ -83,6 +83,17 @@ require_once '../includes/db.php';
     </div>
     <h3>Suas solicitações de suporte:</h3>
     <div class="suporte-lista">
+      <div id="modalSuporte" class="modal">
+        <div class="modal-content">
+          <span id="fecharModalSuporte" class="fechar">&times;</span>
+          <h2>Detalhes do Ticket</h2>
+          <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
+          <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
+          <p><strong>Data:</strong><br> <span id="modalData"></span></p>
+          <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
+        </div>
+      </div>
+
       <?php include '../includes/readSuporteUsuario.php'; ?>
     </div>
       </section>
@@ -101,5 +112,6 @@ require_once '../includes/db.php';
       </section>
 </main>
     <script src="../assets/css/js/script.js"></script>
+    <script src="../assets/css/js/suporteUsuario.js"></script>
 </body>
 </html>

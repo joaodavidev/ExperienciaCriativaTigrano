@@ -16,7 +16,9 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo "<div class='suporte-item'>";
+        $dadosJSON = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+
+        echo "<div class='suporte-item' onclick='abrirModalSuporte({$dadosJSON})'>";
         echo "<p><strong>Assunto:</strong> " . htmlspecialchars($row['assunto']) . "</p>";
         echo "<p><strong>Mensagem:</strong> " . htmlspecialchars($row['descricao']) . "</p>";
         echo "<p><strong>Data:</strong> " . $row['data_envio'] . "</p>";
