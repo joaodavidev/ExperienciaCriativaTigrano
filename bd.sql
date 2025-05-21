@@ -141,4 +141,50 @@ CREATE TABLE tipo_pagamento (
 );
 
 SHOW TABLES;
+SELECT * FROM adm;
 SELECT * FROM usuarios;
+
+-- Carrinho
+ALTER TABLE carrinho DROP FOREIGN KEY carrinho_ibfk_1;
+ALTER TABLE carrinho ADD CONSTRAINT carrinho_ibfk_1
+  FOREIGN KEY (usuario_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Cartão Crédito
+ALTER TABLE cartao_credito_usuario DROP FOREIGN KEY cartao_credito_usuario_ibfk_1;
+ALTER TABLE cartao_credito_usuario ADD CONSTRAINT cartao_credito_usuario_ibfk_1
+  FOREIGN KEY (usuario_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Cartão Débito
+ALTER TABLE cartao_debito_usuario DROP FOREIGN KEY cartao_debito_usuario_ibfk_1;
+ALTER TABLE cartao_debito_usuario ADD CONSTRAINT cartao_debito_usuario_ibfk_1
+  FOREIGN KEY (usuario_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Avaliação
+ALTER TABLE avaliacao DROP FOREIGN KEY avaliacao_ibfk_1;
+ALTER TABLE avaliacao ADD CONSTRAINT avaliacao_ibfk_1
+  FOREIGN KEY (usuario_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Vendas
+ALTER TABLE vendas DROP FOREIGN KEY vendas_ibfk_1;
+ALTER TABLE vendas ADD CONSTRAINT vendas_ibfk_1
+  FOREIGN KEY (fornecedor_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Produtos
+ALTER TABLE produtos DROP FOREIGN KEY produtos_ibfk_1;
+ALTER TABLE produtos ADD CONSTRAINT produtos_ibfk_1
+  FOREIGN KEY (vendedor_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Pedidos
+ALTER TABLE pedidos DROP FOREIGN KEY pedidos_ibfk_1;
+ALTER TABLE pedidos ADD CONSTRAINT pedidos_ibfk_1
+  FOREIGN KEY (comprador_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Suporte
+ALTER TABLE suporte DROP FOREIGN KEY suporte_ibfk_2;
+ALTER TABLE suporte ADD CONSTRAINT suporte_ibfk_2
+  FOREIGN KEY (email_usuario) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Histórico de Compras
+ALTER TABLE historico_compras DROP FOREIGN KEY historico_compras_ibfk_1;
+ALTER TABLE historico_compras ADD CONSTRAINT historico_compras_ibfk_1
+FOREIGN KEY (comprador_email) REFERENCES usuarios(email) ON DELETE CASCADE;

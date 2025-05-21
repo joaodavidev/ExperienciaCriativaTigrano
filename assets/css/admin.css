@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  font-family: 'Poppins', sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+ .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100%;
+    padding: 6px 14px;
+    background: #262626;
+    transition: .5s;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+.sidebar .lista {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.lista .espacador {
+  flex-grow: 1;
+}
+
+
+.sidebar.active {
+  width: 220px;
+}
+
+.sidebar .logo-menu {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 70px;
+}
+
+.sidebar .logo-menu .logo {
+  font-size: 25px;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: .3s;
+}
+
+.sidebar.active .logo-menu .logo {
+  opacity: 1;
+  transition-delay: .2s;
+}
+
+.sidebar .logo-menu .toggle-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  text-align: center;
+  line-height: 40px;
+  transition: .5s;
+}
+
+.sidebar.active .logo-menu .toggle-btn {
+  left: 90%;
+}
+
+.lista .lista-item {
+  list-style: none;
+  width: 100%;
+  height: 50px;
+  margin: 5px 0;
+  line-height: 50px;    
+}
+
+.lista .lista-item a {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #D2D2D2;
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: .5s;
+}
+
+.lista .lista-item.ativar a,
+.lista .lista-item a:hover {
+  background: rgba(255, 255, 255, .2);
+}
+
+.lista .lista-item a i {
+  min-width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
+
+.sidebar .nome-link {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+
+.sidebar.active .nome-link {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: calc(.1s * var(--i));
+}
+
+.lista-item.grupo-inferior {
+  margin-top: 200px;
+}
+
+/* LIGHT MODE */
+body.light-mode .sidebar {
+  background-color: #E6E4E4;
+}
+
+body.light-mode .sidebar .logo,
+body.light-mode .lista-item a,
+body.light-mode .lista-item a i,
+body.light-mode .nome-link {
+  color: #262626;
+}
+
+body.light-mode .lista-item a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .sidebar .logo-menu .toggle-btn {
+  color: #262626 !important;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  margin-left: 80px;
+  padding: 30px 50px;
+  width: 100%;
+  transition: margin-left 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.sidebar.active ~ .main-content {
+  margin-left: 220px;
+}
+
+body.light-mode .main-content {
+  background-color: #ffffff;
+  color: #262626;
+}
+
+/* SEARCH BAR PADRÃO */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #4a4a4a;
+  padding: 10px 15px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-bar i {
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+body.light-mode .search-bar {
+  background-color: #e0e0e0;
+}
+
+body.light-mode .search-bar input,
+body.light-mode .search-bar i {
+  color: #262626;
+}
+
+/* ADM */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  width: 250px;
+  color: white;
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #ccc;
+}
+
+.card p {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+body.light-mode .card {
+  background: #f0f0f0;
+  color: #262626;
+  border: 1px solid #000000; /* linha preta ao redor */
+}
+
+body.light-mode .card h3 {
+  color: #555;
+}

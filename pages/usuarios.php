@@ -1,0 +1,122 @@
+<?php
+session_start();
+require_once '../includes/db.php';
+
+
+// Ações: excluir ou resetar senha
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['excluir'])) {
+        $email = $_POST['excluir'];
+        $stmt = $conn->prepare("DELETE FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: usuarios.php");
+        exit();
+    }
+
+    if (isset($_POST['resetar'])) {
+        $email = $_POST['resetar'];
+        $novaSenha = password_hash("Tigrano123", PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
+        $stmt->bind_param("ss", $novaSenha, $email);
+        $stmt->execute();
+        $stmt->close();
+        echo "<script>alert('Senha redefinida para Tigrano123'); window.location.href='usuarios.php';</script>";
+        exit();
+    }
+}
+
+// Consulta usuários
+$result = $conn->query("SELECT email, nome, sexo, idade, cpf FROM usuarios");
+?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciar Usuários</title>
+  <link rel="stylesheet" href="../assets/css/admin.css">
+  <link rel="stylesheet" href="../assets/css/usuarios.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+<nav class="sidebar active">
+  <div class="logo-menu">
+    <h2 class="logo">Tigrano</h2>
+    <i class='bx bx-menu toggle-btn'></i>
+  </div>
+  <ul class="lista">
+    <li class="lista-item">
+      <a href="usuarios.php">
+        <i class='bx bxs-user-detail'></i>
+        <span class="nome-link" style="--i:1;">Usuários</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="tickets.php">
+        <i class='bx bx-support'></i>
+        <span class="nome-link" style="--i:2;">Tickets</span>
+      </a>
+    </li>
+    <li class="espacador"></li>
+    <li class="lista-item">
+      <a href="#" class="btn-toggle-tema">
+        <i class='bx bx-moon'></i>
+        <span class="nome-link" style="--i:5;">Claro/Escuro</span>
+      </a>
+    </li>
+    <li class="lista-item">
+      <a href="../includes/logout.php">
+        <i class='bx bx-log-out'></i>
+        <span class="nome-link" style="--i:6;">Sair</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<main class="main-content">
+  <h1>Gerenciar Usuários</h1>
+
+  <div class="tabela-usuarios">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Sexo</th>
+          <th>Idade</th>
+          <th>CPF</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php while ($row = $result->fetch_assoc()): ?>
+          <tr>
+            <td><?= htmlspecialchars($row['nome']) ?></td>
+            <td><?= htmlspecialchars($row['email']) ?></td>
+            <td><?= htmlspecialchars($row['sexo']) ?></td>
+            <td><?= $row['idade'] ?></td>
+            <td><?= $row['cpf'] ?></td>
+            <td style="display: flex; gap: 8px;">
+              <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                <input type="hidden" name="excluir" value="<?= htmlspecialchars($row['email']) ?>">
+                <button type="submit" class="btn-excluir">Excluir</button>
+              </form>
+
+              <form method="POST" onsubmit="return confirm('Deseja resetar a senha');">
+                <input type="hidden" name="resetar" value="<?= htmlspecialchars($row['email']) ?>">
+                <button type="submit" class="btn-reset">Resetar Senha</button>
+              </form>
+            </td>
+          </tr>
+        <?php endwhile; ?>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script src="../assets/css/js/script.js"></script>
+</body>
+</html>
