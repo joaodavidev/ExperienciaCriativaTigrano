@@ -77,7 +77,6 @@ if (isset($_SESSION['usuario']['email'])) {
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <header>
 <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
@@ -140,7 +139,6 @@ if (isset($_SESSION['usuario']['email'])) {
     </li>
   </ul>
 </nav>
-  </header>
 
   <div class="main-content">
     <div class="search-container">
