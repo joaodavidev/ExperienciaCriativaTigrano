@@ -9,23 +9,59 @@ if (!isset($_SESSION['usuario'])) {
 
 $email = $_SESSION['usuario']['email'];
 
-// Atualizar dados
+// Atualização de dados do perfil
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  $nome = trim($_POST['nome']);
-  $sexo = $_POST['sexo'];
-  $idade = intval($_POST['idade']);
+  if (isset($_POST['nome'])) {
+    $nome = trim($_POST['nome']);
+    $sexo = $_POST['sexo'];
+    $idade = intval($_POST['idade']);
 
-  $sql = "UPDATE usuarios SET nome = ?, sexo = ?, idade = ? WHERE email = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ssis", $nome, $sexo, $idade, $email);
+    $sql = "UPDATE usuarios SET nome = ?, sexo = ?, idade = ? WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssis", $nome, $sexo, $idade, $email);
 
-  if ($stmt->execute()) {
-    $_SESSION['usuario']['nome'] = $nome;
-    $mensagem = "Perfil atualizado com sucesso!";
-  } else {
-    $mensagem = "Erro ao atualizar perfil.";
+    if ($stmt->execute()) {
+      $_SESSION['usuario']['nome'] = $nome;
+      $mensagem = "Perfil atualizado com sucesso!";
+    } else {
+      $mensagem = "Erro ao atualizar perfil.";
+    }
+    $stmt->close();
+  }
+
+  // Redefinir senha
+  if (isset($_POST['senha_atual'], $_POST['nova_senha'], $_POST['confirmar_senha'])) {
+    $senhaAtual = $_POST['senha_atual'];
+    $novaSenha = $_POST['nova_senha'];
+    $confirmarSenha = $_POST['confirmar_senha'];
+
+    if ($novaSenha !== $confirmarSenha) {
+      $mensagem = "A nova senha e a confirmação não coincidem.";
+    } else {
+      $sql = "SELECT senha FROM usuarios WHERE email = ?";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("s", $email);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $dadosSenha = $result->fetch_assoc();
+
+      if (password_verify($senhaAtual, $dadosSenha['senha'])) {
+        $novaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
+        $stmt->bind_param("ss", $novaHash, $email);
+        if ($stmt->execute()) {
+          $mensagem = "Senha atualizada com sucesso!";
+        } else {
+          $mensagem = "Erro ao atualizar a senha.";
+        }
+        $stmt->close();
+      } else {
+        $mensagem = "Senha atual incorreta.";
+      }
+    }
   }
 }
+
 //dados atuais
 $sql = "SELECT nome, sexo, idade FROM usuarios WHERE email = ?";
 $stmt = $conn->prepare($sql);
@@ -123,6 +159,20 @@ $dados = $result->fetch_assoc();
 
       <button type="submit">Salvar</button>
     </form>
+    <h2>Redefinir Senha</h2>
+<form action="perfil.php" method="POST" class="perfil-form">
+  <label for="senha_atual">Senha atual:</label>
+  <input type="password" name="senha_atual" id="senha_atual" required>
+
+  <label for="nova_senha">Nova senha:</label>
+  <input type="password" name="nova_senha" id="nova_senha" required>
+
+  <label for="confirmar_senha">Confirmar nova senha:</label>
+  <input type="password" name="confirmar_senha" id="confirmar_senha" required>
+
+  <button type="submit">Alterar senha</button>
+</form>
+
 
     <form action="../includes/logout.php" method="post" class="logout-form">
       <button type="submit">Sair da conta</button>
