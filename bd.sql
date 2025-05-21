@@ -188,3 +188,15 @@ ALTER TABLE suporte ADD CONSTRAINT suporte_ibfk_2
 ALTER TABLE historico_compras DROP FOREIGN KEY historico_compras_ibfk_1;
 ALTER TABLE historico_compras ADD CONSTRAINT historico_compras_ibfk_1
 FOREIGN KEY (comprador_email) REFERENCES usuarios(email) ON DELETE CASCADE;
+
+-- Ticket PENDENTE (sem resposta)
+INSERT INTO suporte (email_adm, email_usuario, assunto, descricao, data_envio)
+VALUES (NULL, 'cliente@email.com', 'Dúvida sobre pedido', 'Gostaria de saber o status do meu pedido.', NOW());
+
+-- Ticket RESPONDIDO
+INSERT INTO suporte (email_adm, email_usuario, assunto, descricao, data_envio, resposta, data_resposta)
+VALUES ('admin@email.com', 'cliente@email.com', 'Problema com pagamento', 'Tive um erro ao tentar pagar com cartão.', NOW(), 'Verificamos e corrigimos o erro. Pode tentar novamente.', CURDATE());
+
+-- Outro PENDENTE
+INSERT INTO suporte (email_adm, email_usuario, assunto, descricao, data_envio)
+VALUES (NULL, 'cliente@email.com', 'Troca de produto', 'Comprei um produto e quero trocar.', NOW());
