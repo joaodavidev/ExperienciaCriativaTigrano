@@ -1,22 +1,15 @@
 <?php
 session_start();
 require_once '../includes/db.php';
-
-if (!isset($_SESSION['usuario'])) {
-  header("Location: login.php");
-  exit();
-}
-
-$email = $_SESSION['usuario']['email'];
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurações</title>
-  <link rel="stylesheet" href="../assets/css/perfil.css">
+  <title>Tigrano Marketplace</title>
+  <link rel="stylesheet" href="../assets/css/suporteUsuario.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
@@ -37,39 +30,51 @@ $email = $_SESSION['usuario']['email'];
     <li class="lista-item"><a href="../pages/perfil.php"><i class='bx bx-user'></i><span class="nome-link" style="--i:8;">Perfil</span></a></li>
   </ul>
 </nav>
+
 <main class="main-content">
   <section class="marketplace-header">
     <div class="marketplace-title">
-      <h1>Configurações da Conta</h1>
+      <h1>Requisitar suporte</h1>
+    </div>
+
+    <h3>Tickets em aberto</h3>
+    <div class="suporte-lista">
+      <?php include '../includes/readSuporteUsuario_abertos.php'; ?>
+    </div>
+
+    <h3>Tickets respondidos</h3>
+    <div class="suporte-lista">
+      <?php include '../includes/readSuporteUsuario_respondidos.php'; ?>
     </div>
   </section>
 
-  <section class="perfil-container">
-    <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?>
-
-    <form action="../includes/deleteCadastro.php" method="POST" class="logout-form">
-      <input type="hidden" name="deletar_conta" value="1">
-      <button type="submit">Deletar minha conta</button>
-    </form>
+  <section class="marketplace-content">
+    <div class="container">
+      <form action="../includes/createSuporteRequest.php" method="POST">
+        <div class="form-group">
+          <h2>Formulário de suporte</h2>
+          <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
+          <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
+          <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
+          <button type="submit">Solicitar suporte</button>
+        </div>
+      </form>
+    </div>
   </section>
+
+  <div id="modalSuporte" class="modal">
+    <div class="modal-content">
+      <span id="fecharModalSuporte" class="fechar">&times;</span>
+      <h2>Detalhes do Ticket</h2>
+      <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
+      <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
+      <p><strong>Data:</strong><br> <span id="modalData"></span></p>
+      <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
+    </div>
+  </div>
 </main>
 
 <script src="../assets/css/js/script.js"></script>
-<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-    Swal.fire({
-      icon: 'success',
-      title: 'Conta excluída!',
-      text: 'Sua conta foi removida com sucesso.',
-      confirmButtonText: 'OK'
-    }).then(() => {
-      fetch('../includes/destruirSessao.php')  // Este arquivo deve conter apenas: session_start(); session_destroy();
-        .then(() => {
-          window.location.href = '../pages/login.php';
-        });
-    });
-  </script>
-<?php endif; ?>
+<script src="../assets/css/js/suporteUsuario.js"></script>
 </body>
 </html>
