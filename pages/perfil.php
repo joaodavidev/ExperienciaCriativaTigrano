@@ -22,9 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->execute()) {
       $_SESSION['usuario']['nome'] = $nome;
-      $mensagem = "Perfil atualizado com sucesso!";
+      $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Perfil atualizado com sucesso!'];
     } else {
-      $mensagem = "Erro ao atualizar perfil.";
+      $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'Erro ao atualizar perfil.'];
     }
     $stmt->close();
   }
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $confirmarSenha = $_POST['confirmar_senha'];
 
     if ($novaSenha !== $confirmarSenha) {
-      $mensagem = "A nova senha e a confirmação não coincidem.";
+      $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'A nova senha e a confirmação não coincidem.'];
     } else {
       $sql = "SELECT senha FROM usuarios WHERE email = ?";
       $stmt = $conn->prepare($sql);
@@ -50,19 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
         $stmt->bind_param("ss", $novaHash, $email);
         if ($stmt->execute()) {
-          $mensagem = "Senha atualizada com sucesso!";
+          $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Senha atualizada com sucesso!'];
         } else {
-          $mensagem = "Erro ao atualizar a senha.";
+          $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'Erro ao atualizar a senha.'];
         }
         $stmt->close();
       } else {
-        $mensagem = "Senha atual incorreta.";
+        $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'Senha atual incorreta.'];
       }
     }
   }
 }
 
-//dados atuais
+// Dados atuais
 $sql = "SELECT nome, sexo, idade FROM usuarios WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
@@ -81,55 +81,21 @@ $dados = $result->fetch_assoc();
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+
 <nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
   </div>
   <ul class="lista">
-    <li class="lista-item">
-      <a href="../pages/marketplace.php">
-        <i class='bx bxs-shopping-bag-alt'></i>
-        <span class="nome-link" style="--i:1;">Marketplace</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/dashboard.php">
-        <i class='bx bxs-dashboard'></i>
-        <span class="nome-link" style="--i:2;">Dashboard</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/produto.php">
-        <i class='bx bxs-purchase-tag'></i>
-        <span class="nome-link" style="--i:3;">Produtos</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/compras.php">
-        <i class='bx bx-shopping-bag'></i>
-        <span class="nome-link" style="--i:4;">Compras</span>
-      </a>
-    </li>
+    <li class="lista-item"><a href="../pages/marketplace.php"><i class='bx bxs-shopping-bag-alt'></i><span class="nome-link" style="--i:1;">Marketplace</span></a></li>
+    <li class="lista-item"><a href="../pages/dashboard.php"><i class='bx bxs-dashboard'></i><span class="nome-link" style="--i:2;">Dashboard</span></a></li>
+    <li class="lista-item"><a href="../pages/produto.php"><i class='bx bxs-purchase-tag'></i><span class="nome-link" style="--i:3;">Produtos</span></a></li>
+    <li class="lista-item"><a href="../pages/compras.php"><i class='bx bx-shopping-bag'></i><span class="nome-link" style="--i:4;">Compras</span></a></li>
     <li class="espacador"></li>
-    <li class="lista-item">
-      <a href="#" class="btn-toggle-tema">
-        <i class='bx bx-moon'></i>
-        <span class="nome-link" style="--i:5;">Claro/Escuro</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/configuracoes.php">
-        <i class='bx bx-cog'></i>
-        <span class="nome-link" style="--i:6;">Configurações</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="perfil.php">
-        <i class='bx bx-user'></i>
-        <span class="nome-link" style="--i:7;">Perfil</span>
-      </a>
-    </li>
+    <li class="lista-item"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
+    <li class="lista-item"><a href="../pages/configuracoes.php"><i class='bx bx-cog'></i><span class="nome-link" style="--i:6;">Configurações</span></a></li>
+    <li class="lista-item"><a href="perfil.php"><i class='bx bx-user'></i><span class="nome-link" style="--i:7;">Perfil</span></a></li>
   </ul>
 </nav>
 
@@ -141,8 +107,8 @@ $dados = $result->fetch_assoc();
   </section>
 
   <section class="perfil-container">
-    <?php if (isset($mensagem)) echo "<p class='mensagem'>$mensagem</p>"; ?>
 
+    <h2>Dados Pessoais</h2>
     <form action="perfil.php" method="POST" class="perfil-form">
       <label for="nome">Nome:</label>
       <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
@@ -159,26 +125,38 @@ $dados = $result->fetch_assoc();
 
       <button type="submit">Salvar</button>
     </form>
+
     <h2>Redefinir Senha</h2>
-<form action="perfil.php" method="POST" class="perfil-form">
-  <label for="senha_atual">Senha atual:</label>
-  <input type="password" name="senha_atual" id="senha_atual" required>
+    <form action="perfil.php" method="POST" class="perfil-form">
+      <label for="senha_atual">Senha atual:</label>
+      <input type="password" name="senha_atual" id="senha_atual" required>
 
-  <label for="nova_senha">Nova senha:</label>
-  <input type="password" name="nova_senha" id="nova_senha" required>
+      <label for="nova_senha">Nova senha:</label>
+      <input type="password" name="nova_senha" id="nova_senha" required>
 
-  <label for="confirmar_senha">Confirmar nova senha:</label>
-  <input type="password" name="confirmar_senha" id="confirmar_senha" required>
+      <label for="confirmar_senha">Confirmar nova senha:</label>
+      <input type="password" name="confirmar_senha" id="confirmar_senha" required>
 
-  <button type="submit">Alterar senha</button>
-</form>
-
+      <button type="submit">Alterar senha</button>
+    </form>
 
     <form action="../includes/logout.php" method="post" class="logout-form">
       <button type="submit">Sair da conta</button>
     </form>
   </section>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if (isset($_SESSION['alerta'])): ?>
+<script>
+  Swal.fire({
+    icon: '<?= $_SESSION['alerta']['tipo'] ?>',
+    title: '<?= $_SESSION['alerta']['mensagem'] ?>',
+    confirmButtonText: 'OK'
+  });
+</script>
+<?php unset($_SESSION['alerta']); ?>
+<?php endif; ?>
 
 <script src="../assets/css/js/script.js"></script>
 </body>
