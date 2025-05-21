@@ -77,14 +77,12 @@ if (isset($_SESSION['usuario']['email'])) {
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <header>
       <nav class="sidebar active">
       <div class="logo-menu">
         <h2 class="logo">Tigrano</h2>
         <i class='bx bx-menu toggle-btn'></i>
       </div>
       <ul class="lista">
-        <!-- Itens superiores -->
         <li class="lista-item">
           <a href="../pages/marketplace.php">
             <i class='bx bxs-shopping-bag-alt'></i>
@@ -109,11 +107,7 @@ if (isset($_SESSION['usuario']['email'])) {
             <span class="nome-link" style="--i:4;">Compras</span>
           </a>
         </li>
-
-        <!-- Separador flexível -->
         <li class="espacador"></li>
-
-        <!-- Itens inferiores -->
         <li class="lista-item">
           <a href="#" class="btn-toggle-tema">
             <i class='bx bx-moon'></i>
@@ -134,8 +128,6 @@ if (isset($_SESSION['usuario']['email'])) {
         </li>
       </ul>
     </nav>
-  </header>
-
   <div class="main-content">
     <div class="search-container">
       <form action="carrinho.php" method="POST">
