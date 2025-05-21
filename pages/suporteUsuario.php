@@ -1,6 +1,19 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+
+$email = $_SESSION['usuario']['email'];
+
+$total     = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email'")->fetch_assoc()['total'];
+$abertos   = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email' AND (resposta IS NULL OR TRIM(resposta) = '')")->fetch_assoc()['total'];
+$respondidos = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email' AND TRIM(resposta) <> ''")->fetch_assoc()['total'];
+
+
+$sql = "SELECT * FROM suporte WHERE email_usuario = ? ORDER BY data_envio DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$tickets = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -37,14 +50,15 @@ require_once '../includes/db.php';
       <h1>Requisitar suporte</h1>
     </div>
 
-    <h3>Tickets em aberto</h3>
-    <div class="suporte-lista">
-      <?php include '../includes/readSuporteUsuario_abertos.php'; ?>
+    <div class="filtro-tickets">
+      <a href="?filtro=todos" class="<?= (!isset($_GET['filtro']) || $_GET['filtro'] === 'todos') ? 'ativo' : '' ?>">Todos <span><?= $total ?></span></a>
+      <a href="?filtro=abertos" class="<?= ($_GET['filtro'] ?? '') === 'abertos' ? 'ativo' : '' ?>">Abertos <span><?= $abertos ?></span></a>
+      <a href="?filtro=respondidos" class="<?= ($_GET['filtro'] ?? '') === 'respondidos' ? 'ativo' : '' ?>">Respondidos <span><?= $respondidos ?></span></a>
     </div>
 
-    <h3>Tickets respondidos</h3>
+
     <div class="suporte-lista">
-      <?php include '../includes/readSuporteUsuario_respondidos.php'; ?>
+      <?php include '../includes/readSuporteUsuario.php'; ?>
     </div>
   </section>
 
@@ -55,7 +69,7 @@ require_once '../includes/db.php';
           <h2>Formulário de suporte</h2>
           <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
           <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
-          <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
+          <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
           <button type="submit">Solicitar suporte</button>
         </div>
       </form>
@@ -74,6 +88,7 @@ require_once '../includes/db.php';
     </div>
   </div>
 </main>
+
 <script src="../assets/css/js/script.js"></script>
 <script src="../assets/css/js/suporteUsuario.js"></script>
 </body>
