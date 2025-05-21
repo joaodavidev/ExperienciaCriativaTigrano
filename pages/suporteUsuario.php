@@ -81,8 +81,8 @@ require_once '../includes/db.php';
     <div class="marketplace-title">
       <h1>Requisitar suporte</h1>
     </div>
+    <h3>Suas solicitações de suporte:</h3>
     <div class="suporte-lista">
-      <h3>Suas solicitações de suporte:</h3>
       <?php include '../includes/readSuporteUsuario.php'; ?>
     </div>
       </section>
@@ -90,11 +90,9 @@ require_once '../includes/db.php';
         <div class="container">
           <form action="../includes/createSuporteRequest.php" method="POST">
             <div class="form-group">
-              <label for="assunto">Assunto:</label>
-              <input type="text" id="assunto" name="assunto" required>
-              <label for="descricao">Descrição:</label>
-              <input type="text" id="descricao" name="descricao" required>
-              <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+              <h2>Formulário de suporte</h2>
+              <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
+              <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
               <input type="hidden" name="data_envio" value="<?php echo date('Y-m-d H:i:s'); ?>">
               <button type="submit">Solicitar suporte</button>
             </div>

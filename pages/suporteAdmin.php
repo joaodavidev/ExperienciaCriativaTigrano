@@ -9,14 +9,12 @@ if (!isset($_SESSION['usuario']['email'])) {
 
 $email = $_SESSION['usuario']['email'];
 
-// Verifica se o e-mail existe na tabela de administradores
 $sql = "SELECT 1 FROM adm WHERE email = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Se não for admin, exibe erro e redireciona
 if ($result->num_rows === 0) {
   echo "<script>
           alert('Acesso negado. Apenas administradores podem acessar esta página.');
