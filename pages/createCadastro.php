@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div class="login-container">
     <h2>Cadastro</h2>
-    <form action="createCadastro.php" method="POST">
+    <form action="../pages/createCadastro.php" method="POST">
       <label for="nome">Nome completo:</label>
       <input type="text" id="nome" name="nome" required>
 
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <button type="submit">Cadastrar</button>
 
-      <p>Já possui uma conta? <a href="login.php">Fazer login</a></p>
+      <p>Já possui uma conta? <a href="../pages/login.php">Fazer login</a></p>
     </form>
   </div>
 

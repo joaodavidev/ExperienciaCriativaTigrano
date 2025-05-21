@@ -90,5 +90,21 @@ $email = $_SESSION['usuario']['email'];
 </main>
 
 <script src="../assets/css/js/script.js"></script>
+<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    Swal.fire({
+      icon: 'success',
+      title: 'Conta excluída!',
+      text: 'Sua conta foi removida com sucesso.',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      fetch('../includes/destruirSessao.php')  // Este arquivo deve conter apenas: session_start(); session_destroy();
+        .then(() => {
+          window.location.href = '../pages/login.php';
+        });
+    });
+  </script>
+<?php endif; ?>
 </body>
 </html>

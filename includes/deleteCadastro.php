@@ -7,17 +7,17 @@ if (!isset($_SESSION['usuario'])) {
   exit();
 }
 
-$email = $_SESSION['usuario']['email']; // CORREÇÃO AQUI
+$email = $_SESSION['usuario']['email'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['deletar_conta'])) {
   $sql = "DELETE FROM usuarios WHERE email = ?";
   $stmt = $conn->prepare($sql);
   $stmt->bind_param("s", $email);
-  
+
   if ($stmt->execute()) {
     $stmt->close();
-    session_destroy();
-    header("Location: ../pages/login.php");
+    // ⚠️ NÃO destruir a sessão aqui
+    header("Location: ../pages/configuracoes.php?sucesso=1");
     exit();
   } else {
     $stmt->close();
