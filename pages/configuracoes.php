@@ -82,7 +82,7 @@ $email = $_SESSION['usuario']['email'];
   <section class="perfil-container">
     <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?>
 
-    <form action="../includes/deletecadastro.php" method="POST" class="logout-form">
+    <form action="../includes/deleteCadastro.php" method="POST" class="logout-form">
       <input type="hidden" name="deletar_conta" value="1">
       <button type="submit">Deletar minha conta</button>
     </form>
