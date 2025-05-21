@@ -13,7 +13,7 @@ if ($result_checkar->num_rows == 0) {
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("ssi", $usuario, $email, $senha);
+        $stmt->bind_param("sss", $usuario, $email, $senha);
         if ($stmt->execute()) {
             echo "Admin cadastrado com sucesso!";
         } else {

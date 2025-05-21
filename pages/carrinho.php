@@ -179,9 +179,9 @@ if (isset($_SESSION['usuario']['email'])) {
     </div>
 
     <div class="comprar-container">
-      <form action="pagamento.php" method="POST">
-        <button type="submit" class="btn-comprar">Finalizar Compra</button>
-      </form>
+      <a href="pagamento.php">
+        <button class="btn-comprar">Finalizar Compra</button>
+      </a>
     </div>
   </div>
 
