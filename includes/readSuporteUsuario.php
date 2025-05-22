@@ -22,9 +22,12 @@ if ($result->num_rows > 0) {
         echo "<p><strong>Assunto:</strong> " . htmlspecialchars($row['assunto']) . "</p>";
         echo "<p><strong>Mensagem:</strong> " . htmlspecialchars($row['descricao']) . "</p>";
         echo "<p><strong>Data:</strong> " . $row['data_envio'] . "</p>";
+        echo "<p><strong>Resposta:</strong> " . htmlspecialchars($row['resposta']) . "</p>";
+        echo "<p><strong>Status:</strong> " . htmlspecialchars($row['status']) . "</p>";
         echo "</div>";
     }
-} else {
+}
+else {
     echo "<p>Você ainda não enviou nenhuma solicitação de suporte.</p>";
 }
 ?>
