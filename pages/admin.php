@@ -6,6 +6,8 @@ $totalUsuarios = $conn->query("SELECT COUNT(*) AS total FROM usuarios")->fetch_a
 $totalTickets = $conn->query("SELECT COUNT(*) AS total FROM suporte")->fetch_assoc()['total'];
 $ticketsRespondidos = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE resposta IS NOT NULL AND TRIM(resposta) <> ''")->fetch_assoc()['total'];
 $ticketsPendentes = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE resposta IS NULL OR TRIM(resposta) = ''")->fetch_assoc()['total'];
+// COLOCA na query where status = 'pendente' e status = 'respondido' para pegar os tickets pendentes e respondidos
+// isso ta no meu bd da JaySuporte é bom se tu implementar aqui
 ?>
 
 
