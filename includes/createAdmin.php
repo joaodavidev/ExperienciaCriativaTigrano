@@ -6,7 +6,7 @@ $result_checkar = $conn->query($sql_checkar);
 
 if ($result_checkar->num_rows == 0) {
     $usuario = 'admin';
-    $email = 'adm@adm';
+    $email = 'adm@adm.com';
     $senha = password_hash(123, PASSWORD_DEFAULT); //usa hash na senha para segurança
 
     $sql = "INSERT INTO adm (nome, email, senha) VALUES (?, ?, ?)";
