@@ -8,6 +8,8 @@ function abrirModalSuporte(dados) {
     document.getElementById('modalMensagem').textContent = dados.descricao;
     document.getElementById('modalData').textContent = dados.data_envio;
     document.getElementById('modalStatus').textContent = dados.status || 'Pendente';
+    document.getElementById('modalResposta').textContent = dados.resposta || 'Ainda sem resposta.';
+
 }
 
 function fecharModal() {

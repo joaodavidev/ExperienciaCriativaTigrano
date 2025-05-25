@@ -84,8 +84,8 @@ $tickets = $stmt->get_result();
       <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
       <p><strong>Data:</strong><br> <span id="modalData"></span></p>
       <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
-      <p id="modalRespostaWrapper" style="display:none;"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
-    </div>
+      <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+    </div> 
   </div>
 </main>
 
