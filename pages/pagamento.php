@@ -1,29 +1,99 @@
 <?php
 session_start();
-include '..includes/db.php';
+include '../includes/db.php';
+require '../vendor/autoload.php';
 
-// olha se tem algo no carrinho
+
+//integracao com API do mercado pago qnd o cara clica em finalizar compra
+    use MercadoPago\SDK;
+    use MercadoPago\Preference;
+    use MercadoPago\Item;
+    
+
+if (!isset($_SESSION['usuario']['email'])) {
+    header("location: login.php");
+    exit;
+}
+
+$usuario_email = $_SESSION['usuario']['email'];
+
+// Buscar itens do carrinho no banco e colocar na sessão
+$produtosCarrinho = [];
+$sql = "SELECT p.id, p.nome, p.preco, p.descricao 
+        FROM carrinho c
+        JOIN produtos p ON c.produto_id = p.id
+        WHERE c.usuario_email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $usuario_email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
+    $_SESSION['carrinho'] = $produtosCarrinho;
+} else {
+    $_SESSION['carrinho'] = [];
+}
+
+$stmt->close();
+
 if (empty($_SESSION['carrinho'])) {
     header("Location: carrinho.php");
     exit();
 }
 
-// calcula o total do carrinho
 $total = 0;
 foreach ($_SESSION['carrinho'] as $item) {
     $total += $item['preco'];
 }
+    
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
-    // aq da pra integrar com sistema de pagamento, tipo processar pagamento e limpar carrinho apos a compra
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
+    try {
+        echo "Entrou no POST<br>";
 
+        SDK::setAccessToken('APP_USR-5623965132337086-052114-5f63de0c253b7957d897e81968cb799a-2449785661'); 
+        echo "Access token setado<br>";
 
-    // simula pagamento concluido
-    $_SESSION['carrinho'] = []; // limpa o carrinho
+        $preference = new Preference();
+        $items = [];
 
-    // redireciona pra uma pagina de confirmação ficticia..
-    header("Location: pagamento_confirmado.php");
-    exit();
+        foreach ($_SESSION['carrinho'] as $produto) {
+            $item = new Item();
+            $item->title = $produto['nome'];
+            $item->quantity = 1;
+            $item->unit_price = (float) $produto['preco'];
+            $items[] = $item;
+            echo "Produto adicionado: " . $item->title . "<br>";
+        }
+
+        $preference->items = $items;
+
+        $preference->back_urls = [
+            "success" => "http://localhost/ExperienciaCriativaTigrano/pages/sucessoCompra.php",
+            "failure" => "http://localhost/ExperienciaCriativaTigrano/pages/falhaCompra.php",
+            "pending" => "http://localhost/ExperienciaCriativaTigrano/pages/pendenteCompra.php"
+        ];
+        //$preference->auto_return = "approved";
+
+        $preference->save();
+
+        // Verificar se a preferência possui erros
+        if (isset($preference->error)) {
+            echo "Erro na preferência: ";
+            print_r($preference->error);
+            exit;
+        }
+
+        echo "Preferência salva<br>";
+        echo "URL de pagamento: " . $preference->init_point . "<br>";
+
+    } catch (Exception $e) {
+        echo "Exceção capturada: " . $e->getMessage();
+        exit;
+    }
+
+    exit; // para não redirecionar e ver as mensagens
 }
 ?>
 

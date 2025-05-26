@@ -2,6 +2,11 @@
 session_start();
 require_once '../includes/db.php';
 
+if (!isset($_SESSION['usuario']['email'])) {
+        header("location: login.php");
+        exit;
+    }
+
 $email = $_SESSION['usuario']['email'];
 
 $total     = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email'")->fetch_assoc()['total'];

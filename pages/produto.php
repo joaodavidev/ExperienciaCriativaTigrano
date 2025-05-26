@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+
+if (!isset($_SESSION['usuario']['email'])) {
+        header("location: login.php");
+        exit;
+    }
+
 ?>
 
 <!DOCTYPE html>

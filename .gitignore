@@ -1,0 +1,26 @@
+# Ignorar a pasta vendor do Composer (bibliotecas instaladas)
+vendor/
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos de ambiente (se usar .env)
+.env
+
+# Ignorar arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de cache do PHP (se existir)
+cache/
+tmp/
+
+# Ignorar IDEs ou editores (exemplo VSCode)
+.vscode/
+.idea/
+
+# Se quiser ignorar algum arquivo de configuração local, ex:
+config.local.php
+
+# Normalmente não se ignora assets, css, js, includes e pages, 
+# pois eles fazem parte do código do projeto e precisam ser versionados

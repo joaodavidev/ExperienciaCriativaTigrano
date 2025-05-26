@@ -2,16 +2,16 @@
 session_start();
 include '../includes/db.php';
 
-// Adicionar produto ao carrinho
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     if (!isset($_SESSION['usuario']['email'])) {
-        die("Usuário não autenticado.");
+        header("location: login.php");
+        exit;
     }
 
     $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = $_POST['id'];
 
-    // Evita duplicidade
+    // para tirar duplicidade
     $check = $conn->prepare("SELECT * FROM carrinho WHERE usuario_email = ? AND produto_id = ?");
     $check->bind_param("si", $usuario_email, $produto_id);
     $check->execute();
@@ -173,10 +173,11 @@ if (isset($_SESSION['usuario']['email'])) {
     </div>
 
     <div class="comprar-container">
-      <form action="pagamento.php" method="POST">
-        <button type="submit" class="btn-comprar">Finalizar Compra</button>
-      </form>
-    </div>
+      <a href="pagamento.php">
+        <button type="button" class="btn-comprar">Finalizar Compra</button>
+      </a>
+</div>
+
   </div>
 
   <script src="../assets/css/js/script.js"></script>
