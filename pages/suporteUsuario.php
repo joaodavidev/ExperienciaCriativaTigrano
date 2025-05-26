@@ -54,25 +54,11 @@ $tickets = $stmt->get_result();
       <a href="?filtro=todos" class="<?= (!isset($_GET['filtro']) || $_GET['filtro'] === 'todos') ? 'ativo' : '' ?>">Todos <span><?= $total ?></span></a>
       <a href="?filtro=abertos" class="<?= ($_GET['filtro'] ?? '') === 'abertos' ? 'ativo' : '' ?>">Abertos <span><?= $abertos ?></span></a>
       <a href="?filtro=respondidos" class="<?= ($_GET['filtro'] ?? '') === 'respondidos' ? 'ativo' : '' ?>">Respondidos <span><?= $respondidos ?></span></a>
+      <button id="botaoAbrirTicket" class="ativo">Abrir Ticket</button>
     </div>
-
 
     <div class="suporte-lista">
       <?php include '../includes/readSuporteUsuario.php'; ?>
-    </div>
-  </section>
-
-  <section class="marketplace-content">
-    <div class="container">
-      <form action="../includes/createSuporteRequest.php" method="POST">
-        <div class="form-group">
-          <h2>Formulário de suporte</h2>
-          <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
-          <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
-          <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
-          <button type="submit">Solicitar suporte</button>
-        </div>
-      </form>
     </div>
   </section>
 
@@ -87,9 +73,47 @@ $tickets = $stmt->get_result();
       <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
     </div> 
   </div>
+
+  <div id="modalNovoTicket" class="modal">
+  <div class="modal-content">
+    <span id="fecharModalNovoTicket" class="fechar">&times;</span>
+    <h2>Novo Ticket de Suporte</h2>
+    <form action="../includes/createSuporteRequest.php" method="POST">
+      <div class="form-group">
+        <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
+        <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
+        <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
+        <button type="submit">Solicitar suporte</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 </main>
 
 <script src="../assets/css/js/script.js"></script>
 <script src="../assets/css/js/suporteUsuario.js"></script>
+<script>
+  // Adicionar funcionalidade para o botão "Abrir Ticket"
+  document.addEventListener('DOMContentLoaded', function() {
+    const botaoAbrirTicket = document.getElementById('botaoAbrirTicket');
+    const modalNovoTicket = document.getElementById('modalNovoTicket');
+    const fecharModalNovoTicket = document.getElementById('fecharModalNovoTicket');
+    
+    botaoAbrirTicket.addEventListener('click', function() {
+      modalNovoTicket.style.display = 'block';
+    });
+    
+    fecharModalNovoTicket.addEventListener('click', function() {
+      modalNovoTicket.style.display = 'none';
+    });
+    
+    window.addEventListener('click', function(event) {
+      if (event.target === modalNovoTicket) {
+        modalNovoTicket.style.display = 'none';
+      }
+    });
+  });
+</script>
 </body>
 </html>
