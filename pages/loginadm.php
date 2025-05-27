@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login Admin</title>
     <link rel="stylesheet" href="../assets/css/login.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -27,6 +27,10 @@
 
             <p>Não possui uma conta? <a href="../includes/createAdmin.php">Cadastre-se</a></p>
         </form>
+        <div class="linha-ou">
+             <span>OU</span>
+        </div>
+        <p class="admin-link">É usuário comum? <a href="../pages/login.php">Entrar como usuário</a></p>
     </div>
     <script src="../assets/css/js/login.js"></script>
 </body>
