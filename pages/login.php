@@ -27,6 +27,10 @@
 
             <p>Não possui uma conta? <a href="../pages/createCadastro.php">Cadastre-se</a></p>
         </form>
+        <div class="linha-ou">
+             <span>OU</span>
+        </div>
+        <p class="admin-link">É administrador? <a href="../pages/loginadm.php">Entrar como Adm</a></p>
     </div>
     <script src="../assets/css/js/login.js"></script>
 </body>

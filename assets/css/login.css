@@ -95,6 +95,48 @@ p a:hover {
   text-decoration: underline;
 }
 
+.linha-ou {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.linha-ou::before,
+.linha-ou::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #444;
+}
+
+.linha-ou::before {
+  margin-right: 10px;
+}
+
+.linha-ou::after {
+  margin-left: 10px;
+}
+
+.linha-ou span {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.admin-link {
+  font-size: 14px;
+  text-align: center;
+}
+
+.admin-link a {
+  color: #1D4ED8;
+  text-decoration: none;
+}
+
+.admin-link a:hover {
+  text-decoration: underline;
+}
+
 /* Modo claro */
 body.light-mode {
   background-color: #ffffff;
@@ -135,5 +177,18 @@ body:not(.light-mode) .btn-toggle-tema i {
 
 
 body.light-mode .btn-toggle-tema i {
+  color: #1D4ED8;
+}
+
+body.light-mode .linha-ou::before,
+body.light-mode .linha-ou::after {
+  border-color: #aaa;
+}
+
+body.light-mode .linha-ou span {
+  color: #666;
+}
+
+body.light-mode .admin-link a {
   color: #1D4ED8;
 }
