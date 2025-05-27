@@ -8,6 +8,12 @@ require '../vendor/autoload.php';
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+
 
 if (!isset($_SESSION['usuario']['email'])) {
     header("location: login.php");
