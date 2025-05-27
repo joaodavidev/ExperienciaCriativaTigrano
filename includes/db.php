@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db = 'ecommerce';
 $user = 'root';
-$pass = '#Vi1307#';
+$pass = '';
 $port = '3307';
 
 $conn = new mysqli($host, $user, $pass, $db, $port);
