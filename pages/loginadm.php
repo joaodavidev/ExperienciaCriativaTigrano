@@ -12,7 +12,7 @@
     </button>
 
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Login Admin</h2>
         <form action="../includes/autenticaradm.php" method="post">
             <label for="email">Email:</label>
             <input type="text" id="email" name="email" required>
