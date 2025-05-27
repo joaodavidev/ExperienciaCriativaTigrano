@@ -240,6 +240,22 @@ body {
   color: #1D4ED8;
 }
 
+.filtro-tickets button {
+  font-size: 16px;
+  background-color: #1e40af; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  margin-left: auto;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filtro-tickets button:hover {
+  background-color: #1e3a8a;
+}
+
 /* Lista de tickets */
 .suporte-lista {
   padding-top: 10px;
@@ -451,3 +467,27 @@ body.light-mode .filtro-tickets .ativo span {
     transform: scale(1);
   }
 }
+
+.modal-content input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+   border: 2px solid rgba(255, 255, 255, .2);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.modal-content .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
