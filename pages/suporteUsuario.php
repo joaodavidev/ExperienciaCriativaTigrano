@@ -2,13 +2,48 @@
 session_start();
 require_once '../includes/db.php';
 
+// Verificar se o usuário está logado
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario']['email'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $email = $_SESSION['usuario']['email'];
 
-$total     = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email'")->fetch_assoc()['total'];
-$abertos   = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email' AND (resposta IS NULL OR TRIM(resposta) = '')")->fetch_assoc()['total'];
-$respondidos = $conn->query("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = '$email' AND TRIM(resposta) <> ''")->fetch_assoc()['total'];
+// Consultas preparadas para contar tickets
+$total = $abertos = $respondidos = 0;
 
+// Consulta para total de tickets
+$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($row = $result->fetch_assoc()) {
+    $total = $row['total'];
+}
+$stmt->close();
 
+// Consulta para tickets abertos
+$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = ? AND (resposta IS NULL OR TRIM(resposta) = '')");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($row = $result->fetch_assoc()) {
+    $abertos = $row['total'];
+}
+$stmt->close();
+
+// Consulta para tickets respondidos
+$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM suporte WHERE email_usuario = ? AND TRIM(resposta) <> ''");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($row = $result->fetch_assoc()) {
+    $respondidos = $row['total'];
+}
+$stmt->close();
+
+// Consulta para listar tickets
 $sql = "SELECT * FROM suporte WHERE email_usuario = ? ORDER BY data_envio DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
@@ -21,7 +56,7 @@ $tickets = $stmt->get_result();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tigrano Marketplace</title>
+  <title>Suporte - Tigrano Marketplace</title>
   <link rel="stylesheet" href="../assets/css/suporteUsuario.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -44,8 +79,7 @@ $tickets = $stmt->get_result();
   </ul>
 </nav>
 
-<main class="main-content">
-  <section class="marketplace-header">
+<main class="main-content">  <section class="marketplace-header">
     <div class="marketplace-title">
       <h1>Requisitar suporte</h1>
     </div>
@@ -62,58 +96,44 @@ $tickets = $stmt->get_result();
     </div>
   </section>
 
+  <!-- Modal para detalhes do ticket -->
   <div id="modalSuporte" class="modal">
     <div class="modal-content">
       <span id="fecharModalSuporte" class="fechar">&times;</span>
       <h2>Detalhes do Ticket</h2>
-      <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
-      <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
-      <p><strong>Data:</strong><br> <span id="modalData"></span></p>
-      <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
-      <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+      <div class="modal-detalhes">
+        <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
+        <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
+        <p><strong>Data:</strong><br> <span id="modalData"></span></p>
+        <p><strong>Status:</strong><br> <span id="modalStatus" class="status-badge"></span></p>
+        <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+      </div>
     </div> 
   </div>
 
+  <!-- Modal para novo ticket -->
   <div id="modalNovoTicket" class="modal">
-  <div class="modal-content">
-    <span id="fecharModalNovoTicket" class="fechar">&times;</span>
-    <h2>Novo Ticket de Suporte</h2>
-    <form action="../includes/createSuporteRequest.php" method="POST">
-      <div class="form-group">
-        <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
-        <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
-        <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
-        <button type="submit">Solicitar suporte</button>
-      </div>
-    </form>
+    <div class="modal-content">
+      <span id="fecharModalNovoTicket" class="fechar">&times;</span>
+      <h2>Novo Ticket de Suporte</h2>
+      <form action="../includes/createSuporteRequest.php" method="POST" class="form-suporte">
+        <div class="form-group">
+          <label for="assunto">Assunto</label>
+          <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
+          
+          <label for="descricao">Descrição do problema</label>
+          <textarea id="descricao" name="descricao" placeholder="Descreva detalhadamente o problema" required rows="5"></textarea>
+          
+          <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
+          <button type="submit" class="btn-submit">Solicitar suporte</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
 </main>
 
 <script src="../assets/css/js/script.js"></script>
 <script src="../assets/css/js/suporteUsuario.js"></script>
-<script>
-  // Adicionar funcionalidade para o botão "Abrir Ticket"
-  document.addEventListener('DOMContentLoaded', function() {
-    const botaoAbrirTicket = document.getElementById('botaoAbrirTicket');
-    const modalNovoTicket = document.getElementById('modalNovoTicket');
-    const fecharModalNovoTicket = document.getElementById('fecharModalNovoTicket');
-    
-    botaoAbrirTicket.addEventListener('click', function() {
-      modalNovoTicket.style.display = 'block';
-    });
-    
-    fecharModalNovoTicket.addEventListener('click', function() {
-      modalNovoTicket.style.display = 'none';
-    });
-    
-    window.addEventListener('click', function(event) {
-      if (event.target === modalNovoTicket) {
-        modalNovoTicket.style.display = 'none';
-      }
-    });
-  });
-</script>
 </body>
 </html>
