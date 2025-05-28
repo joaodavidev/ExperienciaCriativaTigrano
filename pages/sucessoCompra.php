@@ -55,7 +55,7 @@ if (isset($_SESSION['usuario']['email'])) {
       confirmButton: 'swal2-custom-button'
     }
   }).then(() => {
-    window.location.href = 'index.php';
+    window.location.href = 'marketplace.php';
   });
 </script>
 
