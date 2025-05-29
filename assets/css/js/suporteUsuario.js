@@ -10,6 +10,10 @@ function abrirModalSuporte(dados) {
     document.getElementById('modalStatus').textContent = dados.status || 'Pendente';
     document.getElementById('modalResposta').textContent = dados.resposta || 'Ainda sem resposta.';
 
+    if(document.getElementById('modalTicketId')) {
+        document.getElementById('modalTicketId').value = dados.id;
+    }
+
 }
 
 function fecharModal() {
@@ -18,3 +22,8 @@ function fecharModal() {
 
 fecharModalSuporte.addEventListener('click', fecharModal);
 window.addEventListener('click', e => { if (e.target === modalSuporte) fecharModal(); });
+
+document.getElementById('btnEditarTicket').onclick = function() {
+  const ticketId = document.getElementById('modalTicketId').value;
+  window.location.href = '../includes/updateTicket.php?id=' + encodeURIComponent(ticketId);
+};

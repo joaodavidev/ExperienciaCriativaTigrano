@@ -71,6 +71,15 @@ $tickets = $stmt->get_result();
       <p><strong>Data:</strong><br> <span id="modalData"></span></p>
       <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
       <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+      <div class="modal-ticket-actions" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 10px;">
+        <i class='bx bx-edit' id="btnEditarTicket" style="font-size: 1.5em; cursor:pointer;"></i>
+        <form id="formExcluirTicket" action="../includes/deleteTicket.php" method="POST" style="display:inline;">
+          <input type="hidden" name="id" id="modalTicketId">
+          <button type="submit" style="background:none;border:none;padding:0;margin:0;cursor:pointer;" onclick="event.stopPropagation();">
+            <i class='bx bx-trash' style="font-size: 1.5em; color:#e74c3c;"></i>
+          </button>
+        </form>
+      </div>
     </div> 
   </div>
 
