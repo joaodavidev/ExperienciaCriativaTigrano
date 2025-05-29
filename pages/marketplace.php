@@ -73,9 +73,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
         </div>
       </section>
         <div class="search-bar">
-          <input type="text" name="nome" placeholder="Buscar...">
-          <i class='bx bx-search'></i>
+          <form method="POST">
+            <input type="text" name="nome" placeholder="Buscar produto...">
+            <button type="submit"><i class='bx bx-search'></i></button>
+           </form>
         </div>
+</div>
+  
     </header>
 
     <section class="product-grid">
