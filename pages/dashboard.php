@@ -1,7 +1,8 @@
 <?php
+session_start();
 include '../includes/db.php';
 
-$emailVendedor = 'vendedor@email.com';
+$emailVendedor = $_SESSION['usuario']['email'] ?? '';
 
 
 // Saldo total
@@ -21,27 +22,35 @@ $querySaldo->execute();
 $resultSaldo = $querySaldo->get_result();
 $saldo = $resultSaldo->fetch_assoc()['saldo_total'] ?? 0.00;
 
-// Total de vendas no mês atual
-$queryVendas = $conn->query("
+// Total de vendas no mês atual (apenas do vendedor)
+$queryVendasMes = $conn->prepare("
     SELECT SUM(v.quantidade_vendas * p.preco) AS total_vendas
     FROM vendas v
     JOIN produtos p ON v.produto_id = p.id
     WHERE MONTH(v.data_vendas) = MONTH(CURRENT_DATE())
       AND YEAR(v.data_vendas) = YEAR(CURRENT_DATE())
+      AND p.vendedor_email = ?
 ");
-$vendasMes = $queryVendas->fetch_assoc()['total_vendas'] ?? 0.00;
+$queryVendasMes->bind_param("s", $emailVendedor);
+$queryVendasMes->execute();
+$resultVendasMes = $queryVendasMes->get_result();
+$vendasMes = $resultVendasMes->fetch_assoc()['total_vendas'] ?? 0.00;
 
-// TOTAL DE VENDAS
-$queryTotalVendas = $conn->query("
+// TOTAL DE VENDAS (apenas do vendedor)
+$queryTotalVendas = $conn->prepare("
     SELECT SUM(v.quantidade_vendas * p.preco) AS total_vendas_lifetime
     FROM vendas v
     JOIN produtos p ON v.produto_id = p.id
+    WHERE p.vendedor_email = ?
 ");
-$vendasTotais = $queryTotalVendas->fetch_assoc()['total_vendas_lifetime'] ?? 0.00;
+$queryTotalVendas->bind_param("s", $emailVendedor);
+$queryTotalVendas->execute();
+$resultTotalVendas = $queryTotalVendas->get_result();
+$vendasTotais = $resultTotalVendas->fetch_assoc()['total_vendas_lifetime'] ?? 0.00;
 
-// Total de clientes  
+// Total de clientes  (apenas do vendedor)
 $queryClientes = $conn->prepare("
-    SELECT COUNT(DISTINCT pped.pedido_id) AS total_clientes
+    SELECT COUNT(DISTINCT ped.comprador_email) AS total_clientes
     FROM produtos p
     JOIN produtos_pedido pped ON p.id = pped.produto_id
     JOIN pedidos ped ON pped.pedido_id = ped.id

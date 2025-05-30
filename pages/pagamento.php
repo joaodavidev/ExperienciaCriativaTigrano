@@ -1,32 +1,91 @@
 <?php
-session_start();
-include '..includes/db.php';
 
-// olha se tem algo no carrinho
+session_start();
+include '../includes/db.php';
+require '../vendor/autoload.php';
+
+//integracao com API do Stripe para processar pagamentos
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+
+
+if (!isset($_SESSION['usuario']['email'])) {
+    header("location: login.php");
+    exit;
+}
+
+$usuario_email = $_SESSION['usuario']['email'];
+
+// Buscar itens do carrinho no banco e colocar na sessão
+$produtosCarrinho = [];
+$sql = "SELECT p.id, p.nome, p.preco, p.descricao 
+        FROM carrinho c
+        JOIN produtos p ON c.produto_id = p.id
+        WHERE c.usuario_email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $usuario_email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
+    $_SESSION['carrinho'] = $produtosCarrinho;
+} else {
+    $_SESSION['carrinho'] = [];
+}
+
+$stmt->close();
+
 if (empty($_SESSION['carrinho'])) {
     header("Location: carrinho.php");
     exit();
 }
 
-// calcula o total do carrinho
 $total = 0;
 foreach ($_SESSION['carrinho'] as $item) {
     $total += $item['preco'];
-}
+}    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
+        // Configura a chave secreta do Stripe para autenticação
+        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
-    // aq da pra integrar com sistema de pagamento, tipo processar pagamento e limpar carrinho apos a compra
+        // Array que vai armazenar os itens para o Stripe
+        $line_items = [];
 
+        // Prepara cada item do carrinho para o formato que o Stripe aceita
+        foreach ($_SESSION['carrinho'] as $produto) {
+            $line_items[] = [
+                'price_data' => [
+                    'currency' => 'brl',
+                    'product_data' => [
+                        'name' => $produto['nome'],
+                        'description' => $produto['descricao'],
+                    ],
+                    'unit_amount' => (int)($produto['preco'] * 100), // Converte o preço para centavos como o Stripe requer
+                ],
+                'quantity' => 1,
+            ];
+        }
 
-    // simula pagamento concluido
-    $_SESSION['carrinho'] = []; // limpa o carrinho
+        // Cria uma nova sessão de checkout no Stripe com os produtos
+        $checkout_session = \Stripe\Checkout\Session::create([
+            'line_items' => $line_items,
+            'mode' => 'payment',
+            'success_url' => 'http://localhost/ExperienciaCriativaTigrano/pages/sucessoCompra.php',
+            'cancel_url' => 'http://localhost/ExperienciaCriativaTigrano/pages/falhaCompra.php',
+        ]);
 
-    // redireciona pra uma pagina de confirmação ficticia..
-    header("Location: pagamento_confirmado.php");
-    exit();
+        // Redireciona o usuário para a página de checkout do Stripe
+        header("Location: " . $checkout_session->url);
+        exit();
+
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

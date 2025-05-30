@@ -32,6 +32,7 @@ if ($result->num_rows > 0):
         
         // Preparação de dados JSON para o modal
         $dadosJS = htmlspecialchars(json_encode([
+            'id' => $ticket['id'],
             'assunto' => $ticket['assunto'],
             'descricao' => $ticket['descricao'],
             'data_envio' => $data_formatada,

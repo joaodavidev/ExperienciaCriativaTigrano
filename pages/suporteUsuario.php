@@ -96,44 +96,67 @@ $tickets = $stmt->get_result();
     </div>
   </section>
 
-  <!-- Modal para detalhes do ticket -->
   <div id="modalSuporte" class="modal">
     <div class="modal-content">
       <span id="fecharModalSuporte" class="fechar">&times;</span>
       <h2>Detalhes do Ticket</h2>
-      <div class="modal-detalhes">
-        <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
-        <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
-        <p><strong>Data:</strong><br> <span id="modalData"></span></p>
-        <p><strong>Status:</strong><br> <span id="modalStatus" class="status-badge"></span></p>
-        <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+      <p><strong>Assunto:</strong><br> <span id="modalAssunto"></span></p>
+      <p><strong>Mensagem:</strong><br> <span id="modalMensagem"></span></p>
+      <p><strong>Data:</strong><br> <span id="modalData"></span></p>
+      <p><strong>Status:</strong><br> <span id="modalStatus"></span></p>
+      <p id="modalRespostaWrapper"><strong>Resposta:</strong><br> <span id="modalResposta"></span></p>
+      <div class="modal-ticket-actions" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 10px;">
+        <i class='bx bx-edit' id="btnEditarTicket" style="font-size: 1.5em; cursor:pointer;"></i>
+        <form id="formExcluirTicket" action="../includes/deleteTicket.php" method="POST" style="display:inline;">
+          <input type="hidden" name="id" id="modalTicketId">
+          <button type="submit" style="background:none;border:none;padding:0;margin:0;cursor:pointer;" onclick="event.stopPropagation();">
+            <i class='bx bx-trash' style="font-size: 1.5em; color:#e74c3c;"></i>
+          </button>
+        </form>
       </div>
     </div> 
   </div>
 
-  <!-- Modal para novo ticket -->
   <div id="modalNovoTicket" class="modal">
-    <div class="modal-content">
-      <span id="fecharModalNovoTicket" class="fechar">&times;</span>
-      <h2>Novo Ticket de Suporte</h2>
-      <form action="../includes/createSuporteRequest.php" method="POST" class="form-suporte">
-        <div class="form-group">
-          <label for="assunto">Assunto</label>
-          <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
-          
-          <label for="descricao">Descrição do problema</label>
-          <textarea id="descricao" name="descricao" placeholder="Descreva detalhadamente o problema" required rows="5"></textarea>
-          
-          <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
-          <button type="submit" class="btn-submit">Solicitar suporte</button>
-        </div>
-      </form>
-    </div>
+  <div class="modal-content">
+    <span id="fecharModalNovoTicket" class="fechar">&times;</span>
+    <h2>Novo Ticket de Suporte</h2>
+    <form action="../includes/createSuporteRequest.php" method="POST">
+      <div class="form-group">
+        <input type="text" id="assunto" name="assunto" placeholder="Digite o assunto" required>
+        <input type="text" id="descricao" name="descricao" placeholder="Descreva o problema" required>
+        <input type="hidden" name="data_envio" value="<?= date('Y-m-d H:i:s') ?>">
+        <button type="submit">Solicitar suporte</button>
+      </div>
+    </form>
   </div>
+</div>
 
 </main>
 
 <script src="../assets/css/js/script.js"></script>
 <script src="../assets/css/js/suporteUsuario.js"></script>
+<script>
+  // Adicionar funcionalidade para o botão "Abrir Ticket"
+  document.addEventListener('DOMContentLoaded', function() {
+    const botaoAbrirTicket = document.getElementById('botaoAbrirTicket');
+    const modalNovoTicket = document.getElementById('modalNovoTicket');
+    const fecharModalNovoTicket = document.getElementById('fecharModalNovoTicket');
+    
+    botaoAbrirTicket.addEventListener('click', function() {
+      modalNovoTicket.style.display = 'block';
+    });
+    
+    fecharModalNovoTicket.addEventListener('click', function() {
+      modalNovoTicket.style.display = 'none';
+    });
+    
+    window.addEventListener('click', function(event) {
+      if (event.target === modalNovoTicket) {
+        modalNovoTicket.style.display = 'none';
+      }
+    });
+  });
+</script>
 </body>
 </html>
