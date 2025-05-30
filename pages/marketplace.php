@@ -1,33 +1,49 @@
 <?php
 include '../includes/db.php';
 
-$produtoEncontradoID = null;
+$mensagem_erro = null;
+$produtos = [];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
-    $nome = trim($_POST['nome']);
+// verifica a busca por nome no método GET
+if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
+    $nome = trim($_GET['nome']);
 
-    $sql_search = "SELECT * FROM produtos WHERE nome = ?";
-    $stmt_search = $conn->prepare($sql_search);
-    $stmt_search->bind_param("s", $nome);
-    $stmt_search->execute();
-    $result = $stmt_search->get_result();
+    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
+            FROM produtos p
+            JOIN usuarios u ON p.vendedor_email = u.email
+            WHERE p.nome = ? AND p.status = 'Ativo'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $nome);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $produto = $result->fetch_assoc();
-        $produtoEncontradoID = $produto['id'];
-    }else {
-        $mensagem_erro = "Produto não encontrado.";
+        while ($row = $result->fetch_assoc()) {
+            $produtos[] = $row;
+        }
+    } else {
+        $mensagem_erro = "Produto não encontrado!";
+    }
+
+    $stmt->close();
+} else {
+    // exibe quando não tem busca
+    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
+            FROM produtos p
+            LEFT JOIN usuarios u ON p.vendedor_email = u.email
+            WHERE p.status = 'Ativo'";
+    
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $produtos[] = $row;
+        }
+    } else {
+        $mensagem_erro = "Nenhum produto ativo encontrado.";
     }
 }
-
-
-
-  $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
-        FROM produtos p
-        JOIN usuarios u ON p.vendedor_email = u.email
-        WHERE p.status = 'Ativo'";
-
-  $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -73,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
         </div>
       </section>
         <div class="search-bar">
-          <form method="POST">
+          <form method="GET" action="marketplace.php">
             <input type="text" name="nome" placeholder="Buscar produto...">
             <button type="submit"><i class='bx bx-search'></i></button>
            </form>
@@ -82,26 +98,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
   
     </header>
 
-    <section class="product-grid">
-      <?php if ($result->num_rows > 0): ?>
-      <?php while($row = $result->fetch_assoc()): ?>
-        <div class="product-card">
-          <h2><?php echo htmlspecialchars($row['nome_produto']); ?></h2>
-          <p class="categoria"><?php echo htmlspecialchars($row['categoria']); ?></p>
-          <p class="descricao"><?php echo htmlspecialchars($row['descricao']); ?></p>
-          <p class="preco">R$ <?php echo number_format($row['preco'], 2, ',', '.'); ?></p>
-          <p class="vendedor">Vendedor: <?php echo htmlspecialchars($row['nome_vendedor']); ?></p>
-          <form action="carrinho.php" method="POST" class="form-selecionar">
-            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-            <button type="submit" title="Adicionar ao carrinho" class="btn-carrinho">
-              <i class='bx bx-cart-add'></i>
-            </button>
-          </form>
-        </div>
-      <?php endwhile; ?>
+     <section class="product-grid">
+      <?php if ($mensagem_erro): ?>
+        <p><?php echo $mensagem_erro; ?></p>
+      <?php elseif (!empty($produtos)): ?>
+        <?php foreach ($produtos as $row): //usa a lista produtos como rows para jogar eles no site?>
+          <div class="product-card">
+            <h2><?php echo htmlspecialchars($row['nome_produto']); ?></h2>
+            <p class="categoria"><?php echo htmlspecialchars($row['categoria']); ?></p>
+            <p class="descricao"><?php echo htmlspecialchars($row['descricao']); ?></p>
+            <p class="preco">R$ <?php echo number_format($row['preco'], 2, ',', '.'); ?></p>
+            <p class="vendedor">Vendedor: <?php echo htmlspecialchars($row['nome_vendedor']); ?></p>
+            <form action="carrinho.php" method="POST" class="form-selecionar">
+              <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+              <button type="submit" title="Adicionar ao carrinho" class="btn-carrinho">
+                <i class='bx bx-cart-add'></i>
+              </button>
+            </form>
+          </div>
+        <?php endforeach; ?>
       <?php else: ?>
         <p>Nenhum produto ativo encontrado.</p>
-    <?php endif; ?>
+      <?php endif; ?>
     </section>
   </div>
 </main>
