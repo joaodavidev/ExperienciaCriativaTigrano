@@ -160,6 +160,12 @@
     max-width: 100%;
   }
   
+ .search-bar form {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  } 
+
   .search-bar input {
     flex: 1;
     background: transparent;
@@ -169,12 +175,17 @@
     outline: none;
   }
   
+  .search-bar button {
+    background: none;
+    border: none;
+  }
+
   .search-bar i {
     font-size: 20px;
     color: white;
     cursor: pointer;
   }
-  
+ 
   body.light-mode {
     background-color: #ffffff !important;
     color: #262626;
