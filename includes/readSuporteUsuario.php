@@ -23,6 +23,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0):
     while ($ticket = $result->fetch_assoc()):
         $dadosJS = htmlspecialchars(json_encode([
+            'id' => $ticket['id'],
             'assunto' => $ticket['assunto'],
             'descricao' => $ticket['descricao'],
             'data_envio' => $ticket['data_envio'],
