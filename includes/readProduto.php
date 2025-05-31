@@ -1,8 +1,23 @@
 <?php
-include 'db.php';
+require_once 'db.php';
 
-$sql = "SELECT * FROM produtos ORDER BY id DESC";
-$result = $conn->query($sql);
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ../pages/login.php");
+    exit();
+}
+
+$vendedorEmail = $_SESSION['usuario']['email'];
+
+$sql = "SELECT * FROM produtos WHERE vendedor_email = ? ORDER BY id DESC";
+$stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    die("Erro na preparação: " . $conn->error);
+}
+
+$stmt->bind_param("s", $vendedorEmail);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -24,10 +39,10 @@ if ($result && $result->num_rows > 0) {
         $classeStatus = strtolower($row['status']) === 'ativo' ? 'ativo' : 'inativo';
         echo "<span><span class='status {$classeStatus}'>" . htmlspecialchars($row['status']) . "</span></span>";
 
-        // BOTOES
+        // AÇÕES
         echo "<span class='acoes'>";
 
-        // Botão Editar
+        // Editar
         echo "<i class='bx bx-edit' onclick='abrirModal({
             id: \"{$row['id']}\",
             nome: \"" . addslashes($row['nome']) . "\",
@@ -37,7 +52,7 @@ if ($result && $result->num_rows > 0) {
             status: \"{$row['status']}\"
         })'></i>";
 
-        // Botão Excluir
+        // Excluir
         echo "<form action='../includes/deleteProduto.php' method='POST' style='display:inline;' onsubmit='return confirm(\"Deseja excluir este produto?\")'>";
         echo "<input type='hidden' name='id' value='{$row['id']}'>";
         echo "<button type='submit' style='background:none;border:none;padding:0;margin:0;cursor:pointer;'>";
@@ -51,4 +66,7 @@ if ($result && $result->num_rows > 0) {
 } else {
     echo "<p style='margin: 10px;'>Nenhum produto cadastrado.</p>";
 }
+
+$stmt->close();
+$conn->close();
 ?>
