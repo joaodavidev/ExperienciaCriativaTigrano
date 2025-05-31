@@ -2,12 +2,38 @@
 session_start();
 include '../includes/db.php';
 
-// limpa o carrinho após o pagamento ser aprovado
 if (isset($_SESSION['usuario']['email'])) {
     $usuario_email = $_SESSION['usuario']['email'];
-    $conn->query("DELETE FROM carrinho WHERE usuario_email = '$usuario_email'");
+
+    if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
+        foreach ($_SESSION['carrinho'] as $produto) {
+            $produto_id = $produto['id'];
+            $quantidade = 1; // ou ajuste conforme sua lógica
+
+            // Buscar o fornecedor (vendedor) do produto
+            $stmtFornecedor = $conn->prepare("SELECT vendedor_email FROM produtos WHERE id = ?");
+            $stmtFornecedor->bind_param("i", $produto_id);
+            $stmtFornecedor->execute();
+            $stmtFornecedor->bind_result($vendedor_email);
+            $stmtFornecedor->fetch();
+            $stmtFornecedor->close();
+
+            if ($vendedor_email) {
+                // Inserir na tabela de vendas
+                $stmtVenda = $conn->prepare("INSERT INTO vendas (fornecedor_email, comprador_email, produto_id, quantidade_vendas, data_vendas) VALUES (?, ?, ?, ?, NOW())");
+                $stmtVenda->bind_param("ssii", $vendedor_email, $usuario_email, $produto_id, $quantidade);
+                $stmtVenda->execute();
+                $stmtVenda->close();
+            }
+        }
+
+        // Limpa o carrinho no banco e na sessão
+        $conn->query("DELETE FROM carrinho WHERE usuario_email = '$usuario_email'");
+        unset($_SESSION['carrinho']);
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
