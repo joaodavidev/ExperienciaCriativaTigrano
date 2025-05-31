@@ -8,9 +8,8 @@ if (isset($_SESSION['usuario']['email'])) {
     if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
         foreach ($_SESSION['carrinho'] as $produto) {
             $produto_id = $produto['id'];
-            $quantidade = 1; // ou ajuste conforme sua lógica
+            $quantidade = 1;
 
-            // Buscar o fornecedor (vendedor) do produto
             $stmtFornecedor = $conn->prepare("SELECT vendedor_email FROM produtos WHERE id = ?");
             $stmtFornecedor->bind_param("i", $produto_id);
             $stmtFornecedor->execute();
@@ -19,7 +18,6 @@ if (isset($_SESSION['usuario']['email'])) {
             $stmtFornecedor->close();
 
             if ($vendedor_email) {
-                // Inserir na tabela de vendas
                 $stmtVenda = $conn->prepare("INSERT INTO vendas (fornecedor_email, comprador_email, produto_id, quantidade_vendas, data_vendas) VALUES (?, ?, ?, ?, NOW())");
                 $stmtVenda->bind_param("ssii", $vendedor_email, $usuario_email, $produto_id, $quantidade);
                 $stmtVenda->execute();
@@ -27,7 +25,6 @@ if (isset($_SESSION['usuario']['email'])) {
             }
         }
 
-        // Limpa o carrinho no banco e na sessão
         $conn->query("DELETE FROM carrinho WHERE usuario_email = '$usuario_email'");
         unset($_SESSION['carrinho']);
     }
