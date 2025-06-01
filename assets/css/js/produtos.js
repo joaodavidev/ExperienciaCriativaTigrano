@@ -17,6 +17,7 @@ const modal = document.getElementById('modalProduto');
     form.querySelector('[name="preco"]').value = dados.preco || '';
     form.querySelector('[name="descricao"]').value = dados.descricao || '';
     form.querySelector('[name="status"]').value = dados.status || 'Ativo';
+    form.querySelector('[name="cor_favorita"]').value = dados.cor_favorita || '';
 
     // Corrige o caminho relativo para update
     if (dados.id) {

@@ -46,10 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    if ($nome && $categoria && $preco && $descricao && $vendedorEmail) {
+    if ($nome && $categoria && $preco && $descricao && $vendedorEmail && $arquivo_produto) {
         $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status, vendedor_email, arquivo_produto)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);        if (!$stmt) {
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
             die("Erro no prepare: " . $conn->error);
         }
 

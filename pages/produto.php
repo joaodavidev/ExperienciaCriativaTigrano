@@ -51,7 +51,7 @@ include '../includes/verificar_login.php';
             <input type="text" name="categoria" placeholder="Categoria" required />
             <input type="number" name="preco" placeholder="Preço" step="0.01" required />
             <textarea name="descricao" placeholder="Descrição do Produto" required></textarea>
-            
+
             <div class="upload-arquivo">
                 <label for="arquivo_produto">Arquivo do Produto (opcional):</label>
                 <input type="file" name="arquivo_produto" id="arquivo_produto" accept=".pdf,.doc,.docx,.zip,.rar,.txt,.mp4,.mp3,.png,.jpg,.jpeg">

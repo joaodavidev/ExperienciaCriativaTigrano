@@ -40,23 +40,6 @@ CREATE TABLE produtos (
   arquivo_produto VARCHAR(500) NULL,
   FOREIGN KEY (vendedor_email) REFERENCES usuarios(email) ON DELETE CASCADE
 );
-
-CREATE TABLE pedidos (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  comprador_email VARCHAR(255),
-  data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
-  status ENUM('pendente', 'pago', 'enviado', 'cancelado') DEFAULT 'pendente',
-  FOREIGN KEY (comprador_email) REFERENCES usuarios (email) ON DELETE CASCADE
-);
-
-CREATE TABLE produtos_pedido (
-  pedido_id INT,
-  produto_id INT,
-  PRIMARY KEY (pedido_id, produto_id),
-  FOREIGN KEY (pedido_id) REFERENCES pedidos (id),
-  FOREIGN KEY (produto_id) REFERENCES produtos (id)
-);
-
 CREATE TABLE carrinho (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_email VARCHAR(255),
