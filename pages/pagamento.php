@@ -12,40 +12,12 @@ $dotenv->load();
 
 $usuario_email = $_SESSION['usuario']['email'];
 
-// Buscar itens do carrinho no banco e colocar na sessão
-$produtosCarrinho = [];
-$sql = "SELECT p.id, p.nome, p.preco, p.descricao 
-        FROM carrinho c
-        JOIN produtos p ON c.produto_id = p.id
-        WHERE c.usuario_email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $usuario_email);
-$stmt->execute();
-$result = $stmt->get_result();
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
+    // Configura a chave secreta do Stripe para autenticação
+    \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
-if ($result->num_rows > 0) {
-    $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
-    $_SESSION['carrinho'] = $produtosCarrinho;
-} else {
-    $_SESSION['carrinho'] = [];
-}
-
-$stmt->close();
-
-if (empty($_SESSION['carrinho'])) {
-    header("Location: carrinho.php");
-    exit();
-}
-
-$total = 0;
-foreach ($_SESSION['carrinho'] as $item) {
-    $total += $item['preco'];
-}    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
-        // Configura a chave secreta do Stripe para autenticação
-        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-
-        // Array que vai armazenar os itens para o Stripe
-        $line_items = [];
+    // Array que vai armazenar os itens para o Stripe
+    $line_items = [];
 
         // Prepara cada item do carrinho para o formato que o Stripe aceita
         foreach ($_SESSION['carrinho'] as $produto) {

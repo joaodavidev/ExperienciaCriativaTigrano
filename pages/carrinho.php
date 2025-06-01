@@ -2,9 +2,82 @@
 session_start();
 include '../includes/db.php';
 include '../includes/verificar_login.php';
+require '../vendor/autoload.php';
 
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
+
+// Carregar variáveis do .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+$usuario_email = $_SESSION['usuario']['email'];
+
+// ✅ Finalizar compra
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['finalizar_compra'])) {
+    Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+
+    // Buscar produtos do carrinho
+    $sql = "SELECT p.id, p.nome, p.preco, p.descricao 
+            FROM carrinho c
+            JOIN produtos p ON c.produto_id = p.id
+            WHERE c.usuario_email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $usuario_email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $line_items = [];
+    $produtosParaCompra = [];
+
+    while ($produto = $result->fetch_assoc()) {
+        $line_items[] = [
+            'price_data' => [
+                'currency' => 'brl',
+                'product_data' => [
+                    'name' => $produto['nome'],
+                    'description' => $produto['descricao'],
+                ],
+                'unit_amount' => (int)($produto['preco'] * 100), // preço em centavos
+            ],
+            'quantity' => 1,
+        ];
+
+        // Salvar os produtos na sessão para processar na página sucessoCompra.php
+        $produtosParaCompra[] = [
+            'id' => $produto['id'],
+            'nome' => $produto['nome'],
+            'preco' => $produto['preco'],
+            'descricao' => $produto['descricao']
+        ];
+    }
+
+    $stmt->close();
+
+    if (count($line_items) === 0) {
+        // Carrinho vazio, não pode gerar checkout
+        header("Location: carrinho.php?vazio=1");
+        exit();
+    }
+
+    // ✅ Salva na sessão para sucessoCompra.php processar a venda
+    $_SESSION['carrinho'] = $produtosParaCompra;
+
+    // Cria sessão de checkout Stripe
+    $checkout_session = Session::create([
+        'line_items' => $line_items,
+        'mode' => 'payment',
+        'success_url' => 'http://localhost/ExperienciaCriativaTigrano/pages/sucessoCompra.php',
+        'cancel_url' => 'http://localhost/ExperienciaCriativaTigrano/pages/falhaCompra.php',
+    ]);
+
+    // Redireciona para Stripe Checkout
+    header("Location: " . $checkout_session->url);
+    exit();
+}
+
+// ✅ Adicionar produto ao carrinho
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
-    $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = $_POST['id'];
 
     $check = $conn->prepare("SELECT * FROM carrinho WHERE usuario_email = ? AND produto_id = ?");
@@ -25,8 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     exit();
 }
 
+// ✅ Remover produto do carrinho
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remover_id'])) {
-    $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = $_POST['remover_id'];
 
     $delete = $conn->prepare("DELETE FROM carrinho WHERE usuario_email = ? AND produto_id = ? LIMIT 1");
@@ -35,12 +108,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remover_id'])) {
     $delete->close();
 
     header("Location: carrinho.php?removido=1");
-
     exit();
 }
 
+// ✅ Carregar produtos do carrinho para exibir na página
 $produtosCarrinho = [];
-$usuario_email = $_SESSION['usuario']['email'];
 
 $sql = "SELECT p.id, p.nome, p.preco, p.descricao 
         FROM carrinho c
@@ -54,6 +126,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
 }
+
 $stmt->close();
 ?>
 
@@ -174,11 +247,9 @@ $stmt->close();
             <span>Total:</span>
             <span>R$ <?= number_format($total, 2, ',', '.') ?></span>
           </div>
-          <div class="botao-finalizar">
-            <a href="pagamento.php" class="btn-finalizar">
-              FINALIZAR COMPRA
-            </a>
-          </div>
+           <form action="carrinho.php" method="POST" class="form-pagamento">
+            <button type="submit" name="finalizar_compra" class="btn-comprar">Finalizar Pagamento</button>
+          </form>
         </div>
         
       <?php else: ?>

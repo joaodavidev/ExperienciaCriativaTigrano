@@ -105,7 +105,7 @@ CREATE TABLE historico_compras (
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email) ON DELETE CASCADE,
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
-
+SELECT * FROM vendas;
 CREATE TABLE produtos_historico_compras (
   produtos_id INT,
   historico_compras_id INT,

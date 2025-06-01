@@ -229,12 +229,12 @@ body {
 }
 
 .filtro-tickets a span {
-  background-color: rgba(29, 78, 216, 0.2);
+  background-color: rgba(29, 78, 216, 0.3);
   padding: 3px 9px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  color: #1D4ED8;
+  color: #ffffff;
   transition: all 0.3s ease;
 }
 
@@ -254,6 +254,7 @@ body {
 .filtro-tickets .ativo span {
   background-color: #ffffff;
   color: #1D4ED8;
+  font-weight: 700;
 }
 
 .filtro-tickets button {

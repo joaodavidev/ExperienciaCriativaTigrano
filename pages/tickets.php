@@ -2,6 +2,13 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+include '../includes/verificar_login.php';
+
+// Verifica se o usuário é administrador (adicione esta verificação)
+if (!isset($_SESSION['admin']) || $_SESSION['admin'] !== true) {
+    header("Location: ../pages/login.php");
+    exit();
+}
 
 $filtro = $_GET['filtro'] ?? 'abertos';
 
@@ -120,25 +127,20 @@ function abrirModal(id) {
   const ticket = tickets.find(t => t.id == id);
   if (!ticket) return;
 
-  // Set basic ticket info
   document.getElementById('ticket_id').value = ticket.id;
   document.getElementById('modalNomeUsuario').innerText = ticket.nome;
   document.getElementById('modalAssunto').innerText = ticket.assunto;
   document.getElementById('modalDescricao').innerText = ticket.descricao;
   
-  // Check if ticket has been responded to
   const temResposta = ticket.resposta && ticket.resposta.trim() !== '';
   
-  // Update modal title based on ticket status
   document.getElementById('modalTitulo').innerText = temResposta ? 'Editar Resposta' : 'Responder Ticket';
   
   if (temResposta) {
-    // Show existing response
     document.getElementById('respostaExistente').style.display = 'block';
     document.getElementById('respostaAtual').innerText = ticket.resposta;
     document.getElementById('modalResposta').value = ticket.resposta;
   } else {
-    // Hide existing response area for new responses
     document.getElementById('respostaExistente').style.display = 'none';
     document.getElementById('modalResposta').value = '';
   }
