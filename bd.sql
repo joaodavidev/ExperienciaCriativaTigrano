@@ -15,7 +15,7 @@ CREATE TABLE adm (
   nome VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL
 );
-SELECT * FROM vendas;
+
 CREATE TABLE suporte (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email_adm VARCHAR(255),
@@ -54,17 +54,6 @@ CREATE TABLE produtos_pedido (
   PRIMARY KEY (pedido_id, produto_id),
   FOREIGN KEY (pedido_id) REFERENCES pedidos (id),
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
-);
-
-CREATE TABLE pix (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  pedido_id INT,
-  valor DECIMAL(10,2) NOT NULL,
-  chave_pix VARCHAR(255) NOT NULL,
-  tipo_chave ENUM('cpf', 'email', 'telefone', 'aleatoria') NOT NULL,
-  status ENUM('pendente', 'confirmado', 'cancelado') DEFAULT 'pendente',
-  data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (pedido_id) REFERENCES pedidos (id)
 );
 
 CREATE TABLE carrinho (
@@ -112,30 +101,4 @@ CREATE TABLE produtos_historico_compras (
   PRIMARY KEY (produtos_id, historico_compras_id),
   FOREIGN KEY (produtos_id) REFERENCES produtos (id),
   FOREIGN KEY (historico_compras_id) REFERENCES historico_compras (id)
-);
-
-CREATE TABLE cartao_credito_usuario (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_email VARCHAR(255),
-  nome_titular TEXT,
-  numero_cartao VARCHAR(20),
-  cvv VARCHAR(4),
-  parcelamento INT,
-  FOREIGN KEY (usuario_email) REFERENCES usuarios (email) ON DELETE CASCADE
-);
-
-CREATE TABLE cartao_debito_usuario (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_email VARCHAR(255),
-  nome_titular TEXT,
-  numero_cartao VARCHAR(20),
-  cvv VARCHAR(4),
-  FOREIGN KEY (usuario_email) REFERENCES usuarios (email) ON DELETE CASCADE
-);
-
-CREATE TABLE tipo_pagamento (
-  id_cartao_credito INT,
-  id_cartao_debito INT,
-  FOREIGN KEY (id_cartao_credito) REFERENCES cartao_credito_usuario (id),
-  FOREIGN KEY (id_cartao_debito) REFERENCES cartao_debito_usuario (id)
 );
