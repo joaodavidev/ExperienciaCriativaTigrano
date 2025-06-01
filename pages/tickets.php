@@ -2,13 +2,6 @@
 <?php
 session_start();
 require_once '../includes/db.php';
-include '../includes/verificar_login.php';
-
-// Verifica se o usuário é administrador (adicione esta verificação)
-if (!isset($_SESSION['admin']) || $_SESSION['admin'] !== true) {
-    header("Location: ../pages/login.php");
-    exit();
-}
 
 $filtro = $_GET['filtro'] ?? 'abertos';
 

@@ -15,7 +15,7 @@ $sql_precos = "SELECT MIN(preco) as min_preco, MAX(preco) as max_preco FROM prod
 $result_precos = $conn->query($sql_precos);
 $precos = $result_precos->fetch_assoc();
 
-$precoMinDB = 0; // Sempre começa em zero
+$precoMinDB = 0;
 $precoMaxDB = isset($precos['max_preco']) ? ceil($precos['max_preco']) : 1000;
 
 // Se não foi definido via GET, usa os valores do banco
@@ -191,29 +191,25 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
 </script>
 <?php endif; ?>
 <script>
-  // Função para formatar números para moeda (R$)
   function formatCurrency(value) {
     return 'R$ ' + value.toFixed(2).replace('.', ',');
   }
   
-  // Função para lidar com a mudança nos inputs e aplicar validações
   function handleInputChange(inputId, type) {
     const input = document.getElementById(inputId);
     const min = parseInt(input.min);
     const max = parseInt(input.max);
     let value = parseInt(input.value);
     
-    // Garante que não seja NaN
     if (isNaN(value)) {
       value = (type === 'min') ? min : max;
     }
     
-    // Garante que o valor esteja dentro dos limites
     if (value < min) value = min;
     if (value > max) value = max;
     
     input.value = value;
-  }  // Função para limpar os filtros de preço
+  } 
   function limparFiltrosPreco() {
     console.log('Função limparFiltrosPreco chamada');
     
