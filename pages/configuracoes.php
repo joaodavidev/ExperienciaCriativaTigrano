@@ -43,29 +43,35 @@ $email = $_SESSION['usuario']['email'];
   <section class="perfil-container">
     <?php if (isset($_GET['erro'])) echo "<p class='mensagem'>" . htmlspecialchars($_GET['erro']) . "</p>"; ?>
 
-    <form action="../includes/deleteCadastro.php" method="POST" class="logout-form">
-      <input type="hidden" name="deletar_conta" value="1">
-      <button type="submit">Deletar minha conta</button>
-    </form>
+   <form id="formDeletarConta" action="../includes/deleteCadastro.php" method="POST" class="logout-form">
+  <input type="hidden" name="deletar_conta" value="1">
+  <button type="button" onclick="confirmarExclusao()">Deletar minha conta</button>
+  </form>
   </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmarExclusao() {
+  const temaClaro = localStorage.getItem("tema") === "claro";
 
+  Swal.fire({
+    title: "Tem certeza?",
+    text: "Essa ação irá deletar permanentemente sua conta.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sim, deletar",
+    cancelButtonText: "Cancelar",
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#b91c1c",
+    cancelButtonColor: "#4b5563"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      document.getElementById('formDeletarConta').submit();
+    }
+  });
+}
+</script>
 <script src="../assets/css/js/script.js"></script>
-<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-    Swal.fire({
-      icon: 'success',
-      title: 'Conta excluída!',
-      text: 'Sua conta foi removida com sucesso.',
-      confirmButtonText: 'OK'
-    }).then(() => {
-      fetch('../includes/destruirSessao.php')  // Este arquivo deve conter apenas: session_start(); session_destroy();
-        .then(() => {
-          window.location.href = '../pages/login.php';
-        });
-    });
-  </script>
-<?php endif; ?>
 </body>
 </html>

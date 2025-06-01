@@ -9,14 +9,48 @@ function exibirAlerta($icone, $titulo, $mensagem, $redirecionar = '../pages/tick
     <meta charset='UTF-8'>
     <title>Resposta</title>
     <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <style>
+      .swal2-popup {
+        border-radius: 15px !important;
+        padding: 2em !important;
+        font-family: 'Poppins', sans-serif !important;
+      }
+
+      .swal2-title {
+        font-size: 1.8rem !important;
+        font-weight: bold !important;
+      }
+
+      .swal2-html-container {
+        font-size: 1rem !important;
+      }
+
+      .swal2-confirm {
+        padding: 0.6em 1.5em !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+      }
+    </style>
   </head>
   <body>
     <script>
+      const temaClaro = localStorage.getItem('tema') === 'claro';
+
       Swal.fire({
         icon: '$icone',
         title: '$titulo',
         text: '$mensagem',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        background: temaClaro ? '#E6E4E4' : '#262626',
+        color: temaClaro ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8',
+        customClass: {
+          popup: 'swal2-popup',
+          title: 'swal2-title',
+          htmlContainer: 'swal2-html-container',
+          confirmButton: 'swal2-confirm'
+        }
       }).then(() => {
         window.location.href = '$redirecionar';
       });
@@ -40,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
       exibirAlerta('success', 'Respondido com sucesso!', 'A resposta foi salva com êxito.');
     } else {
-      exibirAlerta('error', 'Erro', 'Erro ao salvar a resposta: " . $stmt->error . "');
+      exibirAlerta('error', 'Erro ao responder', 'Erro técnico: " . $stmt->error . "');
     }
 
     $stmt->close();

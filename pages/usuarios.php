@@ -2,8 +2,6 @@
 session_start();
 require_once '../includes/db.php';
 
-
-// Ações: excluir ou resetar senha
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['excluir'])) {
         $email = $_POST['excluir'];
@@ -46,14 +44,23 @@ $result = $conn->query("SELECT email, nome, sexo, idade, cpf FROM usuarios");
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
   </div>
-  <ul class="lista">
-     <li class="lista-item"><a href="   admin.php"><i class='bx bx-pie-chart-alt-2' ></i><span class="nome-link" style="--i:1;">Admin</span></a></li>
-    <li class="lista-item"><a href="usuarios.php"><i class='bx bxs-user-detail'></i><span class="nome-link" style="--i:2;">Usuários</span></a></li>
-    <li class="lista-item"><a href="tickets.php"><i class='bx bx-support'></i><span class="nome-link" style="--i:3;">Tickets</span></a></li>
-    <li class="espacador"></li>
-    <li class="lista-item"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
-    <li class="lista-item"><a href="../includes/logout.php"><i class='bx bx-log-out'></i><span class="nome-link" style="--i:6;">Sair</span></a></li>
-  </ul>
+<ul class="lista">
+  <li class="lista-item"><a href="admin.php"><i class='bx bx-pie-chart-alt-2'></i><span class="nome-link" style="--i:1;">Admin</span></a></li>
+  <li class="lista-item"><a href="usuarios.php"><i class='bx bxs-user-detail'></i><span class="nome-link" style="--i:2;">Usuários</span></a></li>
+  <li class="lista-item"><a href="tickets.php"><i class='bx bx-support'></i><span class="nome-link" style="--i:3;">Tickets</span></a></li>
+  <li class="espacador"></li>
+  <li class="lista-item">
+    <form id="formDeleteAdmin" action="../includes/deletecadastroAdmin.php" method="POST" style="display:inline;">
+      <input type="hidden" name="excluir" value="1">
+      <a href="#" onclick="confirmarExclusao(event)">
+        <i class='bx bx-user-x'></i>
+        <span class="nome-link" style="--i:4;">Excluir Admin</span>
+      </a>
+    </form>
+  </li>
+  <li class="lista-item"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
+  <li class="lista-item"><a href="../includes/logout.php"><i class='bx bx-log-out'></i><span class="nome-link" style="--i:6;">Sair</span></a></li>
+</ul>
 </nav>
 <main class="main-content">
   <h1>Gerenciar Usuários</h1>
@@ -77,16 +84,16 @@ $result = $conn->query("SELECT email, nome, sexo, idade, cpf FROM usuarios");
             <td><?= htmlspecialchars($row['email']) ?></td>
             <td><?= htmlspecialchars($row['sexo']) ?></td>
             <td><?= $row['idade'] ?></td>
-            <td><?= $row['cpf'] ?></td>
+            <td><?= $row['cpf'] ?></td>            
             <td style="display: flex; gap: 8px;">
-              <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+              <form method="POST">
                 <input type="hidden" name="excluir" value="<?= htmlspecialchars($row['email']) ?>">
-                <button type="submit" class="btn-excluir">Excluir</button>
+                <button type="button" onclick="confirmarExclusaoUsuario(this)" class="btn-excluir">Excluir</button>
               </form>
 
-              <form method="POST" onsubmit="return confirm('Deseja resetar a senha?');">
+              <form method="POST">
                 <input type="hidden" name="resetar" value="<?= htmlspecialchars($row['email']) ?>">
-                <button type="submit" class="btn-reset">Resetar Senha</button>
+                <button type="button" class="btn-reset" data-email="<?= $row['email'] ?>" onclick="confirmarReset(this)">Resetar Senha</button>
               </form>
             </td>
           </tr>
@@ -95,7 +102,68 @@ $result = $conn->query("SELECT email, nome, sexo, idade, cpf FROM usuarios");
     </table>
   </div>
 </main>
+<script>
+function confirmarExclusaoUsuario(botao) {
+  const temaClaro = localStorage.getItem("tema") === "claro";
+  Swal.fire({
+    icon: 'warning',
+    title: 'Tem certeza?',
+    text: 'Essa ação excluirá o usuário permanentemente.',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir',
+    cancelButtonText: 'Cancelar',
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#b91c1c",
+    cancelButtonColor: "#4b5563"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      botao.closest('form').submit();
+    }
+  });
+}
+function confirmarReset(botao) {
+  const temaClaro = localStorage.getItem("tema") === "claro";
+  Swal.fire({
+    icon: 'question',
+    title: 'Resetar senha?',
+    text: 'A senha será redefinida para "Tigrano123".',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, redefinir',
+    cancelButtonText: 'Cancelar',
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#1D4ED8",
+    cancelButtonColor: "#4b5563"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      botao.closest('form').submit();    }
+  });
+}
 
+function confirmarExclusao(event) {
+  event.preventDefault();
+  const temaClaro = localStorage.getItem("tema") === "claro";
+  Swal.fire({
+    icon: 'warning',
+    title: 'Tem certeza?',
+    text: 'Esta ação irá excluir sua conta de administrador permanentemente.',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir',
+    cancelButtonText: 'Cancelar',
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#b91c1c",
+    cancelButtonColor: "#4b5563"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      document.getElementById('formDeleteAdmin').submit();
+    }
+  });
+}
+</script>
+<script src="../assets/css/js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../assets/css/js/script.js"></script>
 </body>
 </html>

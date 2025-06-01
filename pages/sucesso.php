@@ -4,37 +4,36 @@ include '../includes/verificar_login.php';
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sucesso na solicitação</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    .swal2-custom-popup {
-      border-radius: 15px;
-      padding: 2em;
-      background-color: #1e1e1e;
-      color: white;
+    .swal2-popup {
+      border-radius: 15px !important;
+      padding: 2em !important;
+      font-family: 'Poppins', sans-serif;
     }
 
-    .swal2-custom-title {
-      font-size: 1.8rem;
-      font-weight: bold;
-      font-family: 'Poppins', sans-serif;
+    .swal2-title {
+      font-size: 1.8rem !important;
+      font-weight: bold !important;
+      font-family: 'Poppins', sans-serif !important;
     }
 
     .swal2-html-container {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Poppins', sans-serif !important;
+      font-size: 1rem !important;
     }
 
-    .swal2-custom-button {
-      padding: 0.6em 1.5em;
-      font-size: 1rem;
-      font-weight: 600;
-      background-color: #4CAF50 !important;
-      color: white !important;
-      border-radius: 8px;
+    .swal2-confirm {
+      padding: 0.6em 1.5em !important;
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      font-family: 'Poppins', sans-serif !important;
     }
   </style>
 </head>
@@ -42,15 +41,21 @@ include '../includes/verificar_login.php';
 
 <?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
   <script>
+    const temaClaro = localStorage.getItem("tema") === "claro";
+
     Swal.fire({
       icon: 'success',
-      title: 'Suporte enviado!',
-      text: 'Sua solicitação foi registrada com sucesso.',
-      confirmButtonText: 'Voltar',
+      title: 'Solicitação enviada!',
+      text: 'Sua mensagem foi registrada com sucesso.',
+      confirmButtonText: 'OK',
+      background: temaClaro ? '#E6E4E4' : '#262626',
+      color: temaClaro ? '#121212' : '#ffffff',
+      confirmButtonColor: '#1D4ED8',
       customClass: {
-        popup: 'swal2-custom-popup',
-        title: 'swal2-custom-title',
-        confirmButton: 'swal2-custom-button'
+        popup: 'swal2-popup',
+        title: 'swal2-title',
+        htmlContainer: 'swal2-html-container',
+        confirmButton: 'swal2-confirm'
       }
     }).then(() => {
       window.location.href = 'suporteUsuario.php';

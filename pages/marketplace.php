@@ -74,32 +74,29 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
     <li class="lista-item"><a href="../pages/perfil.php"><i class='bx bx-user'></i><span class="nome-link" style="--i:8;">Perfil</span></a></li>
   </ul>
 </nav>
-
   <main class="main-content">
-  <div class="content-wrapper">
-    <header>
-      <section class="marketplace-header">
-        <div class="marketplace-title">
-          <div>
-            <h1>Marketplace</h1>
-            <p>Encontre aqui os melhores infoprodutos.</p>
+    <div class="content-wrapper">
+      <header>
+        <section class="marketplace-header">
+          <div class="marketplace-title">
+            <div>
+              <h1>Marketplace</h1>
+              <p>Encontre aqui os melhores infoprodutos.</p>
+            </div>
+            <a href="../pages/carrinho.php" class="cart-icon">
+              <i class='bx bx-cart'></i>
+            </a>
           </div>
-          <a href="../pages/carrinho.php" class="cart-icon">
-            <i class='bx bx-cart'></i>
-          </a>
-        </div>
-      </section>
+        </section>
         <div class="search-bar">
           <form method="GET" action="marketplace.php">
             <input type="text" name="nome" placeholder="Buscar produto...">
             <button type="submit"><i class='bx bx-search'></i></button>
-           </form>
+          </form>
         </div>
-</div>
-  
-    </header>
+      </header>
 
-     <section class="product-grid">
+         <section class="product-grid">
       <?php if ($mensagem_erro): ?>
         <p><?php echo $mensagem_erro; ?></p>
       <?php elseif (!empty($produtos)): ?>
@@ -124,9 +121,25 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
     </section>
   </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if (isset($_GET['adicionado']) && $_GET['adicionado'] == 1): ?>
+<script>
+  const temaClaro = localStorage.getItem("tema") === "claro";
+  Swal.fire({
+    icon: 'success',
+    title: 'Adicionado ao carrinho!',
+    timer: 1500,
+    showConfirmButton: false,
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#1D4ED8"
+  });
 
-
-
-      <script src="../assets/css/js/script.js"></script>
+  const url = new URL(window.location.href);
+  url.searchParams.delete("adicionado");
+  window.history.replaceState({}, document.title, url.toString());
+</script>
+<?php endif; ?>
+<script src="../assets/css/js/script.js"></script>
 </body>
 </html>

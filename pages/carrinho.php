@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     }
 
     $check->close();
-    header("Location: marketplace.php");
+    header("Location: marketplace.php?adicionado=1");
     exit();
 }
 
@@ -34,7 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remover_id'])) {
     $delete->execute();
     $delete->close();
 
-    header("Location: carrinho.php");
+    header("Location: carrinho.php?removido=1");
+
     exit();
 }
 
@@ -121,53 +122,96 @@ $stmt->close();
       </a>
     </li>
   </ul>
-</nav>
-  <div class="main-content">
-    <div class="search-container">
-      <form action="carrinho.php" method="POST">
-        <div class="search-bar">
-          <input type="text" name="nome" placeholder="Buscar produtos">
-          <i class='bx bx-search'></i>
+</nav>  <div class="main-content">
+    <div class="carrinho-header">
+      <h1>Seu Carrinho</h1>
+    </div>
+
+    <div class="carrinho-container">      <?php if (count($produtosCarrinho) > 0): ?>        <div class="carrinho-table">
+          <div class="carrinho-table-header">
+            <div class="col-produto">PRODUTO</div>
+            <div class="col-preco">PREÇO</div>
+            <div class="col-acoes"></div>
+          </div>
+          
+          <div class="carrinho-table-body">
+            <?php 
+              $total = 0;
+              foreach ($produtosCarrinho as $produto): 
+                $preco_item = $produto['preco'];
+                $total += $preco_item;
+            ?>
+              <div class="carrinho-item" id="produto-<?= $produto['id'] ?>">
+                <div class="col-produto">
+                  <div class="produto-info">
+                    <div class="produto-detalhes">
+                      <strong><?= htmlspecialchars($produto['nome']) ?></strong>
+                      <p class="produto-descricao"><?= htmlspecialchars($produto['descricao']) ?></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-preco">R$ <?= number_format($preco_item, 2, ',', '.') ?></div>
+                <div class="col-acoes">
+                  <form action="carrinho.php" method="post">
+                    <input type="hidden" name="remover_id" value="<?= $produto['id'] ?>">
+                    <button type="submit" class="btn-remover" title="Remover item">×</button>
+                  </form>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>        <div class="carrinho-resumo">
+          <h2>Total do Carrinho</h2>
+          <div class="resumo-produtos">
+            <?php foreach ($produtosCarrinho as $produto): ?>
+              <div class="resumo-produto-item">
+                <span>1x <?= htmlspecialchars($produto['nome']) ?></span>
+                <span>R$ <?= number_format($produto['preco'], 2, ',', '.') ?></span>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <div class="resumo-item total">
+            <span>Total:</span>
+            <span>R$ <?= number_format($total, 2, ',', '.') ?></span>
+          </div>
+          <div class="botao-finalizar">
+            <a href="pagamento.php" class="btn-finalizar">
+              FINALIZAR COMPRA
+            </a>
+          </div>
         </div>
-      </form>
+        
+      <?php else: ?>
+        <div class="carrinho-vazio">
+          <i class="bx bx-cart-alt"></i>
+          <h2>Seu carrinho está vazio</h2>
+          <p>Adicione produtos para continuar suas compras</p>
+          <a href="marketplace.php" class="btn-continuar-comprando">Continuar Comprando</a>
+        </div>
+      <?php endif; ?>
     </div>
-
-    <div id="produtos">
-      <h2>Produtos no Carrinho</h2>
-      <?php
-        $total = 0;
-
-        if (count($produtosCarrinho) > 0) {
-            foreach ($produtosCarrinho as $produto) {
-                $total += $produto['preco'];
-                echo "<div class='produto' id='produto-{$produto['id']}'>";
-                echo "<strong>" . htmlspecialchars($produto['nome']) . "</strong><br>";
-                echo "R$ " . number_format($produto['preco'], 2, ',', '.') . "<br>";
-                echo "<p>" . htmlspecialchars($produto['descricao']) . "</p>";
-                echo "<form action='carrinho.php' method='post' class='form-excluir'>";
-                echo "<input type='hidden' name='remover_id' value='{$produto['id']}'>";
-                echo "<button type='submit' class='btn-excluir'>Excluir</button>";
-                echo "</form>";
-                echo "</div>";
-            }
-
-            echo "<div class='total-carrinho'>";
-            echo "<strong>Total do Carrinho: R$ " . number_format($total, 2, ',', '.') . "</strong>";
-            echo "</div>";
-        } else {
-            echo "<p>Nenhum produto no carrinho.</p>";
-        }
-      ?>
-    </div>
-
-    <div class="comprar-container">
-      <a href="pagamento.php">
-        <button type="button" class="btn-comprar">Finalizar Compra</button>
-      </a>
-</div>
-
   </div>
+<?php if (isset($_GET['removido']) && $_GET['removido'] == 1): ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  const temaClaro = localStorage.getItem("tema") === "claro";
 
+  Swal.fire({
+    toast: true,
+    position: 'top-end',
+    icon: 'success',
+    title: 'Produto removido do carrinho!',
+    showConfirmButton: false,
+    timer: 2000,
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#1D4ED8"
+  });
+  const url = new URL(window.location.href);
+  url.searchParams.delete("removido");
+  window.history.replaceState({}, document.title, url.toString());
+</script>
+<?php endif; ?>
   <script src="../assets/css/js/script.js"></script>
   <script src="../assets/css/js/carrinho.js"></script>
 </body>

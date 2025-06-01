@@ -95,45 +95,63 @@ $dados = $result->fetch_assoc();
   </ul>
 </nav>
 
-<main class="main-content">
-  <section class="marketplace-header">
+<main class="main-content">  <section class="marketplace-header">
     <div class="marketplace-title">
       <h1>Meu Perfil</h1>
+      <p>Gerencie suas informações</p>
     </div>
-  </section>
-
-  <section class="perfil-container">
-
+  </section>  <section class="perfil-container">
+    <div class="perfil-header">
+      <div class="perfil-avatar">
+        <i class='bx bx-user-circle'></i>
+      </div>
+      <div class="perfil-info">
+        <h3><?= htmlspecialchars($dados['nome']) ?></h3>
+        <p><?= htmlspecialchars($email) ?></p>
+      </div>
+    </div>
     <h2>Dados Pessoais</h2>
     <form action="perfil.php" method="POST" class="perfil-form">
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
+      </div>
 
-      <label for="sexo">Sexo:</label>
-      <select name="sexo" id="sexo" required>
-        <option value="masculino" <?= $dados['sexo'] == 'masculino' ? 'selected' : '' ?>>Masculino</option>
-        <option value="feminino" <?= $dados['sexo'] == 'feminino' ? 'selected' : '' ?>>Feminino</option>
-        <option value="outro" <?= $dados['sexo'] == 'outro' ? 'selected' : '' ?>>Outro</option>
-      </select>
+      <div class="form-group">
+        <label for="sexo">Sexo:</label>
+        <select name="sexo" id="sexo" required>
+          <option value="masculino" <?= $dados['sexo'] == 'masculino' ? 'selected' : '' ?>>Masculino</option>
+          <option value="feminino" <?= $dados['sexo'] == 'feminino' ? 'selected' : '' ?>>Feminino</option>
+          <option value="outro" <?= $dados['sexo'] == 'outro' ? 'selected' : '' ?>>Outro</option>
+        </select>
+      </div>
 
-      <label for="idade">Idade:</label>
-      <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" required>
+      <div class="form-group">
+        <label for="idade">Idade:</label>
+        <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" required>
+      </div>
 
-      <button type="submit">Salvar</button>
+      <button type="submit">Salvar Alterações</button>
     </form>
 
     <h2>Redefinir Senha</h2>
     <form action="perfil.php" method="POST" class="perfil-form">
-      <label for="senha_atual">Senha atual:</label>
-      <input type="password" name="senha_atual" id="senha_atual" required>
+      <div class="form-group">
+        <label for="senha_atual">Senha atual:</label>
+        <input type="password" name="senha_atual" id="senha_atual" required>
+      </div>
 
-      <label for="nova_senha">Nova senha:</label>
-      <input type="password" name="nova_senha" id="nova_senha" required>
+      <div class="form-group">
+        <label for="nova_senha">Nova senha:</label>
+        <input type="password" name="nova_senha" id="nova_senha" required>
+      </div>
 
-      <label for="confirmar_senha">Confirmar nova senha:</label>
-      <input type="password" name="confirmar_senha" id="confirmar_senha" required>
+      <div class="form-group">
+        <label for="confirmar_senha">Confirmar nova senha:</label>
+        <input type="password" name="confirmar_senha" id="confirmar_senha" required>
+      </div>
 
-      <button type="submit">Alterar senha</button>
+      <button type="submit">Atualizar Senha</button>
     </form>
 
     <form action="../includes/logout.php" method="post" class="logout-form">
@@ -141,19 +159,20 @@ $dados = $result->fetch_assoc();
     </form>
   </section>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<?php if (isset($_SESSION['alerta'])): ?>
 <script>
+  const temaClaro = localStorage.getItem("tema") === "claro";
+
   Swal.fire({
     icon: '<?= $_SESSION['alerta']['tipo'] ?>',
     title: '<?= $_SESSION['alerta']['mensagem'] ?>',
-    confirmButtonText: 'OK'
+    confirmButtonText: 'OK',
+    background: temaClaro ? "#E6E4E4" : "#262626",
+    color: temaClaro ? "#121212" : "#ffffff",
+    confirmButtonColor: "#1D4ED8"
   });
 </script>
 <?php unset($_SESSION['alerta']); ?>
-<?php endif; ?>
-
 <script src="../assets/css/js/script.js"></script>
 </body>
 </html>

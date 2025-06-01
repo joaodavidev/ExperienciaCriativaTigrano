@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['deletar_conta'])) {
 
   if ($stmt->execute()) {
     $stmt->close();
-    // ⚠️ NÃO destruir a sessão aqui, ela será destruída após o alerta
     header("Location: ../pages/configuracoes.php?sucesso=1");
     exit();
   } else {

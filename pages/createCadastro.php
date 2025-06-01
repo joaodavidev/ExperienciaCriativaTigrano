@@ -17,11 +17,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssssis", $email, $nome, $senha, $sexo, $idade, $cpf);
 
     if ($stmt->execute()) {
-        header("Location: readCadastro.php");
-        exit();
-    } else {
-        echo "Erro ao cadastrar: " . $stmt->error;
-    }
+    echo '
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+      <meta charset="UTF-8">
+      <title>Cadastro Concluído</title>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body>
+      <script>
+        const temaClaro = localStorage.getItem("tema") === "claro";
+        Swal.fire({
+          icon: "success",
+          title: "Cadastro realizado com sucesso!",
+          text: "Você será redirecionado para o login.",
+          confirmButtonText: "OK",
+          background: temaClaro ? "#E6E4E4" : "#262626",
+          color: temaClaro ? "#121212" : "#ffffff",
+          confirmButtonColor: "#1D4ED8"
+        }).then(() => {
+          window.location.href = "../pages/login.php";
+        });
+      </script>
+    </body>
+    </html>';
+    exit();
+} else {
+    echo "Erro ao cadastrar: " . $stmt->error;
+}
+
 }
 ?>
 

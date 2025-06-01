@@ -1,14 +1,14 @@
 <?php
 session_start();
 include 'db.php';
-include 'verificar_login.php'; // ✅ Proteção
+include 'verificar_login.php';
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $assunto = $_POST['assunto'];
     $descricao = $_POST['descricao'];
     $data_envio = $_POST['data_envio'];
 
-    $email_usuario = $_SESSION['usuario']['email']; // já seguro
+    $email_usuario = $_SESSION['usuario']['email']; 
 
     $sql = 'INSERT INTO suporte (email_usuario, assunto, descricao, data_envio) VALUES (?, ?, ?, ?)';
     $stmt = $conn->prepare($sql);

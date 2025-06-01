@@ -49,13 +49,11 @@ $tickets = $stmt->get_result();
   <section class="marketplace-header">
     <div class="marketplace-title">
       <h1>Requisitar suporte</h1>
-    </div>
-
-    <div class="filtro-tickets">
+    </div>    <div class="filtro-tickets">
       <a href="?filtro=todos" class="<?= (!isset($_GET['filtro']) || $_GET['filtro'] === 'todos') ? 'ativo' : '' ?>">Todos <span><?= $total ?></span></a>
       <a href="?filtro=abertos" class="<?= ($_GET['filtro'] ?? '') === 'abertos' ? 'ativo' : '' ?>">Abertos <span><?= $abertos ?></span></a>
       <a href="?filtro=respondidos" class="<?= ($_GET['filtro'] ?? '') === 'respondidos' ? 'ativo' : '' ?>">Respondidos <span><?= $respondidos ?></span></a>
-      <button id="botaoAbrirTicket" class="ativo">Abrir Ticket</button>
+      <button id="botaoAbrirTicket">Novo Ticket</button>
     </div>
 
     <div class="suporte-lista">
@@ -104,7 +102,6 @@ $tickets = $stmt->get_result();
 <script src="../assets/css/js/script.js"></script>
 <script src="../assets/css/js/suporteUsuario.js"></script>
 <script>
-  // Adicionar funcionalidade para o botão "Abrir Ticket"
   document.addEventListener('DOMContentLoaded', function() {
     const botaoAbrirTicket = document.getElementById('botaoAbrirTicket');
     const modalNovoTicket = document.getElementById('modalNovoTicket');

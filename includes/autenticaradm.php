@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (password_verify($senha, $user['senha'])) {
             $_SESSION['email'] = $user['email'];
+            $_SESSION['admin'] = true;
 
             header("Location: ../pages/admin.php");
             exit();

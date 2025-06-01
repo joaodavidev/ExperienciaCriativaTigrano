@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'db.php';
-include 'verificar_login.php'; // Protege acesso
+include 'verificar_login.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $id = intval($_POST['id']);
@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     error_log('POST recebido em deleteTicket.php: ' . var_export($_POST, true));
 
     if ($id > 0) {
-        // ✅ Garante que o ticket pertence ao usuário logado
         $sql = "DELETE FROM suporte WHERE id = ? AND email_usuario = ?";
         $stmt = $conn->prepare($sql);
 

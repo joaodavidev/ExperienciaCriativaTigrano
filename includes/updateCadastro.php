@@ -5,8 +5,6 @@ include '../includes/verificar_login.php';
 
 $email_logado = $_SESSION['usuario']['email'];
 
-// Aqui idealmente: verificar se o usuário tem permissão para editar o ID
-// Ex: se você tiver roles (admin, user), aqui é o ponto para limitar acesso
 $id = intval($_GET['id']);
 
 $sql = "SELECT * FROM usuarios WHERE id = ?";

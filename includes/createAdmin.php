@@ -6,7 +6,7 @@ $result_checkar = $conn->query($sql_checkar);
 
 if ($result_checkar->num_rows == 0) {
     $email = 'admin@email.com';
-    $senha = password_hash(123, PASSWORD_DEFAULT); // senha segura
+    $senha = password_hash(123, PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO adm (email, senha) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
@@ -30,7 +30,10 @@ if ($result_checkar->num_rows == 0) {
                             icon: "success",
                             title: "Admin criado com sucesso!",
                             text: "Você será redirecionado para o login.",
-                            confirmButtonText: "OK"
+                            confirmButtonText: "OK",
+                            background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                            color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
+                            confirmButtonColor: "#1D4ED8"
                         }).then(() => {
                             window.location.href = "../pages/loginadm.php";
                         });
@@ -62,7 +65,10 @@ if ($result_checkar->num_rows == 0) {
                     icon: "info",
                     title: "Admin já existe!",
                     text: "Redirecionando para o login...",
-                    confirmButtonText: "OK"
+                    confirmButtonText: "OK",
+                    background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                    color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#1D4ED8"
                 }).then(() => {
                     window.location.href = "../pages/loginadm.php";
                 });

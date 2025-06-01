@@ -6,13 +6,13 @@
     padding: 0;
     font-family: 'Poppins', sans-serif;
   }
-  
-  body {
+    body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #121212;
     color: #ffffff;
     display: flex;
     height: 100vh;
+    transition: all 0.5s ease;
   }
   
 
@@ -24,7 +24,7 @@
   height: 100%;
   padding: 6px 14px;
   background: #262626;
-  transition: .5s;
+  transition: all .5s ease;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -125,9 +125,10 @@
   pointer-events: auto;
   transition-delay: calc(.1s * var(--i));
 }
-  
-  .sidebar.active ~ .main-content {
-    margin-left: 260px;
+    .sidebar.active ~ .main-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    transition: all 0.5s ease;
   }
   
   .marketplace h1 {
@@ -141,7 +142,6 @@
     color: #bbb;
     margin-bottom: 20px;
   }
-
   .search-bar {
     display: flex;
     align-items: center;
@@ -149,6 +149,7 @@
     padding: 10px 15px;
     border-radius: 10px;
     max-width: 100%;
+    transition: all 0.5s ease;
   }
   
   
@@ -171,6 +172,7 @@
 body.light-mode {
     background-color: #ffffff !important;
     color: #262626;
+    transition: all 0.5s ease;
 }
 
 body.light-mode .sidebar {
@@ -202,25 +204,25 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
   body.light-mode .search-bar i {
     color: #262626;
   }
-
   .main-content {
     margin-left: 80px; 
     padding: 30px;
-    width: 100%;
+    width: calc(100% - 80px);
     background-color: #121212;
     color: white;
-    transition: margin-left 0.5s;
+    transition: all 0.5s ease;
+    overflow-x: hidden;
   }
 
 
   /*css produto*/
-
   .main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-bottom: 20px;
+    transition: all 0.5s ease;
   }
   
   #btnNovoProduto {
@@ -305,20 +307,21 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
   }
   .produtos-listagem {
     margin-top: 30px;
+    transition: all 0.5s ease;
   }
   .tabela-produtos {
     background-color: #1e1e1e;
     border: 1px solid #333;
     border-radius: 10px;
     overflow: hidden;
-
-  }
-  .tabela-cabecalho, .tabela-linha {
+    transition: all 0.5s ease;
+  }  .tabela-cabecalho, .tabela-linha {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   padding: 12px 24px;
   align-items: center;
   column-gap: 20px;
+  transition: all 0.5s ease;
   }
 
   .tabela-cabecalho {
@@ -326,9 +329,11 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
     font-weight: 500;
     font-size: 14px;
     color: #ccc;
+    transition: all 0.5s ease;
   }
   .tabela-linha {
     border-top: 1px solid #333;
+    transition: all 0.5s ease;
   }
 
 .tabela-linha span,
@@ -349,20 +354,22 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
 
 
 
-
   .produto-info {
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: all 0.5s ease;
   }
   .produto-info strong {
     font-size: 15px;
     color: white;
+    transition: color 0.5s ease;
   }
   .produto-info p {
     font-size: 13px;
     color: #aaa;
     margin-top: 2px;
+    transition: color 0.5s ease;
   }
   .icone-produto {
     width: 40px;
@@ -479,6 +486,7 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
 body.light-mode .main-content {
   background-color: #ffffff !important;
   color: #262626;
+  transition: all 0.5s ease;
 }
 
 /* Botão novo produto */
@@ -523,13 +531,16 @@ body.light-mode .produto p {
 body.light-mode .tabela-produtos {
   background-color: #f9f9f9;
   border: 1px solid #ccc;
+  transition: all 0.5s ease;
 }
 body.light-mode .tabela-cabecalho {
   background-color: #e0e0e0;
   color: #333;
+  transition: all 0.5s ease;
 }
 body.light-mode .tabela-linha {
   border-top: 1px solid #ddd;
+  transition: all 0.5s ease;
 }
 
 /* Modal inputs */

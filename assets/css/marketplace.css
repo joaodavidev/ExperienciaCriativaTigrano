@@ -128,15 +128,17 @@
 
   .main-content {
     margin-left: 80px; 
-    padding: 30px;
-    width: 100%;
+    padding: 20px;
+    width: calc(100% - 80px);
     background-color: #121212;
     color: white;
-    transition: margin-left 0.5s;
+    transition: all 0.5s ease;
+    overflow-x: hidden;
   }
   
   .sidebar.active ~ .main-content {
-    margin-left: 260px;
+    margin-left: 220px;
+    width: calc(100% - 220px);
   }
   
   .marketplace h1 {
@@ -189,11 +191,13 @@
   body.light-mode {
     background-color: #ffffff !important;
     color: #262626;
+    transition: all 0.5s ease;
   }
   
   body.light-mode .main-content {
     background-color: #ffffff !important;
     color: #262626;
+    transition: all 0.5s ease;
   }
   
   body.light-mode .sidebar {
@@ -277,18 +281,29 @@ body.light-mode .cart-icon:hover {
   color: #1D4ED8;
 }
 
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #121212;
   color: white;
   margin: 0;
   padding: 0;
+  display: flex;
+  height: 100vh;
+  transition: all 0.5s ease;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
-  padding-top: 2rem;
+  padding-top: 1rem;
+  transition: all 0.5s ease;
+}
+
+.content-wrapper {
+  width: 100%;
+  padding: 0;
+  transition: all 0.5s ease;
 }
 
 .marketplace-title h1 {
@@ -305,63 +320,142 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
-  padding-inline: 1rem;
+  padding: 1rem;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  transition: all 0.5s ease;
 }
 
 .product-card {
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
-  position: relative;
-  top: 5vh;
+  background-color: #262626;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 7px ;
+  gap: 10px;
+  min-height: 280px;
+  margin: 0;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-left: 3px solid #1D4ED8;
+}
+
+body.light-mode .product-card {
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  border-left: 3px solid #1D4ED8;
 }
 
 .product-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(29,78,216,0.2);
 }
 
 .product-card h2 {
   color: #ffffff;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-bottom: 2px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.product-card h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #1D4ED8;
+  border-radius: 2px;
+}
+
+body.light-mode .product-card h2 {
+  color: #262626;
 }
 
 .product-card .categoria {
-  font-size: 0.9em;
-  color: #888;
+  display: inline-block;
+  font-size: 0.8em;
+  color: #1D4ED8;
+  background-color: rgba(29, 78, 216, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+body.light-mode .product-card .categoria {
+  color: #1D4ED8;
+  background-color: rgba(29, 78, 216, 0.1);
 }
 
 .product-card .descricao {
   font-size: 0.95em;
   color: #ccc;
+  line-height: 1.5;
+  margin-bottom: 5px;
+  flex-grow: 1;
+}
+
+body.light-mode .product-card .descricao {
+  color: #555;
 }
 
 .product-card .preco {
-  font-size: 1.1em;
-  color: #4CAF50;
-  font-weight: bold;
+  font-size: 1.2em;
+  color: #1D4ED8;
+  font-weight: 700;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.light-mode .product-card .preco {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .product-card .vendedor {
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: #888;
+  display: flex;
+  align-items: center;
+}
+
+body.light-mode .product-card .vendedor {
+  color: #666;
+}
+
+.form-selecionar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
 }
 
 .btn-carrinho {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--texto);
   font-size: 24px;
   padding: 0;
 }
 
+.btn-carrinho i {
+  color: #777;
+  transition: color 0.2s, transform 0.2s;
+}
+
 .btn-carrinho:hover i {
-  color: #00c853;
+  color: #1D4ED8;
   transform: scale(1.2);
-  transition: 0.2s;
+}
+
+body.light-mode .btn-carrinho i {
+  color: #555;
 }
