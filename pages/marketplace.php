@@ -1,5 +1,7 @@
 <?php
+session_start();
 include '../includes/db.php';
+include '../includes/verificar_login.php';
 
 $mensagem_erro = null;
 $produtos = [];
@@ -28,7 +30,6 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
 
     $stmt->close();
 } else {
-    // exibe quando não tem busca
     $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
             FROM produtos p
             LEFT JOIN usuarios u ON p.vendedor_email = u.email

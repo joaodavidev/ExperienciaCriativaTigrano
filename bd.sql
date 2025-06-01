@@ -1,5 +1,5 @@
-CREATE DATABASE ecommerce;
-USE ecommerce;
+CREATE DATABASE tigrano;
+USE tigrano;
 
 CREATE TABLE usuarios (
   email VARCHAR(255) PRIMARY KEY,

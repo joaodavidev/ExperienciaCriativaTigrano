@@ -1,24 +1,14 @@
 <?php
-
 session_start();
 include '../includes/db.php';
+include '../includes/verificar_login.php';
 require '../vendor/autoload.php';
 
-//integracao com API do Stripe para processar pagamentos
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-
-
-
-if (!isset($_SESSION['usuario']['email'])) {
-    header("location: login.php");
-    exit;
-}
 
 $usuario_email = $_SESSION['usuario']['email'];
 

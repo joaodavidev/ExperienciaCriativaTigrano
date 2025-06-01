@@ -1,11 +1,7 @@
 <?php
 session_start();
 require_once '../includes/db.php';
-
-if (!isset($_SESSION['usuario'])) {
-  header("Location: login.php");
-  exit();
-}
+include '../includes/verificar_login.php';
 
 $email = $_SESSION['usuario']['email'];
 

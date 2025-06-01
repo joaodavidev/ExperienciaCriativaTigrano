@@ -1,17 +1,12 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/verificar_login.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
-    if (!isset($_SESSION['usuario']['email'])) {
-        header("location: login.php");
-        exit;
-    }
-
     $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = $_POST['id'];
 
-    // para tirar duplicidade
     $check = $conn->prepare("SELECT * FROM carrinho WHERE usuario_email = ? AND produto_id = ?");
     $check->bind_param("si", $usuario_email, $produto_id);
     $check->execute();
@@ -30,12 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     exit();
 }
 
-// Remover produto do carrinho
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remover_id'])) {
-    if (!isset($_SESSION['usuario']['email'])) {
-        die("Usuário não autenticado.");
-    }
-
     $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = $_POST['remover_id'];
 
@@ -48,24 +38,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remover_id'])) {
     exit();
 }
 
-// Buscar produtos do carrinho
 $produtosCarrinho = [];
-if (isset($_SESSION['usuario']['email'])) {
-    $usuario_email = $_SESSION['usuario']['email'];
-    $sql = "SELECT p.id, p.nome, p.preco, p.descricao 
-            FROM carrinho c
-            JOIN produtos p ON c.produto_id = p.id
-            WHERE c.usuario_email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $usuario_email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$usuario_email = $_SESSION['usuario']['email'];
 
-    if ($result->num_rows > 0) {
-        $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
-    }
-    $stmt->close();
+$sql = "SELECT p.id, p.nome, p.preco, p.descricao 
+        FROM carrinho c
+        JOIN produtos p ON c.produto_id = p.id
+        WHERE c.usuario_email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $usuario_email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $produtosCarrinho = $result->fetch_all(MYSQLI_ASSOC);
 }
+$stmt->close();
 ?>
 
 <!DOCTYPE html>

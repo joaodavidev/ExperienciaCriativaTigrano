@@ -3,10 +3,9 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['usuario'];  // campo de login continua com o name="usuario" no formulário
+    $email = $_POST['usuario'];
     $senha = $_POST['senha'];
 
-    // Consulta segura
     $stmt = $conn->prepare("SELECT email, nome, senha FROM usuarios WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -20,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'email' => $user['email'],
                 'nome'  => $user['nome']
             ];
+            $_SESSION['usuario_logado'] = true;
 
             header("Location: ../pages/marketplace.php");
             exit();

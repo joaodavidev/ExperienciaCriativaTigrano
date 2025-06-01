@@ -1,16 +1,14 @@
 <?php
-include 'db.php';
 session_start();
+include 'db.php';
+include 'verificar_login.php'; // ✅ Proteção
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $assunto = $_POST['assunto'];
     $descricao = $_POST['descricao'];
     $data_envio = $_POST['data_envio'];
-    
-    if (!isset($_SESSION['usuario']['email'])) {
-        die("Usuário não autenticado.");
-    }
-    $email_usuario = $_SESSION['usuario']['email'];
+
+    $email_usuario = $_SESSION['usuario']['email']; // já seguro
 
     $sql = 'INSERT INTO suporte (email_usuario, assunto, descricao, data_envio) VALUES (?, ?, ?, ?)';
     $stmt = $conn->prepare($sql);
@@ -26,5 +24,4 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $stmt->close();
 }
 $conn->close();
-
 ?>

@@ -1,11 +1,7 @@
 <?php
 session_start();
 require_once 'db.php';
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../pages/login.php");
-    exit();
-}
+include 'verificar_login.php'; // ✅ Proteção unificada
 
 $vendedorEmail = $_SESSION['usuario']['email'];
 

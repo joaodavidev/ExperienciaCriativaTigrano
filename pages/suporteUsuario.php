@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+include '../includes/verificar_login.php';
 
 $email = $_SESSION['usuario']['email'];
 

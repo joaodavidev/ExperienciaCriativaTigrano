@@ -1,11 +1,7 @@
 <?php
 session_start();
 require_once '../includes/db.php';
-
-if (!isset($_SESSION['usuario'])) {
-  header("Location: ../pages/login.php");
-  exit();
-}
+include 'verificar_login.php';
 
 $email = $_SESSION['usuario']['email'];
 
@@ -16,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['deletar_conta'])) {
 
   if ($stmt->execute()) {
     $stmt->close();
-    // ⚠️ NÃO destruir a sessão aqui
+    // ⚠️ NÃO destruir a sessão aqui, ela será destruída após o alerta
     header("Location: ../pages/configuracoes.php?sucesso=1");
     exit();
   } else {

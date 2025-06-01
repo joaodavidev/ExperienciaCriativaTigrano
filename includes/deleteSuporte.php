@@ -1,6 +1,7 @@
 <?php
-include 'db.php';
 session_start();
+include 'db.php';
+include 'verificar_login.php';
 
 if (!isset($_GET['id'])) {
     header("Location: ../pages/readSuporte.php");
@@ -8,10 +9,17 @@ if (!isset($_GET['id'])) {
 }
 
 $id = intval($_GET['id']);
+$email = $_SESSION['usuario']['email']; 
 
-$sql = "DELETE FROM suporte WHERE id = ?";
+// Deleta somente se o ticket pertence ao usuário
+$sql = "DELETE FROM suporte WHERE id = ? AND email_usuario = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $id);
+
+if (!$stmt) {
+    die("Erro no prepare: " . $conn->error);
+}
+
+$stmt->bind_param('is', $id, $email);
 
 if ($stmt->execute()) {
     header("Location: ../pages/readSuporte.php");

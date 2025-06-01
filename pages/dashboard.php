@@ -1,11 +1,10 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/verificar_login.php';
 
-$emailVendedor = $_SESSION['usuario']['email'] ?? '';
+$emailVendedor = $_SESSION['usuario']['email'];
 
-
-// Saldo total
 $querySaldo = $conn->prepare("
     SELECT SUM(v.quantidade_vendas * p.preco) AS saldo_total
     FROM vendas v
