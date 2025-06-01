@@ -1,4 +1,3 @@
-// Função global para excluir admin com SweetAlert
 function confirmarExclusao(e) {
   e.preventDefault();
 

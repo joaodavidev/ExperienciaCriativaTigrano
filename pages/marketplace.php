@@ -6,17 +6,33 @@ include '../includes/verificar_login.php';
 $mensagem_erro = null;
 $produtos = [];
 
+// Configuração padrão de preço
+$precoMin = isset($_GET['preco_min']) ? floatval($_GET['preco_min']) : 0;
+$precoMax = isset($_GET['preco_max']) ? floatval($_GET['preco_max']) : 1000;
+
+// Obter o preço mínimo e máximo disponíveis no banco
+$sql_precos = "SELECT MIN(preco) as min_preco, MAX(preco) as max_preco FROM produtos WHERE status = 'Ativo'";
+$result_precos = $conn->query($sql_precos);
+$precos = $result_precos->fetch_assoc();
+
+$precoMinDB = 0; // Sempre começa em zero
+$precoMaxDB = isset($precos['max_preco']) ? ceil($precos['max_preco']) : 1000;
+
+// Se não foi definido via GET, usa os valores do banco
+if (!isset($_GET['preco_min'])) $precoMin = $precoMinDB;
+if (!isset($_GET['preco_max'])) $precoMax = $precoMaxDB;
+
 // verifica a busca por nome no método GET
-if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
-    $nome = trim($_GET['nome']);
+if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET['nome']);
 
     $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
             FROM produtos p
             JOIN usuarios u ON p.vendedor_email = u.email
-            WHERE p.nome = ? AND p.status = 'Ativo'";
+            WHERE p.nome = ? AND p.status = 'Ativo' 
+            AND p.preco BETWEEN ? AND ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $nome);
+    $stmt->bind_param("sdd", $nome, $precoMin, $precoMax);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -33,9 +49,12 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
     $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
             FROM produtos p
             LEFT JOIN usuarios u ON p.vendedor_email = u.email
-            WHERE p.status = 'Ativo'";
+            WHERE p.status = 'Ativo' AND p.preco BETWEEN ? AND ?";
     
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("dd", $precoMin, $precoMax);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -44,6 +63,8 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
     } else {
         $mensagem_erro = "Nenhum produto ativo encontrado.";
     }
+    
+    $stmt->close();
 }
 ?>
 
@@ -77,8 +98,7 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
   <main class="main-content">
     <div class="content-wrapper">
       <header>
-        <section class="marketplace-header">
-          <div class="marketplace-title">
+        <section class="marketplace-header">          <div class="marketplace-title">
             <div>
               <h1>Marketplace</h1>
               <p>Encontre aqui os melhores infoprodutos.</p>
@@ -88,10 +108,41 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
             </a>
           </div>
         </section>
+        
         <div class="search-bar">
           <form method="GET" action="marketplace.php">
-            <input type="text" name="nome" placeholder="Buscar produto...">
-            <button type="submit"><i class='bx bx-search'></i></button>
+            <div class="search-input">
+              <input type="text" name="nome" placeholder="Buscar produto..." value="<?= isset($_GET['nome']) ? htmlspecialchars($_GET['nome']) : '' ?>">
+              <button type="submit"><i class='bx bx-search'></i></button>
+            </div>
+            
+            <div class="price-filter">
+              <div class="price-inputs">
+                <div class="input-group">
+                  <span class="price-label">Min:</span>
+                  <div class="input-wrapper">
+                    <span class="currency-symbol">R$</span>
+                    <input type="number" id="input-preco-min" name="preco_min" min="0" max="<?= $precoMaxDB ?>" value="<?= $precoMin ?>" step="1">
+                  </div>
+                </div>
+                <div class="input-group">
+                  <span class="price-label">Max:</span>
+                  <div class="input-wrapper">
+                    <span class="currency-symbol">R$</span>
+                    <input type="number" id="input-preco-max" name="preco_max" min="0" max="<?= $precoMaxDB ?>" value="<?= $precoMax ?>" step="1">
+                  </div>
+                </div>
+              </div>              <div class="filter-buttons">
+                <button type="submit" class="btn-filtrar">
+                  <i class='bx bx-filter-alt'></i>
+                  Filtrar
+                </button>
+                <a href="marketplace.php" class="btn-limpar">
+                  <i class='bx bx-reset'></i>
+                  Limpar
+                </a>
+              </div>
+            </div>
           </form>
         </div>
       </header>
@@ -134,12 +185,86 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {
     color: temaClaro ? "#121212" : "#ffffff",
     confirmButtonColor: "#1D4ED8"
   });
-
   const url = new URL(window.location.href);
   url.searchParams.delete("adicionado");
   window.history.replaceState({}, document.title, url.toString());
 </script>
 <?php endif; ?>
+<script>
+  // Função para formatar números para moeda (R$)
+  function formatCurrency(value) {
+    return 'R$ ' + value.toFixed(2).replace('.', ',');
+  }
+  
+  // Função para lidar com a mudança nos inputs e aplicar validações
+  function handleInputChange(inputId, type) {
+    const input = document.getElementById(inputId);
+    const min = parseInt(input.min);
+    const max = parseInt(input.max);
+    let value = parseInt(input.value);
+    
+    // Garante que não seja NaN
+    if (isNaN(value)) {
+      value = (type === 'min') ? min : max;
+    }
+    
+    // Garante que o valor esteja dentro dos limites
+    if (value < min) value = min;
+    if (value > max) value = max;
+    
+    input.value = value;
+  }  // Função para limpar os filtros de preço
+  function limparFiltrosPreco() {
+    console.log('Função limparFiltrosPreco chamada');
+    
+    const inputPrecoMin = document.getElementById('input-preco-min');
+    const inputPrecoMax = document.getElementById('input-preco-max');
+    
+    // Restaura os valores para o mínimo (zero) e máximo
+    inputPrecoMin.value = 0;
+    inputPrecoMax.value = inputPrecoMax.max;
+    
+    // Limpa o campo de busca também
+    const inputBusca = document.querySelector('input[name="nome"]');
+    if (inputBusca) {
+      inputBusca.value = '';
+    }
+    
+    console.log('Valores redefinidos, enviando formulário...');
+    
+    // Submete automaticamente o formulário para atualizar os resultados
+    inputPrecoMin.form.submit();
+  }
+    // Inicializa os displays e adiciona eventos
+  document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona eventos para quando o usuário terminar de digitar
+    const inputPrecoMin = document.getElementById('input-preco-min');
+    const inputPrecoMax = document.getElementById('input-preco-max');
+    
+    inputPrecoMin.addEventListener('blur', function() {
+      handleInputChange('input-preco-min', 'min');
+    });
+    
+    inputPrecoMax.addEventListener('blur', function() {
+      handleInputChange('input-preco-max', 'max');
+    });
+    
+    // Adiciona eventos para lidar com as teclas Enter
+    inputPrecoMin.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        handleInputChange('input-preco-min', 'min');
+        e.preventDefault(); // Previne a submissão do formulário
+      }
+    });
+    
+    inputPrecoMax.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        handleInputChange('input-preco-max', 'max');
+        e.preventDefault(); // Previne a submissão do formulário
+      }
+    });
+  });
+</script>
 <script src="../assets/css/js/script.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@ CREATE TABLE adm (
   nome VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL
 );
-
+SELECT * FROM vendas;
 CREATE TABLE suporte (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email_adm VARCHAR(255),

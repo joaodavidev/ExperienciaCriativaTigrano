@@ -152,24 +152,38 @@
     color: #bbb;
     margin-bottom: 20px;
   }
-  
-  .search-bar {
+    .search-bar {
+    display: flex;
+    background-color: #262626;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+   .search-bar form {
     display: flex;
     align-items: center;
-    background-color: #4a4a4a;
-    padding: 10px 15px;
-    border-radius: 10px;
-    max-width: 100%;
-  }
-  
- .search-bar form {
-    display: flex;
-    justify-content: space-between;
     width: 100%;
-  } 
+    gap: 15px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    display: flex;
+    min-width: 280px;
+    flex: 2;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
 
-  .search-bar input {
+  body.light-mode .search-input {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .search-input input {
     flex: 1;
+    padding: 10px 15px;
     background: transparent;
     border: none;
     color: white;
@@ -177,9 +191,16 @@
     outline: none;
   }
   
+  body.light-mode .search-input input {
+    color: #262626;
+  }
+  
   .search-bar button {
     background: none;
     border: none;
+    padding: 0 15px;
+    color: white;
+    cursor: pointer;
   }
 
   .search-bar i {
@@ -223,9 +244,9 @@
   body.light-mode .search-bar {
     background-color: #e0e0e0;
   }
-  
-  body.light-mode .search-bar input,
-  body.light-mode .search-bar i {
+    body.light-mode .search-bar input,
+  body.light-mode .search-bar i,
+  body.light-mode .search-input input {
     color: #262626;
   }
 
@@ -298,6 +319,13 @@ body {
   flex-direction: column;
   padding-top: 1rem;
   transition: all 0.5s ease;
+  margin-left: 80px;
+  width: calc(100% - 80px);
+}
+
+.sidebar.active ~ .main-content {
+  margin-left: 220px;
+  width: calc(100% - 220px);
 }
 
 .content-wrapper {
@@ -458,4 +486,255 @@ body.light-mode .product-card .vendedor {
 
 body.light-mode .btn-carrinho i {
   color: #555;
+}
+
+/* FILTRO DE PREÇO */
+.search-bar form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  display: flex;
+  min-width: 280px;
+  flex: 2;
+}
+
+.search-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.price-filter {
+  display: flex;
+  align-items: center;
+  min-width: 320px;
+  gap: 10px;
+  flex: 1;
+}
+
+.price-inputs {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.price-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 30px;
+}
+
+.currency-symbol {
+  font-size: 13px;
+  color: #ccc;
+  margin-right: 2px;
+}
+
+.input-wrapper input {
+  width: 70px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 13px;
+  outline: none;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-filtrar, .btn-limpar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-filtrar {
+  background-color: #1D4ED8;
+  color: white;
+}
+
+.btn-filtrar:hover {
+  background-color: #1e40af;
+}
+
+.btn-limpar {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ccc;
+}
+
+.btn-limpar:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+a.btn-limpar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ccc;
+  text-decoration: none;
+}
+
+a.btn-limpar:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+}
+
+body.light-mode a.btn-limpar {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+body.light-mode a.btn-limpar:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para o modo claro */
+body.light-mode .input-wrapper {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .currency-symbol,
+body.light-mode .input-wrapper input {
+  color: #333;
+}
+
+.btn-filtrar {
+  border-radius: 6px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-filtrar:hover {
+  background-color: #1e40af;
+}
+
+.btn-limpar {
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-limpar:hover {
+  background-color: #666;
+}
+
+body.light-mode .btn-limpar {
+  background-color: #d4d4d4;
+  color: #262626;
+}
+
+body.light-mode .btn-limpar:hover {
+  background-color: #bbb;
+}
+
+/* Modo Claro */
+body.light-mode .price-range {
+  color: #555;
+}
+
+body.light-mode .slider {
+  background: #ccc;
+}
+
+body.light-mode .slider::-webkit-slider-thumb {
+  border: 2px solid #262626;
+}
+
+body.light-mode .slider::-moz-range-thumb {
+  border: 2px solid #262626;
+}
+
+body.light-mode .input-wrapper {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .currency-symbol {
+  color: #555;
+}
+
+body.light-mode .input-wrapper input {
+  color: #262626;
+}
+
+body.light-mode .price-label {
+  color: #444;
+}
+
+/* Adicionando estilos para responsividade */
+@media (max-width: 768px) {
+  .search-bar form {
+    flex-direction: column;
+  }
+  
+  .search-input, .price-filter {
+    min-width: 100%;
+  }
+  
+  .price-filter {
+    flex-direction: column;
+  }
+  
+  .filter-buttons {
+    width: 100%;
+  }
 }

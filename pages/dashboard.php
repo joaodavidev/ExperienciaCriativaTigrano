@@ -47,18 +47,195 @@ $queryTotalVendas->execute();
 $resultTotalVendas = $queryTotalVendas->get_result();
 $vendasTotais = $resultTotalVendas->fetch_assoc()['total_vendas_lifetime'] ?? 0.00;
 
-// Total de clientes  (apenas do vendedor)
-$queryClientes = $conn->prepare("
-    SELECT COUNT(DISTINCT ped.comprador_email) AS total_clientes
-    FROM produtos p
-    JOIN produtos_pedido pped ON p.id = pped.produto_id
-    JOIN pedidos ped ON pped.pedido_id = ped.id
-    WHERE p.vendedor_email = ?
-");
-$queryClientes->bind_param("s", $emailVendedor);
-$queryClientes->execute();
-$result = $queryClientes->get_result();
-$totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
+// Verificar se a tabela vendas existe e contar os clientes
+$checkVendas = $conn->query("SHOW TABLES LIKE 'vendas'");
+$tabelaVendasExiste = $checkVendas->num_rows > 0;
+
+// Total de clientes baseado nas vendas
+if ($tabelaVendasExiste) {
+    $queryClientes = $conn->prepare("
+        SELECT COUNT(DISTINCT cliente_email) AS total_clientes
+        FROM vendas v
+        JOIN produtos p ON v.produto_id = p.id
+        WHERE p.vendedor_email = ?
+    ");
+    if (!$queryClientes) {
+        // Tentativa alternativa se a coluna cliente_email não existir
+        $queryClientes = $conn->prepare("
+            SELECT 
+                COUNT(DISTINCT CASE WHEN quantidade_vendas > 0 THEN produto_id ELSE null END) AS total_clientes
+            FROM vendas v
+            JOIN produtos p ON v.produto_id = p.id
+            WHERE p.vendedor_email = ?
+        ");
+    }
+} else {
+    // Consulta alternativa usando pedidos
+    $queryClientes = $conn->prepare("
+        SELECT COUNT(DISTINCT ped.comprador_email) AS total_clientes
+        FROM produtos p
+        JOIN produtos_pedido pped ON p.id = pped.produto_id
+        JOIN pedidos ped ON pped.pedido_id = ped.id
+        WHERE p.vendedor_email = ?
+    ");
+}
+
+if(!$queryClientes) {
+    // Se tudo falhar, use 0 como valor padrão
+    $totalClientes = 0;
+} else {
+    $queryClientes->bind_param("s", $emailVendedor);
+    $queryClientes->execute();
+    $result = $queryClientes->get_result();
+    $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
+}
+
+// Verificamos se existe a tabela vendas
+$checkVendas = $conn->query("SHOW TABLES LIKE 'vendas'");
+$tabelaVendasExiste = $checkVendas->num_rows > 0;
+
+// Buscar as últimas compras 
+$ultimasCompras = [];
+
+if ($tabelaVendasExiste) {
+        // Verificar qual campo de email existe na tabela vendas
+    $queryCheckEmail = $conn->query("SHOW COLUMNS FROM vendas WHERE Field = 'cliente_email'");
+    if ($queryCheckEmail->num_rows > 0) {
+        $colunaEmail = 'v.cliente_email';
+    } else {
+        $queryCheckAlternativo = $conn->query("SHOW COLUMNS FROM vendas WHERE Field = 'email_cliente'");
+        if ($queryCheckAlternativo->num_rows > 0) {
+            $colunaEmail = 'v.email_cliente';
+        } else {
+            $colunaEmail = 'NULL';  // caso não exista nenhuma das colunas
+        }
+    }
+    
+    // Tentar a partir da tabela vendas usando a coluna de email do cliente correta
+    $queryUltimasCompras = $conn->prepare("
+      SELECT 
+          p.nome AS nome_produto,
+          v.data_vendas AS data_pedido,
+          u.nome AS nome_cliente,
+          v.comprador_email AS email_cliente
+      FROM vendas v
+      JOIN produtos p ON v.produto_id = p.id
+      JOIN usuarios u ON v.comprador_email = u.email
+      WHERE p.vendedor_email = ?
+      ORDER BY v.data_vendas DESC
+      LIMIT 5
+  ");
+
+    
+    if(!$queryUltimasCompras) {
+        // Estratégia alternativa - consulta mais simples
+        $queryUltimasCompras = $conn->prepare("
+            SELECT 
+                p.nome AS nome_produto,
+                v.data_vendas AS data_pedido,
+                'Cliente' AS nome_cliente
+            FROM vendas v
+            JOIN produtos p ON v.produto_id = p.id
+            WHERE p.vendedor_email = ?
+            ORDER BY v.data_vendas DESC
+            LIMIT 5
+        ");
+    }
+    
+    if($queryUltimasCompras) {
+        $queryUltimasCompras->bind_param("s", $emailVendedor);
+        $queryUltimasCompras->execute();
+        $resultUltimasCompras = $queryUltimasCompras->get_result();
+        
+        while ($row = $resultUltimasCompras->fetch_assoc()) {
+            // Se temos o email do cliente mas não o nome, vamos buscar o nome
+            if (isset($row['email_cliente']) && $row['nome_cliente'] == 'Cliente') {
+                $emailCliente = $row['email_cliente'];
+                $queryNomeCliente = $conn->prepare("SELECT nome FROM usuarios WHERE email = ? LIMIT 1");
+                $queryNomeCliente->bind_param("s", $emailCliente);
+                $queryNomeCliente->execute();
+                $resultNome = $queryNomeCliente->get_result();
+                if ($resultNome && $nomeRow = $resultNome->fetch_assoc()) {
+                    $row['nome_cliente'] = $nomeRow['nome'];
+                }
+            }
+            $ultimasCompras[] = $row;
+        }
+    }
+}
+
+// Se não encontrou na tabela vendas, tenta na tabela pedidos
+if (empty($ultimasCompras)) {
+    $queryUltimasCompras = $conn->prepare("
+        SELECT 
+            COALESCE(
+                u.nome,
+                (SELECT nome FROM usuarios WHERE email = ped.comprador_email LIMIT 1),
+                'Cliente'
+            ) AS nome_cliente, 
+            p.nome AS nome_produto, 
+            ped.data_pedido,
+            ped.comprador_email AS email_cliente
+        FROM produtos p
+        JOIN produtos_pedido pped ON p.id = pped.produto_id
+        JOIN pedidos ped ON pped.pedido_id = ped.id
+        LEFT JOIN usuarios u ON ped.comprador_email = u.email
+        WHERE p.vendedor_email = ?
+        ORDER BY ped.data_pedido DESC
+        LIMIT 5
+    ");
+    
+    if(!$queryUltimasCompras) {
+        // Consulta simplificada como último recurso
+        $queryUltimasCompras = $conn->prepare("
+            SELECT 
+                'Cliente' AS nome_cliente, 
+                p.nome AS nome_produto, 
+                ped.data_pedido
+            FROM produtos p
+            JOIN produtos_pedido pped ON p.id = pped.produto_id
+            JOIN pedidos ped ON pped.pedido_id = ped.id
+            WHERE p.vendedor_email = ?
+            ORDER BY ped.data_pedido DESC
+            LIMIT 5
+        ");
+    }
+    
+    if($queryUltimasCompras) {
+        $queryUltimasCompras->bind_param("s", $emailVendedor);
+        $queryUltimasCompras->execute();
+        $resultUltimasCompras = $queryUltimasCompras->get_result();
+        
+        while ($row = $resultUltimasCompras->fetch_assoc()) {
+            // Se temos o email do cliente mas não o nome, vamos buscar o nome
+            if (isset($row['email_cliente']) && $row['nome_cliente'] == 'Cliente') {
+                $emailCliente = $row['email_cliente'];
+                $queryNomeCliente = $conn->prepare("SELECT nome FROM usuarios WHERE email = ? LIMIT 1");
+                $queryNomeCliente->bind_param("s", $emailCliente);
+                $queryNomeCliente->execute();
+                $resultNome = $queryNomeCliente->get_result();
+                if ($resultNome && $nomeRow = $resultNome->fetch_assoc()) {
+                    $row['nome_cliente'] = $nomeRow['nome'];
+                }
+            }
+            $ultimasCompras[] = $row;
+        }
+    }
+}
+
+// Se ainda estiver vazio, adiciona dados ficticios para demonstração apenas se estiver em desenvolvimento
+if (empty($ultimasCompras) && $_SERVER['SERVER_NAME'] == 'localhost') {
+    $ultimasCompras[] = [
+        'nome_cliente' => 'João Silva',
+        'nome_produto' => 'Produto de Exemplo',
+        'data_pedido' => date('Y-m-d H:i:s')
+    ];
+    $ultimasCompras[] = [
+        'nome_cliente' => 'Maria Oliveira',
+        'nome_produto' => 'Outro Produto',
+        'data_pedido' => date('Y-m-d H:i:s', strtotime('-1 day'))
+    ];
+}
 
 ?>
 
@@ -88,48 +265,74 @@ $totalClientes = $result->fetch_assoc()['total_clientes'] ?? 0;
     <li class="lista-item"><a href="../pages/configuracoes.php"><i class='bx bx-cog'></i><span class="nome-link" style="--i:7;">Configurações</span></a></li>
     <li class="lista-item"><a href="../pages/perfil.php"><i class='bx bx-user'></i><span class="nome-link" style="--i:8;">Perfil</span></a></li>
   </ul>
-</nav>
-  <main class="main-content">
-    <div class="info-cards">
-  <div class="info-card purple">
-    <i class='bx bx-wallet'></i>
-    <div>
-      <span>Saldo Disponível</span>
-      <h3>R$ <?= number_format($saldo, 2, ',', '.') ?></h3>
-    </div>
-  </div>
-  <div class="info-card green">
-    <i class='bx bx-line-chart'></i>
-    <div>
-      <span>Vendas este mês</span>
-      <h3>R$ <?= number_format($vendasMes, 2, ',', '.') ?></h3>
-    </div>
-  </div>
-  <div class="info-card blue">
-    <i class='bx bx-cart'></i>
-    <div>
-      <span>Vendas totais</span>
-      <h3>R$ <?= number_format($vendasTotais, 2, ',', '.') ?></h3>
-    </div>
-  </div>
-  <div class="info-card pink">
-    <i class='bx bx-group'></i>
-    <div>
-      <span>Clientes</span>
-      <h3><?= $totalClientes ?></h3>
-    </div>
-  </div>
-</div>
-
-    <div class="main-header">
+</nav>  <main class="main-content">    <div class="main-header">
       <h1>Dashboard</h1>
+      <div class="header-actions">
+        <div class="search-bar">
+          <input type="text" name="nome" placeholder="Buscar Produtos"/>
+          <button><i class='bx bx-search'></i></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="info-cards">
+      <div class="info-card purple">
+        <i class='bx bx-wallet'></i>
+        <div>
+          <span>Saldo Disponível</span>
+          <h3>R$ <?= number_format($saldo, 2, ',', '.') ?></h3>
+        </div>
+      </div>
+      <div class="info-card blue">
+        <i class='bx bx-cart'></i>
+        <div>
+          <span>Vendas Totais</span>
+          <h3>R$ <?= number_format($vendasTotais, 2, ',', '.') ?></h3>
+        </div>
+      </div>
+      <div class="info-card pink">
+        <i class='bx bx-group'></i>
+        <div>
+          <span>Clientes</span>
+          <h3><?= $totalClientes ?></h3>
+        </div>
+      </div>
     </div>
 
-    <div class="search-bar">
-        <input type="text" name="nome" placeholder="Buscar Produtos"/>
-      <button><i class='bx bx-search'></i></button>
+    <div class="recent-purchases">
+      <h2>Compras Recentes</h2>      <div class="purchases-list">
+        <?php if (empty($ultimasCompras)): ?>
+          <div class="no-purchases">
+            <i class='bx bx-cart'></i>
+            <p>Nenhuma compra encontrada.</p>
+            <small>Quando seus produtos forem vendidos, as compras aparecerão aqui.</small>
+          </div>
+        <?php else: ?>
+          <?php foreach ($ultimasCompras as $compra): ?>
+            <div class="purchase-item">
+              <div class="purchase-info">
+                <div class="client-avatar">
+                  <i class='bx bx-user'></i>
+                </div>
+                <div class="purchase-details">
+                  <h3><?= htmlspecialchars($compra['nome_cliente']) ?></h3>
+                  <p>comprou <strong><?= htmlspecialchars($compra['nome_produto']) ?></strong></p>
+                  <span class="purchase-date"><?= date('d/m/Y', strtotime($compra['data_pedido'])) ?></span>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </div>
     </div>
-  </main>
-  <script src="../assets/css/js/script.js"></script>
+  </main>  <script src="../assets/css/js/script.js"></script>
+  <script>
+    function toggleDebugInfo() {
+      const debugInfo = document.getElementById('debug-info');
+      if (debugInfo) {
+        debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+  </script>
 </body>
 </html>
