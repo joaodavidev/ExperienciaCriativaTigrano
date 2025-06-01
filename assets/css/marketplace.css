@@ -424,6 +424,53 @@ body.light-mode .product-card .categoria {
   background-color: rgba(29, 78, 216, 0.1);
 }
 
+/* Estilos para avaliações no marketplace */
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.product-rating .stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.product-rating .stars i {
+  color: #FFD700;
+  font-size: 1rem;
+}
+
+.product-rating .stars i.bx-star {
+  color: #555;
+}
+
+body.light-mode .product-rating .stars i.bx-star {
+  color: #ccc;
+}
+
+.product-rating .rating-text {
+  font-size: 0.85em;
+  color: #aaa;
+  font-weight: 500;
+}
+
+body.light-mode .product-rating .rating-text {
+  color: #666;
+}
+
+.product-rating .no-rating .rating-text {
+  color: #777;
+  font-style: italic;
+}
+
+body.light-mode .product-rating .no-rating .rating-text {
+  color: #999;
+}
+
 .product-card .descricao {
   font-size: 0.95em;
   color: #ccc;

@@ -23,13 +23,15 @@ if (!isset($_GET['preco_min'])) $precoMin = $precoMinDB;
 if (!isset($_GET['preco_max'])) $precoMax = $precoMaxDB;
 
 // verifica a busca por nome no método GET
-if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET['nome']);
-
-    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
+if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET['nome']);    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor,
+            AVG(CAST(av.estrelas AS DECIMAL(2,1))) as media_avaliacao,
+            COUNT(av.id) as total_avaliacoes
             FROM produtos p
             JOIN usuarios u ON p.vendedor_email = u.email
+            LEFT JOIN avaliacao av ON p.id = av.produto_id
             WHERE p.nome = ? AND p.status = 'Ativo' 
-            AND p.preco BETWEEN ? AND ?";
+            AND p.preco BETWEEN ? AND ?
+            GROUP BY p.id, p.nome, p.categoria, p.preco, p.descricao, u.nome";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sdd", $nome, $precoMin, $precoMax);
@@ -45,11 +47,14 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
     }
 
     $stmt->close();
-} else {
-    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor 
+} else {    $sql = "SELECT p.id, p.nome AS nome_produto, p.categoria, p.preco, p.descricao, u.nome AS nome_vendedor,
+            AVG(CAST(av.estrelas AS DECIMAL(2,1))) as media_avaliacao,
+            COUNT(av.id) as total_avaliacoes
             FROM produtos p
             LEFT JOIN usuarios u ON p.vendedor_email = u.email
-            WHERE p.status = 'Ativo' AND p.preco BETWEEN ? AND ?";
+            LEFT JOIN avaliacao av ON p.id = av.produto_id
+            WHERE p.status = 'Ativo' AND p.preco BETWEEN ? AND ?
+            GROUP BY p.id, p.nome, p.categoria, p.preco, p.descricao, u.nome";
     
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("dd", $precoMin, $precoMax);
@@ -150,12 +155,31 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
          <section class="product-grid">
       <?php if ($mensagem_erro): ?>
         <p><?php echo $mensagem_erro; ?></p>
-      <?php elseif (!empty($produtos)): ?>
-        <?php foreach ($produtos as $row): //usa a lista produtos como rows para jogar eles no site?>
+      <?php elseif (!empty($produtos)): ?>        <?php foreach ($produtos as $row): //usa a lista produtos como rows para jogar eles no site?>
           <div class="product-card">
             <h2><?php echo htmlspecialchars($row['nome_produto']); ?></h2>
             <p class="categoria"><?php echo htmlspecialchars($row['categoria']); ?></p>
             <p class="descricao"><?php echo htmlspecialchars($row['descricao']); ?></p>
+            
+            <!-- Avaliações -->
+            <div class="product-rating">
+              <?php if ($row['total_avaliacoes'] > 0): ?>
+                <div class="stars">
+                  <?php 
+                    $media = round($row['media_avaliacao'], 1);
+                    for ($i = 1; $i <= 5; $i++): 
+                  ?>
+                    <i class='bx bx<?= $i <= $media ? 's' : '' ?>-star'></i>
+                  <?php endfor; ?>
+                </div>
+                <span class="rating-text"><?= number_format($media, 1, ',', '.') ?> (<?= $row['total_avaliacoes'] ?> avaliação<?= $row['total_avaliacoes'] > 1 ? 'ões' : '' ?>)</span>
+              <?php else: ?>
+                <div class="no-rating">
+                  <span class="rating-text">Sem avaliações</span>
+                </div>
+              <?php endif; ?>
+            </div>
+            
             <p class="preco">R$ <?php echo number_format($row['preco'], 2, ',', '.'); ?></p>
             <p class="vendedor">Vendedor: <?php echo htmlspecialchars($row['nome_vendedor']); ?></p>
             <form action="carrinho.php" method="POST" class="form-selecionar">
