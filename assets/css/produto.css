@@ -454,7 +454,8 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
     gap: 15px;
   }
   .form-produto input,
-  .form-produto textarea {
+  .form-produto textarea,
+  .form-produto select {
     padding: 12px;
     background-color: #333;
     border: none;
@@ -480,6 +481,38 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
   .botoes button#fecharModal {
     background-color: #555;
     color: white;
+  }
+
+.upload-arquivo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .upload-arquivo label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  .upload-arquivo input[type="file"] {
+    padding: 8px;
+    background-color: #333;
+    border: 2px dashed #555;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+
+  .upload-arquivo input[type="file"]:hover {
+    border-color: #1D4ED8;
+  }
+
+  .upload-arquivo small {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
   }
 
 /*MODO CLARO - PRODUTO*/
@@ -508,10 +541,29 @@ body.light-mode .modal-content {
 body.light-mode #formProduto input,
 body.light-mode #formProduto textarea,
 body.light-mode .form-produto input,
-body.light-mode .form-produto textarea {
+body.light-mode .form-produto textarea,
+body.light-mode .form-produto select {
   background-color: #f1f1f1;
   color: #262626;
   border: 1px solid #ccc;
+}
+
+body.light-mode .upload-arquivo label {
+  color: #262626;
+}
+
+body.light-mode .upload-arquivo input[type="file"] {
+  background-color: #f1f1f1;
+  border: 2px dashed #ccc;
+  color: #262626;
+}
+
+body.light-mode .upload-arquivo input[type="file"]:hover {
+  border-color: #1D4ED8;
+}
+
+body.light-mode .upload-arquivo small {
+  color: #666;
 }
 
 /* Cartões de produto */

@@ -44,13 +44,19 @@ include '../includes/verificar_login.php';
     </div>
     <div id="modalProduto" class="modal-overlay" style="display: none;">
       <div class="modal-content">
-        <h2>Novo Produto</h2>
-        <form action="../includes/createProduto.php" method="POST" class="form-produto">
+        <h2>Novo Produto</h2>        
+        <form action="../includes/createProduto.php" method="POST" class="form-produto" enctype="multipart/form-data">
             <input type="hidden" name="id">
             <input type="text" name="nome" placeholder="Nome do Produto" required />
             <input type="text" name="categoria" placeholder="Categoria" required />
             <input type="number" name="preco" placeholder="Preço" step="0.01" required />
             <textarea name="descricao" placeholder="Descrição do Produto" required></textarea>
+            
+            <div class="upload-arquivo">
+                <label for="arquivo_produto">Arquivo do Produto (opcional):</label>
+                <input type="file" name="arquivo_produto" id="arquivo_produto" accept=".pdf,.doc,.docx,.zip,.rar,.txt,.mp4,.mp3,.png,.jpg,.jpeg">
+                <small>Formatos aceitos: PDF, DOC, ZIP, TXT, MP4, MP3, PNG, JPG (máx. 10MB)</small>
+            </div>
 
         <select name="status" required>
             <option value="Ativo">Ativo</option>

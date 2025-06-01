@@ -5,23 +5,29 @@ include '../includes/db.php';
 if (isset($_SESSION['usuario']['email'])) {
     $usuario_email = $_SESSION['usuario']['email'];
 
-    if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
-        foreach ($_SESSION['carrinho'] as $produto) {
+    if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {        foreach ($_SESSION['carrinho'] as $produto) {
             $produto_id = $produto['id'];
             $quantidade = 1;
-
+            
             $stmtFornecedor = $conn->prepare("SELECT vendedor_email FROM produtos WHERE id = ?");
             $stmtFornecedor->bind_param("i", $produto_id);
             $stmtFornecedor->execute();
             $stmtFornecedor->bind_result($vendedor_email);
             $stmtFornecedor->fetch();
             $stmtFornecedor->close();
-
+            
             if ($vendedor_email) {
+                // Inserir na tabela vendas
                 $stmtVenda = $conn->prepare("INSERT INTO vendas (fornecedor_email, comprador_email, produto_id, quantidade_vendas, data_vendas) VALUES (?, ?, ?, ?, NOW())");
                 $stmtVenda->bind_param("ssii", $vendedor_email, $usuario_email, $produto_id, $quantidade);
                 $stmtVenda->execute();
                 $stmtVenda->close();
+
+                // Inserir no histórico de compras
+                $stmtHistorico = $conn->prepare("INSERT INTO historico_compras (comprador_email, produto_id, data_compras) VALUES (?, ?, NOW())");
+                $stmtHistorico->bind_param("si", $usuario_email, $produto_id);
+                $stmtHistorico->execute();
+                $stmtHistorico->close();
             }
         }
 

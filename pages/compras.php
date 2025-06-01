@@ -6,22 +6,23 @@ include '../includes/verificar_login.php';
 // Obter email do usuário logado
 $email_usuario = $_SESSION['usuario']['email'];
 
-try {
-    // Buscar compras do usuário
+try {    // Buscar compras do usuário da tabela vendas (onde as compras reais são registradas)
     $stmt = $conn->prepare("SELECT 
-            ped.id as pedido_id,
-            ped.data_pedido as data_compra,
-            ped.status,
+            v.id as venda_id,
+            v.data_vendas as data_compra,
+            v.quantidade_vendas as quantidade,
             p.nome,
             p.descricao,
             p.preco,
-            COALESCE(p.imagem, '') as imagem,
-            COALESCE(pp.quantidade, 1) as quantidade
-        FROM pedidos ped
-        INNER JOIN produtos_pedido pp ON ped.id = pp.pedido_id
-        INNER JOIN produtos p ON pp.produto_id = p.id
-        WHERE ped.comprador_email = ?
-        ORDER BY ped.data_pedido DESC");
+            p.categoria,
+            p.arquivo_produto,
+            u_vendedor.nome as vendedor_nome,
+            v.fornecedor_email
+        FROM vendas v
+        INNER JOIN produtos p ON v.produto_id = p.id
+        LEFT JOIN usuarios u_vendedor ON v.fornecedor_email = u_vendedor.email
+        WHERE v.comprador_email = ?
+        ORDER BY v.data_vendas DESC");
 
     if (!$stmt) {
         throw new Exception("Erro ao preparar statement: " . $conn->error);
@@ -49,15 +50,22 @@ try {
     error_log("Erro ao buscar compras: " . $e->getMessage());
 }
 
-// Função para formatar status em português
-function formatarStatus($status) {
-    $statusMap = [
-        'pendente' => 'Pendente',
-        'pago' => 'Pago',
-        'enviado' => 'Enviado',
-        'cancelado' => 'Cancelado'
+// Função para formatar data
+function formatarData($data) {
+    return date('d/m/Y', strtotime($data));
+}
+
+// Função para obter ícone da categoria
+function obterIconeCategoria($categoria) {
+    $icones = [
+        'Eletrônicos' => 'bx-chip',
+        'Roupas' => 'bx-closet',
+        'Livros' => 'bx-book',
+        'Calçados' => 'bx-walk',
+        'Casa' => 'bx-home',
+        'Esporte' => 'bx-football'
     ];
-    return $statusMap[$status] ?? ucfirst($status);
+    return $icones[$categoria] ?? 'bx-package';
 }
 ?>
 
@@ -140,21 +148,8 @@ function formatarStatus($status) {
                     </a>
                 </div>
             <?php else: ?>
-                <div class="compras-grid">
-                    <?php foreach ($compras as $compra): ?>
+                <div class="compras-grid">                    <?php foreach ($compras as $compra): ?>
                         <div class="compra-card">
-                            <div class="produto-imagem">
-                                <?php if (!empty($compra['imagem'])): ?>
-                                    <img src="../uploads/<?= htmlspecialchars($compra['imagem']) ?>" 
-                                         alt="<?= htmlspecialchars($compra['nome']) ?>"
-                                         onerror="this.parentElement.innerHTML='<div class=\'imagem-placeholder\'><i class=\'bx bx-image\'></i></div>'">
-                                <?php else: ?>
-                                    <div class="imagem-placeholder">
-                                        <i class='bx bx-image'></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
                             <div class="produto-info">
                                 <div class="produto-header">
                                     <h3 class="produto-nome"><?= htmlspecialchars($compra['nome']) ?></h3>
@@ -173,18 +168,17 @@ function formatarStatus($status) {
                                 <div class="compra-detalhes">
                                     <div class="data-compra">
                                         <i class='bx bx-calendar'></i>
-                                        <span><?= date('d/m/Y H:i', strtotime($compra['data_compra'])) ?></span>
+                                        <span><?= formatarData($compra['data_compra']) ?></span>
                                     </div>
 
-                                    <div class="pedido-id">
-                                        <i class='bx bx-receipt'></i>
-                                        <span>Pedido #<?= str_pad($compra['pedido_id'], 6, '0', STR_PAD_LEFT) ?></span>
+                                    <div class="vendedor-info">
+                                        <i class='bx bx-store'></i>
+                                        <span>Vendido por: <?= htmlspecialchars($compra['vendedor_nome'] ?? 'Tigrano') ?></span>
                                     </div>
-                                </div>
-
-                                <div class="status-quantidade-container">
-                                    <span class="status-badge status-<?= strtolower($compra['status']) ?>">
-                                        <?= formatarStatus($compra['status']) ?>
+                                </div>                                <div class="status-quantidade-container">
+                                    <span class="status-badge status-finalizado">
+                                        <i class='bx bx-check-circle'></i>
+                                        Compra Finalizada
                                     </span>
                                     
                                     <?php if ($compra['quantidade'] > 1): ?>
@@ -192,16 +186,25 @@ function formatarStatus($status) {
                                             <small>Total: R$ <?= number_format($compra['preco'] * $compra['quantidade'], 2, ',', '.') ?></small>
                                         </div>
                                     <?php endif; ?>
-                                </div>
+                                </div>                                <!-- Botão de download se arquivo disponível -->
+                                <?php if (!empty($compra['arquivo_produto'])): ?>
+                                    <div class="download-section">
+                                        <a href="../includes/download_arquivo.php?arquivo=<?= urlencode($compra['arquivo_produto']) ?>" 
+                                           class="btn-download" 
+                                           title="Baixar arquivo do produto">
+                                            <i class='bx bx-download'></i>
+                                            Baixar Arquivo
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-        </div>
-    </div>
+        </div>    </div>
 </main>
 
-<script src="../assets/js/script.js"></script>
+<script src="../assets/css/js/script.js"></script>
 </body>
 </html>

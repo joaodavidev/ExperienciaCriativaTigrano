@@ -37,6 +37,7 @@ CREATE TABLE produtos (
   descricao TEXT NOT NULL,
   status VARCHAR(50) DEFAULT 'Ativo',
   vendedor_email VARCHAR(255),
+  arquivo_produto VARCHAR(500) NULL,
   FOREIGN KEY (vendedor_email) REFERENCES usuarios(email) ON DELETE CASCADE
 );
 
@@ -94,7 +95,7 @@ CREATE TABLE historico_compras (
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email) ON DELETE CASCADE,
   FOREIGN KEY (produto_id) REFERENCES produtos (id)
 );
-SELECT * FROM vendas;
+
 CREATE TABLE produtos_historico_compras (
   produtos_id INT,
   historico_compras_id INT,

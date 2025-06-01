@@ -223,19 +223,8 @@ if (empty($ultimasCompras)) {
     }
 }
 
-// Se ainda estiver vazio, adiciona dados ficticios para demonstração apenas se estiver em desenvolvimento
-if (empty($ultimasCompras) && $_SERVER['SERVER_NAME'] == 'localhost') {
-    $ultimasCompras[] = [
-        'nome_cliente' => 'João Silva',
-        'nome_produto' => 'Produto de Exemplo',
-        'data_pedido' => date('Y-m-d H:i:s')
-    ];
-    $ultimasCompras[] = [
-        'nome_cliente' => 'Maria Oliveira',
-        'nome_produto' => 'Outro Produto',
-        'data_pedido' => date('Y-m-d H:i:s', strtotime('-1 day'))
-    ];
-}
+// Debug: mostrar quantas compras foram encontradas
+// echo "<!-- Debug: " . count($ultimasCompras) . " compras encontradas -->";
 
 ?>
 
@@ -300,12 +289,11 @@ if (empty($ultimasCompras) && $_SERVER['SERVER_NAME'] == 'localhost') {
     </div>
 
     <div class="recent-purchases">
-      <h2>Compras Recentes</h2>      <div class="purchases-list">
-        <?php if (empty($ultimasCompras)): ?>
+      <h2>Compras Recentes</h2>      <div class="purchases-list">        <?php if (empty($ultimasCompras)): ?>
           <div class="no-purchases">
-            <i class='bx bx-cart'></i>
-            <p>Nenhuma compra encontrada.</p>
-            <small>Quando seus produtos forem vendidos, as compras aparecerão aqui.</small>
+            <i class='bx bx-package'></i>
+            <p>Nenhuma venda realizada ainda.</p>
+            <small>Quando você vender seus produtos, as compras dos clientes aparecerão aqui.</small>
           </div>
         <?php else: ?>
           <?php foreach ($ultimasCompras as $compra): ?>

@@ -8,12 +8,11 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: #121212;
     color: #ffffff;
     display: flex;
-    min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
 }
 
 .sidebar {
@@ -21,14 +20,14 @@ body {
   top: 0;
   left: 0;
   width: 80px;
-  height: 100vh;
+  height: 100%;
   padding: 6px 14px;
   background: #262626;
-  transition: width .5s;
+  transition: .5s;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   overflow: hidden;
-  z-index: 1000;
 }
 
 .sidebar.active {
@@ -40,7 +39,6 @@ body {
   width: 100%;
   align-items: center;
   height: 70px;
-  position: relative;
 }
 
 .sidebar .logo-menu .logo {
@@ -102,13 +100,11 @@ body {
   text-decoration: none;
   border-radius: 6px;
   transition: .5s;
-  padding: 0 10px;
 }
 
 .lista .lista-item.ativar a,
 .lista .lista-item a:hover {
   background: rgba(255, 255, 255, .2);
-  color: #fff;
 }
 
 .lista .lista-item a i {
@@ -116,7 +112,6 @@ body {
   height: 50px;
   text-align: center;
   line-height: 50px;
-  font-size: 20px;
 }
 
 .sidebar .nome-link {
@@ -131,20 +126,15 @@ body {
   transition-delay: calc(.1s * var(--i));
 }
 
-.sidebar.active ~ .main-content {
-  margin-left: 220px;
-  width: calc(100% - 220px);
-  transition: all 0.5s ease;
-}
-
 body.light-mode {
     background-color: #ffffff !important;
     color: #262626;
     transition: all 0.5s ease;
 }
 
+/* Light mode - Sidebar */
 body.light-mode .sidebar {
-  background-color: #e0e0e0;
+  background-color: #E6E4E4;
 }
 
 body.light-mode .sidebar .logo,
@@ -163,13 +153,12 @@ body.light-mode .sidebar .logo-menu .toggle-btn {
 }
 
 .main-content {
-  margin-left: 80px;
+  margin-left: 80px; 
   padding: 30px;
   width: calc(100% - 80px);
   background-color: #121212;
   color: white;
   transition: all 0.5s ease;
-  flex-grow: 1;
 }
 
 .sidebar.active ~ .main-content {
@@ -340,32 +329,6 @@ body.light-mode .compra-card {
 
 body.light-mode .compra-card:hover {
   box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-.produto-imagem {
-  width: 100%;
-  height: 180px;
-  background: #222;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.produto-imagem img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.imagem-placeholder {
-  color: #666;
-  font-size: 3rem;
-}
-
-body.light-mode .imagem-placeholder {
-  color: #ccc;
-  background-color: #f9f9f9;
 }
 
 .produto-info {
@@ -549,7 +512,52 @@ body.light-mode .empty-state p {
   background: #2563eb;
 }
 
-@media (max-width: 992px) {
+.download-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #333;
+}
+
+body.light-mode .download-section {
+  border-top: 1px solid #ddd;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #10B981;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-download:hover {
+  background: #059669;
+  text-decoration: none;
+  color: #fff;
+}
+
+.btn-download i {
+  font-size: 1.1rem;
+}
+
+body.light-mode .btn-download {
+  background: #10B981;
+  color: #fff;
+}
+
+body.light-mode .btn-download:hover {
+  background: #059669;
+}
+
+@media (max-width: 768px) {
     .sidebar {
         left: -220px;
     }
@@ -562,32 +570,29 @@ body.light-mode .empty-state p {
         width: 100%;
         padding: 20px;
     }
-}
-
-@media (max-width: 768px) {
-  .stats-container {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  .compras-grid {
-    grid-template-columns: 1fr;
-  }
-  .page-header {
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-  }
-  .title-section h1 {
-    font-size: 24px;
-  }
-  .section-header h2 {
-    font-size: 1.3rem;
-  }
-  .produto-nome {
-    font-size: 1rem;
-  }
-  .produto-preco {
-    font-size: 1.1rem;
-  }
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .compras-grid {
+        grid-template-columns: 1fr;
+    }
+    .page-header {
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    .title-section h1 {
+        font-size: 24px;
+    }
+    .section-header h2 {
+        font-size: 1.3rem;
+    }
+    .produto-nome {
+        font-size: 1rem;
+    }
+    .produto-preco {
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 480px) {
