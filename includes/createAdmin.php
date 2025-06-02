@@ -1,21 +1,46 @@
 <?php
 include 'db.php';
 
-$sql_checkar = "SELECT * FROM usuarios WHERE usuario = 'admin'";
+$sql_checkar = "SELECT * FROM adm WHERE email = 'admin@email.com'";
 $result_checkar = $conn->query($sql_checkar);
 
 if ($result_checkar->num_rows == 0) {
-    $usuario = 'admin';
+    $email = 'admin@email.com';
+    $senha = password_hash(123, PASSWORD_DEFAULT);
 
-    $senha = password_hash(123, PASSWORD_DEFAULT); //usa hash na senha para segurança
-
-    $sql = "INSERT INTO usuarios (usuario, senha) VALUES (?, ?)";
+    $sql = "INSERT INTO adm (email, senha) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("ss", $usuario, $senha);
+        $stmt->bind_param("ss", $email, $senha);
         if ($stmt->execute()) {
-            echo "Admin cadastrado com sucesso!";
+            echo '
+                <!DOCTYPE html>
+                <html lang="pt-br">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Admin Criado</title>
+                    <link rel="stylesheet" href="../assets/css/login.css">
+                    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                </head>
+                <body>
+                    <script>
+                        Swal.fire({
+                            icon: "success",
+                            title: "Admin criado com sucesso!",
+                            text: "Você será redirecionado para o login.",
+                            confirmButtonText: "OK",
+                            background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                            color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
+                            confirmButtonColor: "#1D4ED8"
+                        }).then(() => {
+                            window.location.href = "../pages/loginadm.php";
+                        });
+                    </script>
+                </body>
+                </html>';
+            exit();
         } else {
             echo "Erro ao cadastrar admin: " . $stmt->error;
         }
@@ -24,7 +49,33 @@ if ($result_checkar->num_rows == 0) {
         echo "Erro ao preparar SQL: " . $conn->error;
     }
 } else {
-    echo "Admin já existe!";
+    echo '
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <title>Admin já existe</title>
+            <link rel="stylesheet" href="../assets/css/login.css">
+            <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        </head>
+        <body>
+            <script>
+                Swal.fire({
+                    icon: "info",
+                    title: "Admin já existe!",
+                    text: "Redirecionando para o login...",
+                    confirmButtonText: "OK",
+                    background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                    color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#1D4ED8"
+                }).then(() => {
+                    window.location.href = "../pages/loginadm.php";
+                });
+            </script>
+        </body>
+        </html>';
+    exit();
 }
 
 $conn->close();

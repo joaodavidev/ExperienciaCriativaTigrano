@@ -3,26 +3,24 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario = $_POST['usuario'];
+    $email = $_POST['usuario'];
     $senha = $_POST['senha'];
 
-    // Protegido contra SQL Injection
-    $stmt = $conn->prepare("SELECT id, usuario, senha, tipo FROM usuarios WHERE usuario = ?");
-    $stmt->bind_param("s", $usuario);
+    $stmt = $conn->prepare("SELECT email, nome, senha FROM usuarios WHERE email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-
-        if (password_verify($senha, $user['senha'])) {
+        $user = $result->fetch_assoc();        if (password_verify($senha, $user['senha'])) {
             $_SESSION['usuario'] = [
-                'id' => $user['id'],
-                'nome' => $user['usuario'],
-                'tipo' => $user['tipo'] // Ex: 'admin' ou 'usuario'
+                'email' => $user['email'],
+                'nome'  => $user['nome']
             ];
+            $_SESSION['usuario_logado'] = true;
+            $_SESSION['usuario_logado'] = true;
 
-            header("Location: ../pages/paginaInicial.php"); // Altere para sua home real
+            header("Location: ../pages/marketplace.php");
             exit();
         } else {
             echo "Senha incorreta!";
@@ -34,4 +32,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 ?>
-

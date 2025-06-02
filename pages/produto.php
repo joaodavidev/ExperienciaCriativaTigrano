@@ -1,14 +1,9 @@
 <?php
 session_start();
 require_once '../includes/db.php';
-
-if (!isset($_SESSION['email'])) {
-  header("Location: ../pages/login.php");
-  exit();
-}
-
-$email = $_SESSION['email'];
+include '../includes/verificar_login.php';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -20,66 +15,21 @@ $email = $_SESSION['email'];
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <nav class="sidebar active">
+<nav class="sidebar active">
   <div class="logo-menu">
     <h2 class="logo">Tigrano</h2>
     <i class='bx bx-menu toggle-btn'></i>
   </div>
   <ul class="lista">
-    <li class="lista-item">
-      <a href="../pages/marketplace.php">
-        <i class='bx bxs-shopping-bag-alt'></i>
-        <span class="nome-link" style="--i:1;">Marketplace</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/dashboard.php">
-        <i class='bx bxs-dashboard'></i>
-        <span class="nome-link" style="--i:2;">Dashboard</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/produto.php">
-        <i class='bx bxs-purchase-tag'></i>
-        <span class="nome-link" style="--i:3;">Produtos</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/compras.php">
-        <i class='bx bx-shopping-bag'></i>
-        <span class="nome-link" style="--i:4;">Compras</span>
-      </a>
-    </li>
+    <li class="lista-item"><a href="../pages/marketplace.php"><i class='bx bxs-shopping-bag-alt'></i><span class="nome-link" style="--i:1;">Marketplace</span></a></li>
+    <li class="lista-item"><a href="../pages/dashboard.php"><i class='bx bxs-dashboard'></i><span class="nome-link" style="--i:2;">Dashboard</span></a></li>
+    <li class="lista-item"><a href="../pages/produto.php"><i class='bx bxs-purchase-tag'></i><span class="nome-link" style="--i:3;">Produtos</span></a></li>
+    <li class="lista-item"><a href="../pages/compras.php"><i class='bx bx-shopping-bag'></i><span class="nome-link" style="--i:4;">Compras</span></a></li>
     <li class="espacador"></li>
-    <li class="lista-item">
-      <a href="#" class="btn-toggle-tema">
-        <i class='bx bx-moon'></i>
-        <span class="nome-link" style="--i:5;">Claro/Escuro</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="../pages/configuracoes.php">
-        <i class='bx bx-cog'></i>
-        <span class="nome-link" style="--i:6;">Configurações</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="suporteUsuario.php">
-        <i class='bx bx-cog'></i>
-        <span class="nome-link">Suporte</span>
-      </a>
-    </li>
-    <li class="lista-item">
-      <a href="suporteAdmin.php">
-        <i class='bx bx-cog'></i>
-        <span class="nome-link">SuporteAdmin</span>
-      </a></li>
-    <li class="lista-item">
-      <a href="perfil.php">
-        <i class='bx bx-user'></i>
-        <span class="nome-link" style="--i:7;">Perfil</span>
-      </a>
-    </li>
+    <li class="lista-item"><a href="#" class="btn-toggle-tema"><i class='bx bx-moon'></i><span class="nome-link" style="--i:5;">Claro/Escuro</span></a></li>
+    <li class="lista-item"><a href="../pages/suporteUsuario.php"><i class='bx bx-info-circle'></i><span class="nome-link" style="--i:6;">Ajuda</span></a></li>
+    <li class="lista-item"><a href="../pages/configuracoes.php"><i class='bx bx-cog'></i><span class="nome-link" style="--i:7;">Configurações</span></a></li>
+    <li class="lista-item"><a href="../pages/perfil.php"><i class='bx bx-user'></i><span class="nome-link" style="--i:8;">Perfil</span></a></li>
   </ul>
 </nav>
     <main class="main-content">
@@ -94,13 +44,19 @@ $email = $_SESSION['email'];
     </div>
     <div id="modalProduto" class="modal-overlay" style="display: none;">
       <div class="modal-content">
-        <h2>Novo Produto</h2>
-        <form action="../includes/createProduto.php" method="POST" class="form-produto">
+        <h2>Novo Produto</h2>        
+        <form action="../includes/createProduto.php" method="POST" class="form-produto" enctype="multipart/form-data">
             <input type="hidden" name="id">
             <input type="text" name="nome" placeholder="Nome do Produto" required />
             <input type="text" name="categoria" placeholder="Categoria" required />
             <input type="number" name="preco" placeholder="Preço" step="0.01" required />
             <textarea name="descricao" placeholder="Descrição do Produto" required></textarea>
+
+            <div class="upload-arquivo">
+                <label for="arquivo_produto">Arquivo do Produto (opcional):</label>
+                <input type="file" name="arquivo_produto" id="arquivo_produto" accept=".pdf,.doc,.docx,.zip,.rar,.txt,.mp4,.mp3,.png,.jpg,.jpeg">
+                <small>Formatos aceitos: PDF, DOC, ZIP, TXT, MP4, MP3, PNG, JPG (máx. 10MB)</small>
+            </div>
 
         <select name="status" required>
             <option value="Ativo">Ativo</option>
@@ -129,5 +85,24 @@ $email = $_SESSION['email'];
 </main>
     <script src="../assets/css/js/script.js"></script>
     <script src="../assets/css/js/produtos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
+  <script>
+    const tema = localStorage.getItem("tema") === "claro";
+    Swal.fire({
+      icon: 'success',
+      title: 'Produto criado com sucesso!',
+      confirmButtonText: 'OK',
+      background: tema ? '#E6E4E4' : '#262626',
+      color: tema ? '#121212' : '#ffffff',
+      confirmButtonColor: '#1D4ED8'
+    }).then(() => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('sucesso');
+      window.history.replaceState({}, document.title, url.toString());
+    });
+  </script>
+<?php endif; ?>
+
 </body>
 </html>

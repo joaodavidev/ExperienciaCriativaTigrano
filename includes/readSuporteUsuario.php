@@ -1,28 +1,45 @@
 <?php
 require_once '../includes/db.php';
-
-if (!isset($_SESSION)) {
-    session_start();
-}
 $email = $_SESSION['usuario']['email'];
+$filtro = $_GET['filtro'] ?? 'todos';
 
-$sql = "SELECT * FROM suporte WHERE email = ?";
+switch ($filtro) {
+    case 'abertos':
+        $sql = "SELECT * FROM suporte WHERE email_usuario = ? AND (resposta IS NULL OR TRIM(resposta) = '') ORDER BY data_envio DESC";
+        break;
+    case 'respondidos':
+        $sql = "SELECT * FROM suporte WHERE email_usuario = ? AND resposta IS NOT NULL AND TRIM(resposta) <> '' ORDER BY data_envio DESC";
+        break;
+    default:
+        $sql = "SELECT * FROM suporte WHERE email_usuario = ? ORDER BY data_envio DESC";
+        break;
+}
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    echo "<h3>Suas solicitações de suporte:</h3>";
-    while ($row = $result->fetch_assoc()) {
-        echo "<div class='suporte-item'>";
-        echo "<strong>Assunto:</strong> " . htmlspecialchars($row['assunto']) . "<br>";
-        echo "<strong>Mensagem:</strong> " . htmlspecialchars($row['descricao']) . "<br>";
-        echo "<strong>Data:</strong> " . $row['data_envio'] . "<br>";
-        echo "<hr>";
-        echo "</div>";
-    }
-} else {
-    echo "<p>Você ainda não enviou nenhuma solicitação de suporte.</p>";
-}
+if ($result->num_rows > 0):
+    while ($ticket = $result->fetch_assoc()):
+        $dadosJS = htmlspecialchars(json_encode([
+            'id' => $ticket['id'],
+            'assunto' => $ticket['assunto'],
+            'descricao' => $ticket['descricao'],
+            'data_envio' => $ticket['data_envio'],
+            'resposta' => $ticket['resposta'],
+            'status' => trim($ticket['resposta']) ? 'Concluído' : 'Pendente'
+        ]), ENT_QUOTES, 'UTF-8');
+?>
+    <div class="suporte-item" onclick="abrirModalSuporte(<?= $dadosJS ?>)">
+        <p><strong>Assunto:</strong> <?= htmlspecialchars($ticket['assunto']) ?></p>
+        <p><strong>Mensagem:</strong> <?= htmlspecialchars(mb_strimwidth($ticket['descricao'], 0, 60, '...')) ?></p>
+    </div>
+<?php
+    endwhile;
+else:
+    echo "<p>Nenhum ticket encontrado.</p>";
+endif;
+
+$stmt->close();
 ?>

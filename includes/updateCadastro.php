@@ -1,18 +1,11 @@
 <?php
 session_start();
+include '../includes/db.php';
+include '../includes/verificar_login.php';
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: login.php");
-    exit();
-}
+$email_logado = $_SESSION['usuario']['email'];
 
-$conn = new mysqli("localhost", "root", "", "ecommerce");
-
-if ($conn->connect_error) {
-    die("Erro na conexão: " . $conn->connect_error);
-}
-
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
 $sql = "SELECT * FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -25,45 +18,26 @@ if (!$user) {
     die("Usuário não encontrado.");
 }
 
-// processando a att
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = $_POST['usuario'];
-    $senha = $_POST['senha'] ? password_hash($_POST['senha'], PASSWORD_DEFAULT) : $user['senha'];
+    $senha = $_POST['senha'];
+    $confirmar = $_POST['confirmar_senha'];
+
+    if (!empty($senha)) {
+        if ($senha !== $confirmar) {
+            die("As senhas não coincidem.");
+        }
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+    } else {
+        $senhaHash = $user['senha']; // mantém a senha atual
+    }
 
     $sql = "UPDATE usuarios SET usuario = ?, senha = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $usuario, $senha, $id);
+    $stmt->bind_param("ssi", $usuario, $senhaHash, $id);
     $stmt->execute();
 
-    header("Location: readCadastro.php"); // joga no read 
+    header("Location: readCadastro.php");
     exit();
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Cadastro de Usuário</title>
-    <link rel="stylesheet" href="login.css">
-</head>
-<body>
-
-    <div class="login-container">
-        <h1>Editar Cadastro de Usuário</h1>
-        <form action="updateCadastro.php?id=<?php echo $user['id']; ?>" method="post">
-            <label for="usuario">Usuário:</label>
-            <input type="text" id="usuario" name="usuario" value="<?php echo $user['usuario']; ?>" required>
-
-            <label for="senha">Nova Senha:</label>
-            <input type="password" id="senha" name="senha">
-
-            <label for="confirmar_senha">Confirmar Nova Senha:</label>
-            <input type="password" id="confirmar_senha" name="confirmar_senha">
-
-            <button type="submit">Atualizar Cadastro</button>
-        </form>
-    </div>
-
-</body>
-</html>

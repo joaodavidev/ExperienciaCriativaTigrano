@@ -1,0 +1,93 @@
+.tabela-usuarios {
+  overflow-x: auto;
+  background-color: #1e1e1e;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+  margin-top: 20px;
+}
+
+.tabela-usuarios table {
+  width: 100%;
+  border-collapse: collapse; /* <- removido o border-spacing e voltamos ao padrão */
+}
+
+.tabela-usuarios th,
+.tabela-usuarios td {
+  padding: 12px 15px;
+  background-color: #2b2b2b;
+  border: 1px solid #3a3a3a;
+  color: white;
+  font-size: 15px;
+  text-align: left;
+}
+
+.tabela-usuarios th {
+  background-color: #1a1a1a;
+  color: #ccc;
+}
+
+.tabela-usuarios td {
+  font-weight: 400;
+}
+
+.btn-excluir {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.btn-excluir:hover {
+  background-color: #c0392b;
+}
+
+/* Modo claro */
+body.light-mode .tabela-usuarios {
+  background-color: #f5f5f5;
+}
+
+body.light-mode .tabela-usuarios th {
+  background-color: #dddddd;
+  color: #333;
+}
+
+body.light-mode .tabela-usuarios td {
+  background-color: #ffffff;
+  color: #262626;
+  border: 1px solid #ccc;
+}
+
+body.light-mode .btn-excluir {
+  background-color: #ff4d4d;
+}
+
+body.light-mode .btn-excluir:hover {
+  background-color: #cc0000;
+}
+
+.btn-reset {
+  background-color: #1D4ED8;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-reset:hover {
+  background-color: #2563eb;
+}
+
+body.light-mode .btn-reset {
+  background-color: #1D4ED8;
+}
+
+body.light-mode .btn-reset:hover {
+  background-color: #2563eb;
+}
+

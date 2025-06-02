@@ -1,36 +1,72 @@
 <?php
-include '../includes/db.php';
+require_once 'db.php';
 
-$sql = "SELECT * FROM produtos";
-$result = $conn->query($sql);
-
-while ($row = $result->fetch_assoc()) {
-  echo "<div class='produto' id='produto-" . $row['id'] . "'>";
-  echo "<strong>" . htmlspecialchars($row['nome']) . "</strong><br>";
-  echo "R$ " . number_format($row['preco'], 2, ',', '.') . "<br>";
-  echo "<p>" . htmlspecialchars($row['descricao']) . "</p>";
-
-  echo "<div class='produto-conteudo'>";
-
-  echo "<form class='form-editar' action='updateProduto.php' method='POST'>
-          <input type='hidden' name='id' value='" . $row['id'] . "'>
-          <input type='text' name='nome' value='" . htmlspecialchars($row['nome']) . "'>
-          <input type='number' step='0.01' name='preco' value='" . $row['preco'] . "'>
-          <input type='text' name='descricao' value='" . htmlspecialchars($row['descricao']) . "'>
-          <button type='submit'>Editar</button>
-        </form>";
-
-  echo "<form class='form-excluir' action='deleteProduto.php' method='POST'>
-          <input type='hidden' name='id' value='" . $row['id'] . "'>
-          <button type='submit'>Excluir</button>
-        </form>";
-
-  echo "<form class='form-selecionar' action='../pages/carrinho.php' method='POST'>
-          <input type='hidden' name='id' value='" . $row['id'] . "'>
-          <button type='submit'>Selecionar</button>
-        </form>";
-
-  echo "</div>";
-  echo "</div>";
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ../pages/login.php");
+    exit();
 }
+
+$vendedorEmail = $_SESSION['usuario']['email'];
+
+$sql = "SELECT * FROM produtos WHERE vendedor_email = ? ORDER BY id DESC";
+$stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    die("Erro na preparação: " . $conn->error);
+}
+
+$stmt->bind_param("s", $vendedorEmail);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<div class='tabela-linha'>";
+
+        // PRODUTO
+        echo "<span class='produto-info'>"; 
+        echo "<div class='icone-produto'>" . substr($row['nome'], 0, 1) . "</div>";
+        echo "<div><strong>" . htmlspecialchars($row['nome']) . "</strong><p>" . htmlspecialchars($row['descricao']) . "</p></div>";
+        echo "</span>";
+
+        // CATEGORIA
+        echo "<span>" . htmlspecialchars($row['categoria']) . "</span>";
+
+        // PREÇO
+        echo "<span>R$ " . number_format($row['preco'], 2, ',', '.') . "</span>";
+
+        // STATUS
+        $classeStatus = strtolower($row['status']) === 'ativo' ? 'ativo' : 'inativo';
+        echo "<span><span class='status {$classeStatus}'>" . htmlspecialchars($row['status']) . "</span></span>";
+
+        // AÇÕES
+        echo "<span class='acoes'>";
+
+        // Editar
+        echo "<i class='bx bx-edit' onclick='abrirModal({
+            id: \"{$row['id']}\",
+            nome: \"" . addslashes($row['nome']) . "\",
+            categoria: \"" . addslashes($row['categoria']) . "\",
+            preco: \"{$row['preco']}\",
+            descricao: \"" . addslashes($row['descricao']) . "\",
+            status: \"{$row['status']}\"
+        })'></i>";
+
+        // Excluir
+        echo "<form action='../includes/deleteProduto.php' method='POST' style='display:inline;' onsubmit='return confirm(\"Deseja excluir este produto?\")'>";
+        echo "<input type='hidden' name='id' value='{$row['id']}'>";
+        echo "<button type='submit' style='background:none;border:none;padding:0;margin:0;cursor:pointer;'>";
+        echo "<i class='bx bx-trash'></i>";
+        echo "</button>";
+        echo "</form>";
+
+        echo "</span>";
+        echo "</div>";
+    }
+} else {
+    echo "<p style='margin: 10px;'>Nenhum produto cadastrado.</p>";
+}
+
+$stmt->close();
+$conn->close();
 ?>

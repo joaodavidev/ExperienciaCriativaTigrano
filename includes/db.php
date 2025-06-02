@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db = 'ecommerce';
+$db = 'tigrano';
 $user = 'root';
 $pass = '';
 
