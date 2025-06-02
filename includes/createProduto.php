@@ -44,9 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             die("Erro: Falha ao fazer upload do arquivo.");
         }
-    }
-
-    if ($nome && $categoria && $preco && $descricao && $vendedorEmail && $arquivo_produto) {
+    }   
+    if ($nome && $categoria && $preco && $descricao && $vendedorEmail) {
         $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status, vendedor_email, arquivo_produto)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
@@ -63,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "Erro ao inserir: " . $stmt->error;
         }
     } else {
-        echo "Todos os campos são obrigatórios.";
+        echo "Nome, categoria, preço, descrição são obrigatórios.";
     }
 } else {
     echo "Requisição inválida.";
