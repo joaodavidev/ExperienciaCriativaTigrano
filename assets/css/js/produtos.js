@@ -6,6 +6,7 @@ const modal = document.getElementById('modalProduto');
    function abrirModal(dados = {}) {
     const modal = document.getElementById('modalProduto');
     const form = document.querySelector('.form-produto');
+    const titulo = modal.querySelector('h2');
 
     modal.style.display = 'flex';
     form.reset();
@@ -17,13 +18,15 @@ const modal = document.getElementById('modalProduto');
     form.querySelector('[name="preco"]').value = dados.preco || '';
     form.querySelector('[name="descricao"]').value = dados.descricao || '';
     form.querySelector('[name="status"]').value = dados.status || 'Ativo';
-    form.querySelector('[name="cor_favorita"]').value = dados.cor_favorita || '';
 
-    // Corrige o caminho relativo para update
     if (dados.id) {
         form.action = "../includes/updateProduto.php";
+        titulo.textContent = "Editar Produto";
+        console.log("Modo edição - ID:", dados.id);
     } else {
         form.action = "../includes/createProduto.php";
+        titulo.textContent = "Novo Produto";
+        console.log("Modo criação");
     }
 }
 

@@ -104,5 +104,23 @@ include '../includes/verificar_login.php';
   </script>
 <?php endif; ?>
 
+<?php if (isset($_GET['atualizado']) && $_GET['atualizado'] == 1): ?>
+  <script>
+    const tema = localStorage.getItem("tema") === "claro";
+    Swal.fire({
+      icon: 'success',
+      title: 'Produto atualizado com sucesso!',
+      confirmButtonText: 'OK',
+      background: tema ? '#E6E4E4' : '#262626',
+      color: tema ? '#121212' : '#ffffff',
+      confirmButtonColor: '#1D4ED8'
+    }).then(() => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('atualizado');
+      window.history.replaceState({}, document.title, url.toString());
+    });
+  </script>
+<?php endif; ?>
+
 </body>
 </html>

@@ -17,6 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = $_SESSION['usuario']['email']; // email do vendedor logado
 
+    // Debug: Log dos dados recebidos
+    error_log("UpdateProduto - ID: $id, Nome: $nome, Email: $email");
+
     if ($id && $nome && $categoria && $preco && $descricao) {
         // Garante que o produto pertence ao vendedor logado
         $verifica = $conn->prepare("SELECT id FROM produtos WHERE id = ? AND vendedor_email = ?");

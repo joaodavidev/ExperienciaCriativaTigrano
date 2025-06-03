@@ -6,16 +6,36 @@ include 'verificar_login.php'; // ✅ Proteção unificada
 $vendedorEmail = $_SESSION['usuario']['email'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Verificar se é uma atualização (ID presente) ou criação (sem ID)
+    $id = intval($_POST['id'] ?? 0);
+    
+    if ($id > 0) {
+        // É uma atualização, redirecionar para updateProduto.php
+        header("Location: updateProduto.php");
+        exit;
+    }
+    
     $nome = trim($_POST['nome'] ?? '');
     $categoria = trim($_POST['categoria'] ?? '');
     $preco = floatval($_POST['preco'] ?? 0);
     $descricao = trim($_POST['descricao'] ?? '');
     $status = trim($_POST['status'] ?? 'Ativo');
-    $arquivo_produto = null;
-
-    // Processar upload do arquivo se fornecido
+    $arquivo_produto = null;    // Processar upload do arquivo se fornecido
     if (isset($_FILES['arquivo_produto']) && $_FILES['arquivo_produto']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = '../uploads/produtos/';
+        
+        // Verificar se o diretório existe, criar se não existir
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0755, true)) {
+                die("Erro: Não foi possível criar o diretório de uploads.");
+            }
+        }
+        
+        // Verificar se o diretório tem permissão de escrita
+        if (!is_writable($upload_dir)) {
+            die("Erro: Diretório de uploads não tem permissão de escrita.");
+        }
+        
         $arquivo_nome = $_FILES['arquivo_produto']['name'];
         $arquivo_tmp = $_FILES['arquivo_produto']['tmp_name'];
         $arquivo_tamanho = $_FILES['arquivo_produto']['size'];
