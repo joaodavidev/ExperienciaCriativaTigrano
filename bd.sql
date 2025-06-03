@@ -25,7 +25,7 @@ CREATE TABLE suporte (
   data_envio DATETIME,
   resposta TEXT,
   data_resposta DATE,
-  FOREIGN KEY (email_adm) REFERENCES adm (email),
+  FOREIGN KEY (email_adm) REFERENCES adm (email) ON DELETE CASCADE,
   FOREIGN KEY (email_usuario) REFERENCES usuarios (email) ON DELETE CASCADE
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE carrinho (
   usuario_email VARCHAR(255),
   produto_id INT,
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email) ON DELETE CASCADE,
-  FOREIGN KEY (produto_id) REFERENCES produtos (id)
+  FOREIGN KEY (produto_id) REFERENCES produtos (id) ON DELETE CASCADE
 );
 
 CREATE TABLE avaliacao (
@@ -55,7 +55,7 @@ CREATE TABLE avaliacao (
   comentario TEXT,
   produto_id INT,
   FOREIGN KEY (usuario_email) REFERENCES usuarios (email) ON DELETE CASCADE,
-  FOREIGN KEY (produto_id) REFERENCES produtos (id)
+  FOREIGN KEY (produto_id) REFERENCES produtos (id) ON DELETE CASCADE
 );
 
 CREATE TABLE vendas (
@@ -67,7 +67,7 @@ CREATE TABLE vendas (
   data_vendas DATE,
   FOREIGN KEY (fornecedor_email) REFERENCES usuarios (email) ON DELETE CASCADE,
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email) ON DELETE CASCADE,
-  FOREIGN KEY (produto_id) REFERENCES produtos (id)
+  FOREIGN KEY (produto_id) REFERENCES produtos (id) ON DELETE CASCADE
 );
 
 CREATE TABLE historico_compras (
@@ -76,13 +76,13 @@ CREATE TABLE historico_compras (
   produto_id INT,
   data_compras DATE,
   FOREIGN KEY (comprador_email) REFERENCES usuarios (email) ON DELETE CASCADE,
-  FOREIGN KEY (produto_id) REFERENCES produtos (id)
+  FOREIGN KEY (produto_id) REFERENCES produtos (id) ON DELETE CASCADE
 );
-
+SELECT * FROM vendas;
 CREATE TABLE produtos_historico_compras (
   produtos_id INT,
   historico_compras_id INT,
   PRIMARY KEY (produtos_id, historico_compras_id),
-  FOREIGN KEY (produtos_id) REFERENCES produtos (id),
-  FOREIGN KEY (historico_compras_id) REFERENCES historico_compras (id)
+  FOREIGN KEY (produtos_id) REFERENCES produtos (id) ON DELETE CASCADE, 
+  FOREIGN KEY (historico_compras_id) REFERENCES historico_compras (id) ON DELETE CASCADE
 );
