@@ -543,6 +543,7 @@ body.light-mode .btn-carrinho i {
   gap: 15px;
   justify-content: space-between;
   flex-wrap: wrap;
+  min-height: 50px;
 }
 
 .search-input {
@@ -566,6 +567,7 @@ body.light-mode .btn-carrinho i {
   min-width: 320px;
   gap: 10px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .price-inputs {
@@ -613,6 +615,8 @@ body.light-mode .btn-carrinho i {
 .filter-buttons {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
+  min-width: 120px;
 }
 
 .btn-filtrar, .btn-limpar {
@@ -662,6 +666,8 @@ a.btn-limpar {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ccc;
   text-decoration: none;
+  flex-shrink: 0;
+  min-width: fit-content;
 }
 
 a.btn-limpar:hover {
@@ -771,6 +777,7 @@ body.light-mode .price-label {
 @media (max-width: 768px) {
   .search-bar form {
     flex-direction: column;
+    gap: 10px;
   }
   
   .search-input, .price-filter {
@@ -779,9 +786,52 @@ body.light-mode .price-label {
   
   .price-filter {
     flex-direction: column;
+    gap: 10px;
+  }
+  
+  .price-inputs {
+    justify-content: space-between;
   }
   
   .filter-buttons {
     width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .btn-filtrar, .btn-limpar, a.btn-limpar {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .price-inputs {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .input-group {
+    width: 100%;
+  }
+  
+  .input-wrapper {
+    width: 100%;
+  }
+  
+  .input-wrapper input {
+    width: 100%;
+  }
+  
+  .filter-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-filtrar, .btn-limpar, a.btn-limpar {
+    width: 100%;
+    justify-content: center;
   }
 }

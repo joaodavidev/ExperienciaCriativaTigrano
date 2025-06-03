@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="../assets/css/login.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="login-container">
@@ -15,7 +16,7 @@
             <label for="senha">Senha:</label>
             <div class="senha-container">
                 <input type="password" id="senha" name="senha" required>
-                <button type="button" id="toggleSenha">👁️</button>
+                <button type="button" id="toggleSenha"><i class='bx bx-show'></i></button>
             </div>
 
             <button type="submit">Entrar</button>
@@ -25,9 +26,8 @@
         <div class="linha-ou">
              <span>OU</span>
         </div>
-        <p class="admin-link">É administrador? <a href="../pages/loginadm.php">Entrar como Adm</a></p>
-    </div>
+        <p class="admin-link">É administrador? <a href="../pages/loginadm.php">Entrar como Adm</a></p>    </div>
 
-    <script src="../includes/login.js"></script>
+    <script src="../assets/css/js/login.js"></script>
 </body>
 </html>
