@@ -88,13 +88,13 @@ include '../includes/verificar_login.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
   <script>
-    const tema = localStorage.getItem("tema") === "claro";
+    const sidebarStatus = localStorage.getItem("tema") === "claro";
     Swal.fire({
       icon: 'success',
       title: 'Produto criado com sucesso!',
       confirmButtonText: 'OK',
-      background: tema ? '#E6E4E4' : '#262626',
-      color: tema ? '#121212' : '#ffffff',
+      background: sidebarStatus ? '#E6E4E4' : '#262626',
+      color: sidebarStatus ? '#121212' : '#ffffff',
       confirmButtonColor: '#1D4ED8'
     }).then(() => {
       const url = new URL(window.location.href);
