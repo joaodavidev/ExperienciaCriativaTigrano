@@ -5,6 +5,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="../assets/css/login.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="login-container">
@@ -27,6 +28,60 @@
              <span>OU</span>
         </div>
         <p class="admin-link">É administrador? <a href="../pages/loginadm.php">Entrar como Adm</a></p>    </div>
+
+    <!-- Mensagens de feedback -->
+    <?php if (isset($_GET['sucesso'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const temaClaro = localStorage.getItem("tema") === "claro";
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Conta deletada com sucesso!',
+                    text: 'Sua conta foi removida permanentemente.',
+                    confirmButtonText: 'OK',
+                    background: temaClaro ? "#E6E4E4" : "#262626",
+                    color: temaClaro ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#1D4ED8"
+                });
+            });
+        </script>
+    <?php endif; ?>    <?php if (isset($_GET['conta_desativada'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const temaClaro = localStorage.getItem("tema") === "claro";
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Conta desativada',
+                    html: 'Sua conta foi <strong>desativada</strong> ao invés de deletada.<br><br>' +
+                          'Isso aconteceu porque você já vendeu produtos e os compradores precisam continuar tendo acesso aos produtos adquiridos.<br><br>' +
+                          'Para reativar sua conta, entre em contato com o suporte.',
+                    confirmButtonText: 'Entendi',
+                    background: temaClaro ? "#E6E4E4" : "#262626",
+                    color: temaClaro ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#1D4ED8"
+                });
+            });
+        </script>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['conta_desativada_login'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const temaClaro = localStorage.getItem("tema") === "claro";
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Conta desativada',
+                    html: 'Sua conta está <strong>desativada</strong>.<br><br>' +
+                          'Isso aconteceu porque você solicitou a exclusão da conta, mas como já vendeu produtos, ela foi apenas desativada para preservar o acesso dos compradores aos produtos adquiridos.<br><br>' +
+                          'Para reativar sua conta, entre em contato com o suporte.',
+                    confirmButtonText: 'Entendi',
+                    background: temaClaro ? "#E6E4E4" : "#262626",
+                    color: temaClaro ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#f59e0b"
+                });
+            });
+        </script>
+    <?php endif; ?>
 
     <script src="../assets/css/js/login.js"></script>
 </body>

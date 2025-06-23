@@ -11,21 +11,16 @@ try {    // Buscar compras do usuário da tabela vendas (onde as compras reais s
             v.id as venda_id,
             v.data_vendas as data_compra,
             v.quantidade_vendas as quantidade,
-            p.id as produto_id,
             p.nome,
             p.descricao,
             p.preco,
             p.categoria,
             p.arquivo_produto,
             u_vendedor.nome as vendedor_nome,
-            v.fornecedor_email,
-            av.id as avaliacao_id,
-            av.estrelas,
-            av.comentario
+            v.fornecedor_email
         FROM vendas v
         INNER JOIN produtos p ON v.produto_id = p.id
         LEFT JOIN usuarios u_vendedor ON v.fornecedor_email = u_vendedor.email
-        LEFT JOIN avaliacao av ON (av.produto_id = p.id AND av.usuario_email = v.comprador_email)
         WHERE v.comprador_email = ?
         ORDER BY v.data_vendas DESC");
 
@@ -78,10 +73,10 @@ function obterIconeCategoria($categoria) {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Minhas Compras - Tigrano</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Compras - Tigrano</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../assets/css/compras.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <nav class="sidebar active">
@@ -202,71 +197,6 @@ function obterIconeCategoria($categoria) {
                                         </a>
                                     </div>
                                 <?php endif; ?>
-
-                                <!-- Seção de Avaliação -->
-                                <div class="avaliacao-section">
-                                    <?php if ($compra['avaliacao_id']): ?>
-                                        <!-- Avaliação Existente -->
-                                        <div class="avaliacao-existente">
-                                            <h4><i class='bx bx-star'></i> Sua Avaliação</h4>
-                                            <div class="estrelas-display">
-                                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                    <i class='bx bx<?= $i <= $compra['estrelas'] ? 's' : '' ?>-star'></i>
-                                                <?php endfor; ?>
-                                                <span class="nota-texto">(<?= $compra['estrelas'] ?>/5)</span>
-                                            </div>
-                                            <?php if (!empty($compra['comentario'])): ?>
-                                                <p class="comentario-texto"><?= htmlspecialchars($compra['comentario']) ?></p>
-                                            <?php endif; ?>
-                                            <button class="btn-editar-avaliacao" onclick="toggleAvaliacaoForm(<?= $compra['produto_id'] ?>)">
-                                                <i class='bx bx-edit'></i> Editar Avaliação
-                                            </button>
-                                        </div>
-                                    <?php else: ?>
-                                        <!-- Botão para Avaliar -->
-                                        <button class="btn-avaliar" onclick="toggleAvaliacaoForm(<?= $compra['produto_id'] ?>)">
-                                            <i class='bx bx-star'></i>
-                                            Avaliar Produto
-                                        </button>
-                                    <?php endif; ?>
-
-                                    <!-- Formulário de Avaliação (oculto por padrão) -->
-                                    <div id="form-avaliacao-<?= $compra['produto_id'] ?>" class="form-avaliacao" style="display: none;">
-                                        <form action="../includes/createAvaliacao.php" method="POST">
-                                            <input type="hidden" name="produto_id" value="<?= $compra['produto_id'] ?>">
-                                            
-                                            <div class="estrelas-input">
-                                                <label>Sua nota:</label>
-                                                <div class="estrelas-selecao">
-                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                        <input type="radio" name="estrelas" value="<?= $i ?>" id="star-<?= $compra['produto_id'] ?>-<?= $i ?>" 
-                                                               <?= ($compra['avaliacao_id'] && $compra['estrelas'] == $i) ? 'checked' : '' ?> required>
-                                                        <label for="star-<?= $compra['produto_id'] ?>-<?= $i ?>" class="star-label">
-                                                            <i class='bx bx-star'></i>
-                                                        </label>
-                                                    <?php endfor; ?>
-                                                </div>
-                                            </div>
-
-                                            <div class="comentario-input">
-                                                <label for="comentario-<?= $compra['produto_id'] ?>">Comentário (opcional):</label>
-                                                <textarea name="comentario" id="comentario-<?= $compra['produto_id'] ?>" 
-                                                          placeholder="Conte sua experiência com o produto..."><?= $compra['avaliacao_id'] ? htmlspecialchars($compra['comentario']) : '' ?></textarea>
-                                            </div>
-
-                                            <div class="form-actions">
-                                                <button type="submit" class="btn-salvar-avaliacao">
-                                                    <i class='bx bx-check'></i>
-                                                    <?= $compra['avaliacao_id'] ? 'Atualizar' : 'Avaliar' ?>
-                                                </button>
-                                                <button type="button" class="btn-cancelar" onclick="toggleAvaliacaoForm(<?= $compra['produto_id'] ?>)">
-                                                    <i class='bx bx-x'></i>
-                                                    Cancelar
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -276,77 +206,5 @@ function obterIconeCategoria($categoria) {
 </main>
 
 <script src="../assets/css/js/script.js"></script>
-<script>
-function toggleAvaliacaoForm(produtoId) {
-    const form = document.getElementById('form-avaliacao-' + produtoId);
-    if (form.style.display === 'none' || form.style.display === '') {
-        form.style.display = 'block';
-    } else {
-        form.style.display = 'none';
-    }
-}
-
-// Efeito visual nas estrelas
-document.addEventListener('DOMContentLoaded', function() {
-    const starLabels = document.querySelectorAll('.star-label');
-    
-    starLabels.forEach(label => {
-        label.addEventListener('mouseover', function() {
-            const starValue = this.previousElementSibling.value;
-            const produtoId = this.previousElementSibling.id.split('-')[1];
-            highlightStars(produtoId, starValue);
-        });
-    });
-    
-    document.querySelectorAll('.estrelas-selecao').forEach(container => {
-        container.addEventListener('mouseleave', function() {
-            const produtoId = this.closest('.form-avaliacao').id.split('-')[2];
-            const checkedStar = this.querySelector('input[type="radio"]:checked');
-            const value = checkedStar ? checkedStar.value : 0;
-            highlightStars(produtoId, value);
-        });
-    });
-});
-
-function highlightStars(produtoId, rating) {
-    const stars = document.querySelectorAll(`#form-avaliacao-${produtoId} .star-label i`);
-    stars.forEach((star, index) => {
-        if (index < rating) {
-            star.className = 'bx bxs-star';
-        } else {
-            star.className = 'bx bx-star';
-        }
-    });
-}
-
-// SweetAlert para mensagens de sucesso
-<?php if (isset($_GET['avaliacao_criada'])): ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Avaliação enviada!',
-        text: 'Sua avaliação foi salva com sucesso.',
-        timer: 2000,
-        showConfirmButton: false
-    });
-    // Remove o parâmetro da URL
-    const url = new URL(window.location);
-    url.searchParams.delete('avaliacao_criada');
-    window.history.replaceState({}, document.title, url);
-<?php endif; ?>
-
-<?php if (isset($_GET['avaliacao_atualizada'])): ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Avaliação atualizada!',
-        text: 'Sua avaliação foi atualizada com sucesso.',
-        timer: 2000,
-        showConfirmButton: false
-    });
-    // Remove o parâmetro da URL
-    const url = new URL(window.location);
-    url.searchParams.delete('avaliacao_atualizada');
-    window.history.replaceState({}, document.title, url);
-<?php endif; ?>
-</script>
 </body>
 </html>
