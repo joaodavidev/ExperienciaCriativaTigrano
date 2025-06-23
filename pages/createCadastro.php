@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <button id="btnModo" class="btn-toggle-tema" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: white; cursor: pointer;">
+  <button id="btnModo" class="btn-toggle-tema">
     <i class='bx bx-moon'></i>
   </button>
 
@@ -94,14 +94,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <p>Já possui uma conta? <a href="../pages/login.php">Fazer login</a></p>
     </form>
   </div>
-
   <script>
     const btnModo = document.getElementById('btnModo');
     if (btnModo) {
+      // Aplicar tema salvo no carregamento
+      const temaSalvo = localStorage.getItem('tema');
+      if (temaSalvo === 'claro') {
+        document.body.classList.add('light-mode');
+        btnModo.querySelector('i').classList.remove('bx-moon');
+        btnModo.querySelector('i').classList.add('bx-sun');
+      }
+
       btnModo.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
         const icon = btnModo.querySelector('i');
-        icon.className = document.body.classList.contains('light-mode') ? 'bx bx-sun' : 'bx bx-moon';
+        
+        if (document.body.classList.contains('light-mode')) {
+          icon.classList.remove('bx-moon');
+          icon.classList.add('bx-sun');
+          localStorage.setItem('tema', 'claro');
+        } else {
+          icon.classList.remove('bx-sun');
+          icon.classList.add('bx-moon');
+          localStorage.setItem('tema', 'escuro');
+        }
       });
     }
   </script>

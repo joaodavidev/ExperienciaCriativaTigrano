@@ -8,6 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <button id="btnModo" class="btn-toggle-tema">
+        <i class='bx bx-moon'></i>
+    </button>
+
     <div class="login-container">
         <h2>Login</h2>
         <form action="../includes/autenticar.php" method="post">

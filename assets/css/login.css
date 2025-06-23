@@ -167,6 +167,28 @@ body.light-mode p a {
   color: #1D4ED8;
 }
 
+.btn-toggle-tema {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.btn-toggle-tema:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.light-mode .btn-toggle-tema:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .btn-toggle-tema i {
   transition: color 0.3s;
 }
@@ -174,7 +196,6 @@ body.light-mode p a {
 body:not(.light-mode) .btn-toggle-tema i {
   color: white;
 }
-
 
 body.light-mode .btn-toggle-tema i {
   color: #1D4ED8;

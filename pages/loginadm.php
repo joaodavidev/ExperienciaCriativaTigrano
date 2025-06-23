@@ -7,7 +7,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <button id="btnModo" class="btn-toggle-tema" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: white; cursor: pointer;">
+    <button id="btnModo" class="btn-toggle-tema">
      <i class='bx bx-moon'></i>
     </button>
 
