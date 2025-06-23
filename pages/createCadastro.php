@@ -2,51 +2,137 @@
 require_once '../includes/db.php';
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = trim($_POST['nome']);
-    $email = trim($_POST['email']);
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-    $sexo = $_POST['sexo'];
-    $idade = intval($_POST['idade']);
-    $cpf = $_POST['cpf'];
-
-    $sql = "INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
-            VALUES (?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssis", $email, $nome, $senha, $sexo, $idade, $cpf);
-
-    if ($stmt->execute()) {
+function exibirErroSweetAlert($titulo, $mensagem) {
     echo '
     <!DOCTYPE html>
     <html lang="pt-br">
     <head>
       <meta charset="UTF-8">
-      <title>Cadastro Concluído</title>
+      <title>Erro no Cadastro</title>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
       <script>
         const temaClaro = localStorage.getItem("tema") === "claro";
         Swal.fire({
-          icon: "success",
-          title: "Cadastro realizado com sucesso!",
-          text: "Você será redirecionado para o login.",
+          icon: "error",
+          title: "' . $titulo . '",
+          text: "' . $mensagem . '",
           confirmButtonText: "OK",
           background: temaClaro ? "#E6E4E4" : "#262626",
           color: temaClaro ? "#121212" : "#ffffff",
-          confirmButtonColor: "#1D4ED8"
+          confirmButtonColor: "#DC2626"
         }).then(() => {
-          window.location.href = "../pages/login.php";
+          window.history.back();
         });
       </script>
     </body>
     </html>';
     exit();
-} else {
-    echo "Erro ao cadastrar: " . $stmt->error;
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nome = trim($_POST['nome']);
+    $email = trim($_POST['email']);
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+    $sexo = $_POST['sexo'];
+    $idade = intval($_POST['idade']);
+    $cpf = trim($_POST['cpf']);
+
+    // Validar dados básicos
+    if (empty($nome) || empty($email) || empty($cpf)) {
+        exibirErroSweetAlert("Dados incompletos", "Preencha todos os campos obrigatórios.");
+    }
+
+    // Validar formato do email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        exibirErroSweetAlert("Email inválido", "Digite um endereço de email válido.");
+    }
+
+    // Validar CPF (apenas números e 11 dígitos)
+    if (!preg_match('/^\d{11}$/', $cpf)) {
+        exibirErroSweetAlert("CPF inválido", "O CPF deve conter exatamente 11 números.");
+    }
+
+    // Verificar se email já existe
+    $stmtEmailCheck = $conn->prepare("SELECT email FROM usuarios WHERE email = ?");
+    $stmtEmailCheck->bind_param("s", $email);
+    $stmtEmailCheck->execute();
+    $resultEmail = $stmtEmailCheck->get_result();
+    
+    if ($resultEmail->num_rows > 0) {
+        $stmtEmailCheck->close();
+        exibirErroSweetAlert("Email já cadastrado", "Este email já está em uso. Tente fazer login ou use outro email.");
+    }
+    $stmtEmailCheck->close();
+
+    // Verificar se CPF já existe
+    $stmtCpfCheck = $conn->prepare("SELECT cpf FROM usuarios WHERE cpf = ?");
+    $stmtCpfCheck->bind_param("s", $cpf);
+    $stmtCpfCheck->execute();
+    $resultCpf = $stmtCpfCheck->get_result();
+    
+    if ($resultCpf->num_rows > 0) {
+        $stmtCpfCheck->close();
+        exibirErroSweetAlert("CPF já cadastrado", "Este CPF já está registrado em nossa base de dados.");
+    }
+    $stmtCpfCheck->close();
+
+    // Tentar inserir usuário
+    $sql = "INSERT INTO usuarios (email, nome, senha, sexo, idade, cpf)
+            VALUES (?, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        exibirErroSweetAlert("Erro interno", "Erro ao preparar a consulta. Tente novamente mais tarde.");
+    }
+    
+    $stmt->bind_param("ssssis", $email, $nome, $senha, $sexo, $idade, $cpf);
+
+    if ($stmt->execute()) {
+        $stmt->close();
+        echo '
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+          <meta charset="UTF-8">
+          <title>Cadastro Concluído</title>
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        </head>
+        <body>
+          <script>
+            const temaClaro = localStorage.getItem("tema") === "claro";
+            Swal.fire({
+              icon: "success",
+              title: "Cadastro realizado com sucesso!",
+              text: "Você será redirecionado para o login.",
+              confirmButtonText: "OK",
+              background: temaClaro ? "#E6E4E4" : "#262626",
+              color: temaClaro ? "#121212" : "#ffffff",
+              confirmButtonColor: "#1D4ED8"
+            }).then(() => {
+              window.location.href = "../pages/login.php";
+            });
+          </script>
+        </body>
+        </html>';
+        exit();
+    } else {
+        $stmt->close();
+        // Verificar se é erro de duplicate key
+        if ($conn->errno == 1062) {
+            if (strpos($conn->error, 'email') !== false) {
+                exibirErroSweetAlert("Email já cadastrado", "Este email já está em uso. Tente fazer login ou use outro email.");
+            } elseif (strpos($conn->error, 'cpf') !== false) {
+                exibirErroSweetAlert("CPF já cadastrado", "Este CPF já está registrado em nossa base de dados.");
+            } else {
+                exibirErroSweetAlert("Dados duplicados", "Já existe um usuário com estes dados. Verifique email e CPF.");
+            }
+        } else {
+            exibirErroSweetAlert("Erro no cadastro", "Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+    }
 }
 ?>
 

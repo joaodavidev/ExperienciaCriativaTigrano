@@ -197,23 +197,6 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<?php if (isset($_GET['adicionado']) && $_GET['adicionado'] == 1): ?>
-<script>
-  const temaClaro = localStorage.getItem("tema") === "claro";
-  Swal.fire({
-    icon: 'success',
-    title: 'Adicionado ao carrinho!',
-    timer: 1500,
-    showConfirmButton: false,
-    background: temaClaro ? "#E6E4E4" : "#262626",
-    color: temaClaro ? "#121212" : "#ffffff",
-    confirmButtonColor: "#1D4ED8"
-  });
-  const url = new URL(window.location.href);
-  url.searchParams.delete("adicionado");
-  window.history.replaceState({}, document.title, url.toString());
-</script>
-<?php endif; ?>
 <script>
   function formatCurrency(value) {
     return 'R$ ' + value.toFixed(2).replace('.', ',');
@@ -285,6 +268,31 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
     });
   });
 </script>
+
+<!-- Mensagem de sucesso produto adicionado ao carrinho -->
+<?php if (isset($_GET['adicionado']) && $_GET['adicionado'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Produto adicionado ao carrinho!',
+        showConfirmButton: false,
+        timer: 2000,
+        background: tema ? "#E6E4E4" : "#262626",
+        color: tema ? "#121212" : "#ffffff"
+      });
+      
+      const url = new URL(window.location.href);
+      url.searchParams.delete('adicionado');
+      window.history.replaceState({}, document.title, url.toString());
+    });
+  </script>
+<?php endif; ?>
+
 <script src="../assets/css/js/script.js"></script>
 </body>
 </html>

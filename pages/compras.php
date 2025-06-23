@@ -206,5 +206,104 @@ function obterIconeCategoria($categoria) {
 </main>
 
 <script src="../assets/css/js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Mensagens de sucesso para avaliações -->
+<?php if (isset($_GET['avaliacao_criada']) && $_GET['avaliacao_criada'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Avaliação enviada com sucesso!',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('avaliacao_criada');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
+<?php if (isset($_GET['avaliacao_atualizada']) && $_GET['avaliacao_atualizada'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Avaliação atualizada com sucesso!',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('avaliacao_atualizada');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
+<!-- Tratamento de erros de avaliações -->
+<?php if (isset($_GET['erro'])): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const erro = '<?php echo $_GET["erro"]; ?>';
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      let titulo = 'Erro';
+      let mensagem = 'Ocorreu um erro inesperado. Tente novamente.';
+      
+      switch(erro) {
+        case 'produto_invalido':
+          titulo = 'Produto inválido';
+          mensagem = 'ID do produto é inválido.';
+          break;
+        case 'avaliacao_invalida':
+          titulo = 'Avaliação inválida';
+          mensagem = 'A avaliação deve ser entre 1 e 5 estrelas.';
+          break;
+        case 'produto_nao_comprado':
+          titulo = 'Produto não comprado';
+          mensagem = 'Você só pode avaliar produtos que comprou.';
+          break;
+        case 'erro_atualizar_avaliacao':
+          titulo = 'Erro ao atualizar';
+          mensagem = 'Erro ao atualizar sua avaliação. Tente novamente.';
+          break;
+        case 'erro_criar_avaliacao':
+          titulo = 'Erro ao enviar';
+          mensagem = 'Erro ao enviar sua avaliação. Tente novamente.';
+          break;
+        case 'metodo_invalido':
+          titulo = 'Método inválido';
+          mensagem = 'Método de requisição inválido.';
+          break;
+      }
+      
+      Swal.fire({
+        icon: 'error',
+        title: titulo,
+        text: mensagem,
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#DC2626'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('erro');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
 </body>
 </html>

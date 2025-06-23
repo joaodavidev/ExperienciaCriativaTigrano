@@ -23,17 +23,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $arquivo_produto = null;    // Processar upload do arquivo se fornecido
     if (isset($_FILES['arquivo_produto']) && $_FILES['arquivo_produto']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = '../uploads/produtos/';
-        
-        // Verificar se o diretório existe, criar se não existir
+          // Verificar se o diretório existe, criar se não existir
         if (!is_dir($upload_dir)) {
             if (!mkdir($upload_dir, 0755, true)) {
-                die("Erro: Não foi possível criar o diretório de uploads.");
+                header("Location: ../pages/produto.php?erro=erro_diretorio");
+                exit();
             }
         }
         
         // Verificar se o diretório tem permissão de escrita
         if (!is_writable($upload_dir)) {
-            die("Erro: Diretório de uploads não tem permissão de escrita.");
+            header("Location: ../pages/produto.php?erro=erro_permissao");
+            exit();
         }
         
         $arquivo_nome = $_FILES['arquivo_produto']['name'];
@@ -43,34 +44,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         // Extensões permitidas
         $extensoes_permitidas = ['pdf', 'doc', 'docx', 'zip', 'rar', 'txt', 'mp4', 'mp3', 'png', 'jpg', 'jpeg'];
-        
-        // Verificar tamanho (10MB máximo)
+          // Verificar tamanho (10MB máximo)
         if ($arquivo_tamanho > 10 * 1024 * 1024) {
-            die("Erro: Arquivo muito grande. Máximo 10MB.");
+            header("Location: ../pages/produto.php?erro=arquivo_grande");
+            exit();
         }
         
         // Verificar extensão
         if (!in_array($arquivo_ext, $extensoes_permitidas)) {
-            die("Erro: Tipo de arquivo não permitido.");
+            header("Location: ../pages/produto.php?erro=tipo_arquivo");
+            exit();
         }
         
         // Gerar nome único para o arquivo
         $nome_unico = uniqid() . '_' . time() . '.' . $arquivo_ext;
         $caminho_completo = $upload_dir . $nome_unico;
-        
-        // Mover arquivo para diretório de uploads
+          // Mover arquivo para diretório de uploads
         if (move_uploaded_file($arquivo_tmp, $caminho_completo)) {
             $arquivo_produto = 'uploads/produtos/' . $nome_unico;
         } else {
-            die("Erro: Falha ao fazer upload do arquivo.");
+            header("Location: ../pages/produto.php?erro=falha_upload");
+            exit();
         }
     }   
     if ($nome && $categoria && $preco && $descricao && $vendedorEmail) {
         $sql = "INSERT INTO produtos (nome, categoria, preco, descricao, status, vendedor_email, arquivo_produto)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
+                VALUES (?, ?, ?, ?, ?, ?, ?)";        $stmt = $conn->prepare($sql);
         if (!$stmt) {
-            die("Erro no prepare: " . $conn->error);
+            header("Location: ../pages/produto.php?erro=erro_prepare");
+            exit();
         }
 
         $stmt->bind_param("ssdssss", $nome, $categoria, $preco, $descricao, $status, $vendedorEmail, $arquivo_produto);
@@ -79,11 +81,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../pages/produto.php?sucesso=1");
             exit;
         } else {
-            echo "Erro ao inserir: " . $stmt->error;
+            header("Location: ../pages/produto.php?erro=erro_inserir");
+            exit();
         }
     } else {
-        echo "Nome, categoria, preço, descrição são obrigatórios.";
+        header("Location: ../pages/produto.php?erro=campos_obrigatorios");
+        exit();
     }
 } else {
-    echo "Requisição inválida.";
+    header("Location: ../pages/produto.php?erro=requisicao_invalida");
+    exit();
 }

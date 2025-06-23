@@ -87,6 +87,44 @@
         </script>
     <?php endif; ?>
 
+    <!-- Tratamento de erros de login -->
+    <?php if (isset($_GET['erro'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const erro = '<?php echo $_GET["erro"]; ?>';
+                const temaClaro = localStorage.getItem("tema") === "claro";
+                
+                let titulo = 'Erro no login';
+                let mensagem = 'Ocorreu um erro inesperado. Tente novamente.';
+                
+                switch(erro) {
+                    case 'senha_incorreta':
+                        titulo = 'Senha incorreta';
+                        mensagem = 'A senha digitada está incorreta. Verifique e tente novamente.';
+                        break;
+                    case 'usuario_nao_encontrado':
+                        titulo = 'Usuário não encontrado';
+                        mensagem = 'Este email não está cadastrado. Verifique o email ou faça seu cadastro.';
+                        break;
+                    case 'dados_incompletos':
+                        titulo = 'Dados incompletos';
+                        mensagem = 'Preencha todos os campos para fazer login.';
+                        break;
+                }
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: titulo,
+                    text: mensagem,
+                    confirmButtonText: 'OK',
+                    background: temaClaro ? "#E6E4E4" : "#262626",
+                    color: temaClaro ? "#121212" : "#ffffff",
+                    confirmButtonColor: "#DC2626"
+                });
+            });
+        </script>
+    <?php endif; ?>
+
     <script src="../assets/css/js/login.js"></script>
 </body>
 </html>

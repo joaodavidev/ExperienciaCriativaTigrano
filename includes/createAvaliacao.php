@@ -7,25 +7,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usuario_email = $_SESSION['usuario']['email'];
     $produto_id = intval($_POST['produto_id'] ?? 0);
     $estrelas = intval($_POST['estrelas'] ?? 0);
-    $comentario = trim($_POST['comentario'] ?? '');
-
-    // Validações
+    $comentario = trim($_POST['comentario'] ?? '');    // Validações
     if ($produto_id <= 0) {
-        die("Erro: ID do produto inválido.");
+        header("Location: ../pages/compras.php?erro=produto_invalido");
+        exit();
     }
 
     if ($estrelas < 1 || $estrelas > 5) {
-        die("Erro: Avaliação deve ser entre 1 e 5 estrelas.");
+        header("Location: ../pages/compras.php?erro=avaliacao_invalida");
+        exit();
     }
 
     // Verificar se o usuário realmente comprou este produto
     $stmt_verificar = $conn->prepare("SELECT id FROM vendas WHERE comprador_email = ? AND produto_id = ?");
     $stmt_verificar->bind_param("si", $usuario_email, $produto_id);
     $stmt_verificar->execute();
-    $result_verificar = $stmt_verificar->get_result();
-
-    if ($result_verificar->num_rows === 0) {
-        die("Erro: Você só pode avaliar produtos que comprou.");
+    $result_verificar = $stmt_verificar->get_result();    if ($result_verificar->num_rows === 0) {
+        header("Location: ../pages/compras.php?erro=produto_nao_comprado");
+        exit();
     }
     $stmt_verificar->close();
 
@@ -39,11 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Atualizar avaliação existente
         $stmt_update = $conn->prepare("UPDATE avaliacao SET estrelas = ?, comentario = ? WHERE usuario_email = ? AND produto_id = ?");
         $stmt_update->bind_param("issi", $estrelas, $comentario, $usuario_email, $produto_id);
-        
-        if ($stmt_update->execute()) {
+          if ($stmt_update->execute()) {
             header("Location: ../pages/compras.php?avaliacao_atualizada=1");
         } else {
-            echo "Erro ao atualizar avaliação: " . $conn->error;
+            header("Location: ../pages/compras.php?erro=erro_atualizar_avaliacao");
         }
         $stmt_update->close();
     } else {
@@ -54,14 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($stmt_insert->execute()) {
             header("Location: ../pages/compras.php?avaliacao_criada=1");
         } else {
-            echo "Erro ao criar avaliação: " . $conn->error;
+            header("Location: ../pages/compras.php?erro=erro_criar_avaliacao");
         }
         $stmt_insert->close();
     }
     
     $stmt_existe->close();
 } else {
-    echo "Método de requisição inválido.";
+    header("Location: ../pages/compras.php?erro=metodo_invalido");
 }
 
 $conn->close();

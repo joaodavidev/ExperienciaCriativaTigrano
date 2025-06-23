@@ -11,11 +11,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
     $vendedorEmail = $_SESSION['usuario']['email'];
 
     // Segurança extra: só deleta se o produto pertence ao vendedor logado
-    $sql = "DELETE FROM produtos WHERE id = ? AND vendedor_email = ?";
-    $stmt = $conn->prepare($sql);
+    $sql = "DELETE FROM produtos WHERE id = ? AND vendedor_email = ?";    $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
-        die("Erro no prepare: " . $conn->error);
+        header("Location: ../pages/produto.php?erro=erro_prepare");
+        exit();
     }
 
     $stmt->bind_param("is", $id, $vendedorEmail);
@@ -24,9 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
         header("Location: ../pages/produto.php?removido=1");
         exit;
     } else {
-        echo "Erro ao deletar: " . $stmt->error;
+        header("Location: ../pages/produto.php?erro=erro_deletar");
+        exit();
     }
 } else {
-    echo "Requisição inválida.";
+    header("Location: ../pages/produto.php?erro=requisicao_invalida");
+    exit();
 }
 ?>

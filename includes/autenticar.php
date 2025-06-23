@@ -3,8 +3,14 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['usuario'];
-    $senha = $_POST['senha'];
+    $email = trim($_POST['usuario'] ?? '');
+    $senha = trim($_POST['senha'] ?? '');
+
+    // Validar campos obrigatórios
+    if (empty($email) || empty($senha)) {
+        header("Location: ../pages/login.php?erro=dados_incompletos");
+        exit();
+    }
 
     // Verificar se a coluna 'ativo' existe, se não existir, adicionar
     $resultColumn = $conn->query("SHOW COLUMNS FROM usuarios LIKE 'ativo'");
@@ -35,12 +41,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['usuario_logado'] = true;
 
             header("Location: ../pages/marketplace.php");
+            exit();        } else {
+            header("Location: ../pages/login.php?erro=senha_incorreta");
             exit();
-        } else {
-            echo "Senha incorreta!";
         }
     } else {
-        echo "Usuário não encontrado!";
+        header("Location: ../pages/login.php?erro=usuario_nao_encontrado");
+        exit();
     }
 
     $stmt->close();

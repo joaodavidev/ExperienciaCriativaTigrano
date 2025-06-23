@@ -29,12 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
 
     $sql = "UPDATE usuarios SET usuario = ?, senha = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $usuario, $senha, $id);
-
-    if ($stmt->execute()) {
-        echo "Administrador atualizado com sucesso!";
+    $stmt->bind_param("ssi", $usuario, $senha, $id);    if ($stmt->execute()) {
+        header("Location: ../pages/usuarios.php?admin_atualizado=1");
+        exit();
     } else {
-        echo "Erro ao atualizar.";
+        header("Location: ../pages/usuarios.php?erro=erro_atualizar_admin");
+        exit();
     }
 }
 ?>

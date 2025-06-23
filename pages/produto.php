@@ -122,5 +122,89 @@ include '../includes/verificar_login.php';
   </script>
 <?php endif; ?>
 
+<?php if (isset($_GET['removido']) && $_GET['removido'] == 1): ?>
+  <script>
+    const tema = localStorage.getItem("tema") === "claro";
+    Swal.fire({
+      icon: 'success',
+      title: 'Produto removido com sucesso!',
+      confirmButtonText: 'OK',
+      background: tema ? '#E6E4E4' : '#262626',
+      color: tema ? '#121212' : '#ffffff',
+      confirmButtonColor: '#1D4ED8'
+    }).then(() => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('removido');
+      window.history.replaceState({}, document.title, url.toString());
+    });
+  </script>
+<?php endif; ?>
+
+<!-- Tratamento de erros de produtos -->
+<?php if (isset($_GET['erro'])): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const erro = '<?php echo $_GET["erro"]; ?>';
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      let titulo = 'Erro';
+      let mensagem = 'Ocorreu um erro inesperado. Tente novamente.';
+      
+      switch(erro) {
+        case 'erro_diretorio':
+          titulo = 'Erro no diretório';
+          mensagem = 'Não foi possível criar o diretório de uploads. Contate o administrador.';
+          break;
+        case 'erro_permissao':
+          titulo = 'Erro de permissão';
+          mensagem = 'Sem permissão para salvar arquivos. Contate o administrador.';
+          break;
+        case 'arquivo_grande':
+          titulo = 'Arquivo muito grande';
+          mensagem = 'O arquivo deve ter no máximo 10MB. Escolha um arquivo menor.';
+          break;
+        case 'tipo_arquivo':
+          titulo = 'Tipo de arquivo inválido';
+          mensagem = 'Tipos permitidos: PDF, DOC, DOCX, ZIP, RAR, TXT, MP4, MP3, PNG, JPG, JPEG.';
+          break;
+        case 'falha_upload':
+          titulo = 'Falha no upload';
+          mensagem = 'Erro ao fazer upload do arquivo. Tente novamente.';
+          break;
+        case 'erro_prepare':
+          titulo = 'Erro interno';
+          mensagem = 'Erro ao preparar a consulta. Tente novamente mais tarde.';
+          break;
+        case 'erro_inserir':
+          titulo = 'Erro ao salvar';
+          mensagem = 'Erro ao salvar o produto no banco de dados. Tente novamente.';
+          break;
+        case 'campos_obrigatorios':
+          titulo = 'Campos obrigatórios';
+          mensagem = 'Preencha todos os campos obrigatórios: nome, categoria, preço e descrição.';
+          break;
+        case 'requisicao_invalida':
+          titulo = 'Requisição inválida';
+          mensagem = 'Erro na requisição. Tente recarregar a página.';
+          break;
+      }
+      
+      Swal.fire({
+        icon: 'error',
+        title: titulo,
+        text: mensagem,
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#DC2626'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('erro');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
 </body>
 </html>

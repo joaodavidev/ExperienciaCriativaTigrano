@@ -25,17 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $verifica = $conn->prepare("SELECT id FROM produtos WHERE id = ? AND vendedor_email = ?");
         $verifica->bind_param("is", $id, $email);
         $verifica->execute();
-        $resultado = $verifica->get_result();
-
-        if ($resultado->num_rows === 0) {
-            die("Produto não encontrado ou você não tem permissão para editar.");
+        $resultado = $verifica->get_result();        if ($resultado->num_rows === 0) {
+            header("Location: ../pages/produto.php?erro=produto_nao_encontrado");
+            exit();
         }
 
         $sql = "UPDATE produtos SET nome = ?, categoria = ?, preco = ?, descricao = ?, status = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
-            die("Erro no prepare: " . $conn->error);
+            header("Location: ../pages/produto.php?erro=erro_prepare");
+            exit();
         }
 
         $stmt->bind_param("ssdssi", $nome, $categoria, $preco, $descricao, $status, $id);
@@ -44,12 +44,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../pages/produto.php?atualizado=1");
             exit;
         } else {
-            echo "Erro ao atualizar: " . $stmt->error;
+            header("Location: ../pages/produto.php?erro=erro_atualizar");
+            exit();
         }
     } else {
-        echo "Todos os campos são obrigatórios.";
+        header("Location: ../pages/produto.php?erro=campos_obrigatorios");
+        exit();
     }
 } else {
-    echo "Requisição inválida.";
+    header("Location: ../pages/produto.php?erro=requisicao_invalida");
+    exit();
 }
 ?>

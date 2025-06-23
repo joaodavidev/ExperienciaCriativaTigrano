@@ -3,8 +3,14 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $email = trim($_POST['email'] ?? '');
+    $senha = trim($_POST['senha'] ?? '');
+
+    // Validar campos obrigatórios
+    if (empty($email) || empty($senha)) {
+        header("Location: ../pages/loginadm.php?erro=dados_incompletos");
+        exit();
+    }
 
     $stmt = $conn->prepare("SELECT email, senha FROM adm WHERE email = ?");
     $stmt->bind_param("s", $email);
@@ -19,12 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['admin'] = true;
 
             header("Location: ../pages/admin.php");
+            exit();        } else {
+            header("Location: ../pages/loginadm.php?erro=senha_incorreta");
             exit();
-        } else {
-            echo "Senha incorreta!";
         }
     } else {
-        echo "Usuário não encontrado!";
+        header("Location: ../pages/loginadm.php?erro=usuario_nao_encontrado");
+        exit();
     }
 
     $stmt->close();

@@ -2,25 +2,22 @@
 session_start();
 require_once '../includes/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['excluir'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {    if (isset($_POST['excluir'])) {
         $email = $_POST['excluir'];
         $stmt = $conn->prepare("DELETE FROM usuarios WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->close();
-        header("Location: usuarios.php");
+        header("Location: usuarios.php?usuario_excluido=1");
         exit();
-    }
-
-    if (isset($_POST['resetar'])) {
+    }if (isset($_POST['resetar'])) {
         $email = $_POST['resetar'];
         $novaSenha = password_hash("Tigrano123", PASSWORD_DEFAULT);
         $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
         $stmt->bind_param("ss", $novaSenha, $email);
         $stmt->execute();
         $stmt->close();
-        echo "<script>alert('Senha redefinida para Tigrano123'); window.location.href='usuarios.php';</script>";
+        header("Location: usuarios.php?senha_resetada=1");
         exit();
     }
 }
@@ -162,6 +159,114 @@ function confirmarExclusao(event) {
   });
 }
 </script>
+
+<!-- Mensagens de sucesso e erro para usuários -->
+<?php if (isset($_GET['usuario_excluido']) && $_GET['usuario_excluido'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Usuário excluído com sucesso!',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('usuario_excluido');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
+<?php if (isset($_GET['senha_resetada']) && $_GET['senha_resetada'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Senha redefinida com sucesso!',
+        text: 'A nova senha é: Tigrano123',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('senha_resetada');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
+<?php if (isset($_GET['admin_atualizado']) && $_GET['admin_atualizado'] == 1): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Administrador atualizado com sucesso!',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#1D4ED8'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('admin_atualizado');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
+<!-- Tratamento de erros para usuários -->
+<?php if (isset($_GET['erro'])): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const erro = '<?php echo $_GET["erro"]; ?>';
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      let titulo = 'Erro';
+      let mensagem = 'Ocorreu um erro inesperado. Tente novamente.';
+      
+      switch(erro) {
+        case 'erro_atualizar_admin':
+          titulo = 'Erro ao atualizar';
+          mensagem = 'Erro ao atualizar os dados do administrador. Tente novamente.';
+          break;
+        case 'erro_excluir_usuario':
+          titulo = 'Erro ao excluir';
+          mensagem = 'Erro ao excluir o usuário. Tente novamente.';
+          break;
+        case 'erro_resetar_senha':
+          titulo = 'Erro ao resetar';
+          mensagem = 'Erro ao resetar a senha do usuário. Tente novamente.';
+          break;
+      }
+      
+      Swal.fire({
+        icon: 'error',
+        title: titulo,
+        text: mensagem,
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#DC2626'
+      }).then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('erro');
+        window.history.replaceState({}, document.title, url.toString());
+      });
+    });
+  </script>
+<?php endif; ?>
+
 <script src="../assets/css/js/admin.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../assets/css/js/script.js"></script>

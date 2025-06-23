@@ -11,9 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 
     if ($id > 0) {
         $sql = "DELETE FROM suporte WHERE id = ? AND email_usuario = ?";
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt) {
+        $stmt = $conn->prepare($sql);        if ($stmt) {
             $stmt->bind_param('is', $id, $email);
             if ($stmt->execute()) {
                 error_log('Ticket excluído com sucesso: id=' . $id);
@@ -21,20 +19,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                 exit();
             } else {
                 error_log('Erro ao excluir ticket: ' . $stmt->error);
-                echo 'Erro ao excluir ticket: ' . $stmt->error;
+                header('Location: ../pages/suporteUsuario.php?erro=erro_excluir');
+                exit();
             }
             $stmt->close();
         } else {
             error_log('Erro na preparação da query: ' . $conn->error);
-            echo 'Erro na preparação da query: ' . $conn->error;
+            header('Location: ../pages/suporteUsuario.php?erro=erro_prepare');
+            exit();
         }
     } else {
         error_log('ID inválido para exclusão: ' . $id);
-        echo 'ID inválido.';
+        header('Location: ../pages/suporteUsuario.php?erro=id_invalido');
+        exit();
     }
 } else {
     error_log('Requisição inválida em deleteTicket.php. POST=' . var_export($_POST, true));
-    echo 'Requisição inválida.';
+    header('Location: ../pages/suporteUsuario.php?erro=requisicao_invalida');
+    exit();
 }
 
 $conn->close();
