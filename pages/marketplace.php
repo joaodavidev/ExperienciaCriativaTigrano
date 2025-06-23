@@ -16,7 +16,7 @@ $result_precos = $conn->query($sql_precos);
 $precos = $result_precos->fetch_assoc();
 
 $precoMinDB = 0;
-$precoMaxDB = isset($precos['max_preco']) ? ceil($precos['max_preco']) : 1000;
+$precoMaxDB = isset($precos['max_preco']) ? floatval($precos['max_preco']) : 1000;
 
 // Se não foi definido via GET, usa os valores do banco
 if (!isset($_GET['preco_min'])) $precoMin = $precoMinDB;
@@ -122,19 +122,18 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
             </div>
             
             <div class="price-filter">
-              <div class="price-inputs">
-                <div class="input-group">
+              <div class="price-inputs">                <div class="input-group">
                   <span class="price-label">Min:</span>
                   <div class="input-wrapper">
                     <span class="currency-symbol">R$</span>
-                    <input type="number" id="input-preco-min" name="preco_min" min="0" max="<?= $precoMaxDB ?>" value="<?= $precoMin ?>" step="1">
+                    <input type="number" id="input-preco-min" name="preco_min" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMin, 2, '.', '') ?>" step="0.01">
                   </div>
                 </div>
                 <div class="input-group">
                   <span class="price-label">Max:</span>
                   <div class="input-wrapper">
                     <span class="currency-symbol">R$</span>
-                    <input type="number" id="input-preco-max" name="preco_max" min="0" max="<?= $precoMaxDB ?>" value="<?= $precoMax ?>" step="1">
+                    <input type="number" id="input-preco-max" name="preco_max" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMax, 2, '.', '') ?>" step="0.01">
                   </div>
                 </div>
               </div>              <div class="filter-buttons">
@@ -201,12 +200,11 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
   function formatCurrency(value) {
     return 'R$ ' + value.toFixed(2).replace('.', ',');
   }
-  
-  function handleInputChange(inputId, type) {
+    function handleInputChange(inputId, type) {
     const input = document.getElementById(inputId);
-    const min = parseInt(input.min);
-    const max = parseInt(input.max);
-    let value = parseInt(input.value);
+    const min = parseFloat(input.min);
+    const max = parseFloat(input.max);
+    let value = parseFloat(input.value);
     
     if (isNaN(value)) {
       value = (type === 'min') ? min : max;
@@ -215,17 +213,16 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
     if (value < min) value = min;
     if (value > max) value = max;
     
-    input.value = value;
-  } 
-  function limparFiltrosPreco() {
+    input.value = value.toFixed(2);
+  }  function limparFiltrosPreco() {
     console.log('Função limparFiltrosPreco chamada');
     
     const inputPrecoMin = document.getElementById('input-preco-min');
     const inputPrecoMax = document.getElementById('input-preco-max');
     
     // Restaura os valores para o mínimo (zero) e máximo
-    inputPrecoMin.value = 0;
-    inputPrecoMax.value = inputPrecoMax.max;
+    inputPrecoMin.value = '0.00';
+    inputPrecoMax.value = parseFloat(inputPrecoMax.max).toFixed(2);
     
     // Limpa o campo de busca também
     const inputBusca = document.querySelector('input[name="nome"]');
