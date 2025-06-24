@@ -25,13 +25,12 @@ if ($result_checkar->num_rows == 0) {
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 </head>
                 <body>
-                    <script>
-                        Swal.fire({
+                    <script>                        Swal.fire({
                             icon: "success",
                             title: "Admin criado com sucesso!",
                             text: "Você será redirecionado para o login.",
                             confirmButtonText: "OK",
-                            background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                            background: localStorage.getItem("tema") === "claro" ? "#E6E4E4" : "#262626",
                             color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
                             confirmButtonColor: "#1D4ED8"
                         }).then(() => {
@@ -60,13 +59,12 @@ if ($result_checkar->num_rows == 0) {
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         </head>
         <body>
-            <script>
-                Swal.fire({
+            <script>                Swal.fire({
                     icon: "info",
                     title: "Admin já existe!",
                     text: "Redirecionando para o login...",
                     confirmButtonText: "OK",
-                    background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+                    background: localStorage.getItem("tema") === "claro" ? "#E6E4E4" : "#262626",
                     color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
                     confirmButtonColor: "#1D4ED8"
                 }).then(() => {

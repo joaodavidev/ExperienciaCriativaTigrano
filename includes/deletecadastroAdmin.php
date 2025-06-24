@@ -41,7 +41,7 @@ Swal.fire({
     icon: '<?= $tipo ?>',
     title: '<?= $mensagem ?>',
     confirmButtonText: 'OK',
-    background: localStorage.getItem("tema") === "claro" ? "#ffffff" : "#121212",
+    background: localStorage.getItem("tema") === "claro" ? "#E6E4E4" : "#262626",
     color: localStorage.getItem("tema") === "claro" ? "#121212" : "#ffffff",
     confirmButtonColor: "#1D4ED8"
 }).then(() => {

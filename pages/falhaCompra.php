@@ -37,16 +37,16 @@ session_start();
 <body>
 
 <script>
+  const tema = localStorage.getItem("tema") === "claro";
+  
   Swal.fire({
     icon: 'error',
     title: 'Pagamento Falhou!',
     text: 'Ocorreu um erro no seu pagamento. Tente novamente.',
     confirmButtonText: 'Voltar ao carrinho',
-    customClass: {
-      popup: 'swal2-custom-popup',
-      title: 'swal2-custom-title',
-      confirmButton: 'swal2-custom-button'
-    }
+    background: tema ? '#E6E4E4' : '#262626',
+    color: tema ? '#121212' : '#ffffff',
+    confirmButtonColor: '#DC2626'
   }).then(() => {
     window.location.href = 'carrinho.php';
   });

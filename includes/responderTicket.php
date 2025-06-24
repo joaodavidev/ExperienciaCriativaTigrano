@@ -35,22 +35,14 @@ function exibirAlerta($icone, $titulo, $mensagem, $redirecionar = '../pages/tick
   </head>
   <body>
     <script>
-      const temaClaro = localStorage.getItem('tema') === 'claro';
-
-      Swal.fire({
+      const temaClaro = localStorage.getItem('tema') === 'claro';      Swal.fire({
         icon: '$icone',
         title: '$titulo',
         text: '$mensagem',
         confirmButtonText: 'OK',
         background: temaClaro ? '#E6E4E4' : '#262626',
         color: temaClaro ? '#121212' : '#ffffff',
-        confirmButtonColor: '#1D4ED8',
-        customClass: {
-          popup: 'swal2-popup',
-          title: 'swal2-title',
-          htmlContainer: 'swal2-html-container',
-          confirmButton: 'swal2-confirm'
-        }
+        confirmButtonColor: '#1D4ED8'
       }).then(() => {
         window.location.href = '$redirecionar';
       });

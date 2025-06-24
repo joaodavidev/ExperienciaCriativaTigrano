@@ -73,16 +73,16 @@ if (isset($_SESSION['usuario']['email'])) {
 <body>
 
 <script>
+  const tema = localStorage.getItem("tema") === "claro";
+  
   Swal.fire({
     icon: 'success',
     title: 'Pagamento Aprovado!',
     text: 'Seu pagamento foi confirmado com sucesso.',
     confirmButtonText: 'Voltar à loja',
-    customClass: {
-      popup: 'swal2-custom-popup',
-      title: 'swal2-custom-title',
-      confirmButton: 'swal2-custom-button'
-    }
+    background: tema ? '#E6E4E4' : '#262626',
+    color: tema ? '#121212' : '#ffffff',
+    confirmButtonColor: '#1D4ED8'
   }).then(() => {
     window.location.href = 'marketplace.php';
   });

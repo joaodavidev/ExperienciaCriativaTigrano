@@ -39,8 +39,7 @@ include '../includes/verificar_login.php';
 </head>
 <body>
 
-<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>
-  <script>
+<?php if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1): ?>  <script>
     const temaClaro = localStorage.getItem("tema") === "claro";
 
     Swal.fire({
@@ -50,13 +49,7 @@ include '../includes/verificar_login.php';
       confirmButtonText: 'OK',
       background: temaClaro ? '#E6E4E4' : '#262626',
       color: temaClaro ? '#121212' : '#ffffff',
-      confirmButtonColor: '#1D4ED8',
-      customClass: {
-        popup: 'swal2-popup',
-        title: 'swal2-title',
-        htmlContainer: 'swal2-html-container',
-        confirmButton: 'swal2-confirm'
-      }
+      confirmButtonColor: '#1D4ED8'
     }).then(() => {
       window.location.href = 'suporteUsuario.php';
     });
