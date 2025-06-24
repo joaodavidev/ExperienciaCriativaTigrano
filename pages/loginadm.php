@@ -12,10 +12,9 @@
     </button>
 
     <div class="login-container">
-        <h2>Login Admin</h2>
-        <form action="../includes/autenticaradm.php" method="post">
+        <h2>Login Admin</h2>        <form action="../includes/autenticaradm.php" method="post">
             <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required>
 
             <label for="senha">Senha:</label>
             <div class="senha-container">

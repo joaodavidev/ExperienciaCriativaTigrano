@@ -13,10 +13,9 @@
     </button>
 
     <div class="login-container">
-        <h2>Login</h2>
-        <form action="../includes/autenticar.php" method="post">
-            <label for="usuario">Usuário:</label>
-            <input type="text" id="usuario" name="usuario" required>
+        <h2>Login</h2>        <form action="../includes/autenticar.php" method="post">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="usuario" placeholder="Digite seu email" required>
 
             <label for="senha">Senha:</label>
             <div class="senha-container">

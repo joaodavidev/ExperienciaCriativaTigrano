@@ -56,14 +56,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nome'])) {
     </form>
     <?php if (isset($mensagem_erro)) echo "<p class='erro'>$mensagem_erro</p>"; ?>
   </div>
-
   <div class="filtro-preco-form">
     <form action="index.php" method="GET">
       <label>Preço mínimo:
-        <input type="number" name="preco_min" step="0.01" min="0">
+        <input type="number" name="preco_min" step="0.01" min="0" placeholder="R$ 0,00">
       </label>
       <label>Preço máximo:
-        <input type="number" name="preco_max" step="0.01" min="0">
+        <input type="number" name="preco_max" step="0.01" min="0" placeholder="R$ 999,99">
       </label>
       <button type="submit">Filtrar</button>
     </form>

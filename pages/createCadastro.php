@@ -47,11 +47,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validar formato do email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         exibirErroSweetAlert("Email inválido", "Digite um endereço de email válido.");
-    }
-
-    // Validar CPF (apenas números e 11 dígitos)
+    }    // Validar CPF (apenas números e 11 dígitos)
     if (!preg_match('/^\d{11}$/', $cpf)) {
         exibirErroSweetAlert("CPF inválido", "O CPF deve conter exatamente 11 números.");
+    }
+
+    // Validar senha forte (mínimo 8 caracteres e 1 caractere especial)
+    if (strlen($_POST['senha']) < 8 || !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $_POST['senha'])) {
+        exibirErroSweetAlert("Senha muito fraca", "A senha deve ter pelo menos 8 caracteres e pelo menos 1 caractere especial (!@#$%^&*).");
     }
 
     // Verificar se email já existe
@@ -151,15 +154,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div class="login-container">
     <h2>Cadastro</h2>
-    <form action="../pages/createCadastro.php" method="POST">
-      <label for="nome">Nome completo:</label>
-      <input type="text" id="nome" name="nome" required>
+    <form action="../pages/createCadastro.php" method="POST">      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
 
       <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-
-      <label for="senha">Senha:</label>
-      <input type="password" id="senha" name="senha" required>
+      <input type="email" id="email" name="email" placeholder="Digite seu email" required><label for="senha">Senha:</label>
+      <input type="password" id="senha" name="senha" placeholder="Mínimo 8 caracteres, 1 especial" required>
+      <div class="senha-requisitos" id="senhaRequisitos">
+        <p>• Mínimo 8 caracteres</p>
+        <p>• Pelo menos 1 caractere especial (!@#$%^&*)</p>
+      </div>
 
       <label for="sexo">Sexo:</label>
       <select id="sexo" name="sexo" required>
@@ -167,13 +171,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <option value="masculino">Masculino</option>
         <option value="feminino">Feminino</option>
         <option value="outro">Outro</option>
-      </select>
-
-      <label for="idade">Idade:</label>
-      <input type="number" id="idade" name="idade" required>
+      </select>      <label for="idade">Idade:</label>
+      <input type="number" id="idade" name="idade" placeholder="Digite sua idade" min="1" max="120" required>
 
       <label for="cpf">CPF:</label>
-      <input type="text" id="cpf" name="cpf" pattern="\d{11}" placeholder="Somente números" required>
+      <input type="text" id="cpf" name="cpf" pattern="\d{11}" placeholder="Digite apenas os 11 números do CPF" required>
 
       <button type="submit">Cadastrar</button>
 
@@ -206,6 +208,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
       });
     }
+
+    // Validação de senha forte
+    function validarSenhaForte(senha) {
+      const minLength = 8;
+      const temCaracterEspecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha);
+      
+      return senha.length >= minLength && temCaracterEspecial;
+    }
+
+    // Feedback visual da força da senha
+    const senhaInput = document.getElementById('senha');
+    const requisitos = document.getElementById('senhaRequisitos');
+    
+    if (senhaInput && requisitos) {
+      senhaInput.addEventListener('input', function() {
+        const senha = this.value;
+        
+        if (validarSenhaForte(senha)) {
+          requisitos.classList.add('forte');
+          requisitos.innerHTML = '<p>✓ Senha forte!</p>';
+        } else {
+          requisitos.classList.remove('forte');
+          requisitos.innerHTML = '<p>• Mínimo 8 caracteres</p><p>• Pelo menos 1 caractere especial (!@#$%^&*)</p>';
+        }
+      });
+    }
+
+    // Validação no envio do formulário
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const senha = document.getElementById('senha').value;
+        
+        if (!validarSenhaForte(senha)) {
+          e.preventDefault();
+          
+          const tema = localStorage.getItem("tema") === "claro";
+          
+          Swal.fire({
+            icon: 'error',
+            title: 'Senha muito fraca!',
+            text: 'A senha deve ter pelo menos 8 caracteres e 1 caractere especial (!@#$%^&*)',
+            confirmButtonText: 'OK',
+            background: tema ? '#E6E4E4' : '#262626',
+            color: tema ? '#121212' : '#ffffff',
+            confirmButtonColor: '#DC2626'
+          });
+          return false;
+        }
+      });
+    }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

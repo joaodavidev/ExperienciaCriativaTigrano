@@ -126,14 +126,14 @@ if (isset($_GET['nome']) && !empty(trim($_GET['nome']))) {    $nome = trim($_GET
                   <span class="price-label">Min:</span>
                   <div class="input-wrapper">
                     <span class="currency-symbol">R$</span>
-                    <input type="number" id="input-preco-min" name="preco_min" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMin, 2, '.', '') ?>" step="0.01">
+                    <input type="number" id="input-preco-min" name="preco_min" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMin, 2, '.', '') ?>" step="0.01" placeholder="0,00">
                   </div>
                 </div>
                 <div class="input-group">
                   <span class="price-label">Max:</span>
                   <div class="input-wrapper">
                     <span class="currency-symbol">R$</span>
-                    <input type="number" id="input-preco-max" name="preco_max" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMax, 2, '.', '') ?>" step="0.01">
+                    <input type="number" id="input-preco-max" name="preco_max" min="0" max="<?= $precoMaxDB ?>" value="<?= number_format($precoMax, 2, '.', '') ?>" step="0.01" placeholder="999,99">
                   </div>
                 </div>
               </div>              <div class="filter-buttons">

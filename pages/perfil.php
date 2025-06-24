@@ -24,14 +24,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $stmt->close();
   }
-
   // Redefinir senha
   if (isset($_POST['senha_atual'], $_POST['nova_senha'], $_POST['confirmar_senha'])) {
     $senhaAtual = $_POST['senha_atual'];
     $novaSenha = $_POST['nova_senha'];
     $confirmarSenha = $_POST['confirmar_senha'];
 
-    if ($novaSenha !== $confirmarSenha) {
+    // Validar senha forte
+    if (strlen($novaSenha) < 8 || !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $novaSenha)) {
+      $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'A nova senha deve ter pelo menos 8 caracteres e pelo menos 1 caractere especial (!@#$%^&*).'];
+    } elseif ($novaSenha !== $confirmarSenha) {
       $_SESSION['alerta'] = ['tipo' => 'error', 'mensagem' => 'A nova senha e a confirmação não coincidem.'];
     } else {
       $sql = "SELECT senha FROM usuarios WHERE email = ?";
@@ -111,10 +113,9 @@ $dados = $result->fetch_assoc();
       </div>
     </div>
     <h2>Dados Pessoais</h2>
-    <form action="perfil.php" method="POST" class="perfil-form">
-      <div class="form-group">
+    <form action="perfil.php" method="POST" class="perfil-form">      <div class="form-group">
         <label for="nome">Nome:</label>
-        <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
+        <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($dados['nome']) ?>" placeholder="Digite seu nome completo" required>
       </div>
 
       <div class="form-group">
@@ -128,27 +129,25 @@ $dados = $result->fetch_assoc();
 
       <div class="form-group">
         <label for="idade">Idade:</label>
-        <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" required>
+        <input type="number" name="idade" id="idade" value="<?= $dados['idade'] ?>" placeholder="Digite sua idade" min="1" max="120" required>
       </div>
 
       <button type="submit">Salvar Alterações</button>
-    </form>
-
-    <h2>Redefinir Senha</h2>
+    </form>    <h2>Redefinir Senha</h2>
     <form action="perfil.php" method="POST" class="perfil-form">
       <div class="form-group">
         <label for="senha_atual">Senha atual:</label>
-        <input type="password" name="senha_atual" id="senha_atual" required>
+        <input type="password" name="senha_atual" id="senha_atual" placeholder="Digite sua senha atual" required>
       </div>
 
       <div class="form-group">
         <label for="nova_senha">Nova senha:</label>
-        <input type="password" name="nova_senha" id="nova_senha" required>
+        <input type="password" name="nova_senha" id="nova_senha" placeholder="Mínimo 8 caracteres, 1 especial" required>
       </div>
 
       <div class="form-group">
         <label for="confirmar_senha">Confirmar nova senha:</label>
-        <input type="password" name="confirmar_senha" id="confirmar_senha" required>
+        <input type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Digite novamente a nova senha" required>
       </div>
 
       <button type="submit">Atualizar Senha</button>
@@ -167,12 +166,65 @@ $dados = $result->fetch_assoc();
     icon: '<?= $_SESSION['alerta']['tipo'] ?>',
     title: '<?= $_SESSION['alerta']['mensagem'] ?>',
     confirmButtonText: 'OK',
-    background: temaClaro ? "#E6E4E4" : "#262626",
-    color: temaClaro ? "#121212" : "#ffffff",
+    background: temaClaro ? "#E6E4E4" : "#262626",    color: temaClaro ? "#121212" : "#ffffff",
     confirmButtonColor: "#1D4ED8"
   });
 </script>
 <?php unset($_SESSION['alerta']); ?>
+
+<script>
+// Validação de senha forte para redefinição de senha
+function validarSenhaForte(senha) {
+  const minLength = 8;
+  const temCaracterEspecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha);
+  
+  return senha.length >= minLength && temCaracterEspecial;
+}
+
+// Validação no envio do formulário de redefinição de senha
+const formSenha = document.querySelector('form[action="perfil.php"]:has(input[name="nova_senha"])');
+if (formSenha) {
+  formSenha.addEventListener('submit', function(e) {
+    const novaSenha = document.getElementById('nova_senha').value;
+    const confirmarSenha = document.getElementById('confirmar_senha').value;
+    
+    if (!validarSenhaForte(novaSenha)) {
+      e.preventDefault();
+      
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Senha muito fraca!',
+        text: 'A nova senha deve ter pelo menos 8 caracteres e 1 caractere especial (!@#$%^&*)',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#DC2626'
+      });
+      return false;
+    }
+    
+    if (novaSenha !== confirmarSenha) {
+      e.preventDefault();
+      
+      const tema = localStorage.getItem("tema") === "claro";
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Senhas não coincidem!',
+        text: 'A nova senha e a confirmação devem ser iguais.',
+        confirmButtonText: 'OK',
+        background: tema ? '#E6E4E4' : '#262626',
+        color: tema ? '#121212' : '#ffffff',
+        confirmButtonColor: '#DC2626'
+      });
+      return false;
+    }
+  });
+}
+</script>
+
 <script src="../assets/css/js/script.js"></script>
 </body>
 </html>
